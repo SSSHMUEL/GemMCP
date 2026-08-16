@@ -16,6 +16,13 @@ const I18N_DICT = {
     helpBtnTitle: 'מדריך והסבר: מה זה עושה ואיך להשתמש?',
     langToggleTitle: 'Switch to English / החלף לאנגלית',
     langToggleLabel: 'EN',
+    checkForUpdatesTitle: 'בדוק עדכונים מ-GitHub',
+    updateAvailable: 'גרסה חדשה זמינה ב-GitHub!',
+    updateUpToDate: 'התוסף מעודכן לגרסה האחרונה!',
+    updateChecking: 'בודק עדכונים...',
+    updateError: 'שגיאה בבדיקת עדכון',
+    updateOpenGitHub: 'פתח עמוד עדכון ↗',
+    updateRunScriptHint: 'להתקנת עדכון: הפעל את update.bat בתיקיית הפרויקט',
 
     // Windows MCP Card
     winTitle: 'Windows MCP',
@@ -159,6 +166,13 @@ const I18N_DICT = {
     helpBtnTitle: 'Guide & Help: What is this and how to use?',
     langToggleTitle: 'עבור לעברית / Switch to Hebrew',
     langToggleLabel: 'עב',
+    checkForUpdatesTitle: 'Check for updates on GitHub',
+    updateAvailable: 'New version available on GitHub!',
+    updateUpToDate: 'GemMCP is up to date!',
+    updateChecking: 'Checking for updates...',
+    updateError: 'Failed to check for updates',
+    updateOpenGitHub: 'Open Release Page ↗',
+    updateRunScriptHint: 'To update: Run update.bat in project folder',
 
     // Windows MCP Card
     winTitle: 'Windows MCP',

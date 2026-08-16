@@ -931,6 +931,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ---------- Update & Version Check Logic ----------
+  const checkForUpdateBtn = document.getElementById('checkForUpdateBtn');
+  if (checkForUpdateBtn) {
+    checkForUpdateBtn.addEventListener('click', async () => {
+      checkForUpdateBtn.classList.add('spinning');
+      showStatus(t('updateChecking', currentLang), 'info');
+
+      try {
+        const response = await fetch('https://api.github.com/repos/SSSHMUEL/GemMCP/releases/latest', {
+          headers: { 'Accept': 'application/vnd.github.v3+json' }
+        });
+
+        if (response.ok) {
+          const release = await response.json();
+          const latestTag = (release.tag_name || '').replace(/^v/i, '').trim();
+          const currentVersion = (chrome.runtime.getManifest().version || '').trim();
+
+          if (latestTag && latestTag !== currentVersion) {
+            showStatus(`${t('updateAvailable', currentLang)} (v${latestTag})`, 'success');
+            setTimeout(() => {
+              if (confirm(`${t('updateAvailable', currentLang)} (v${latestTag})\n\n${t('updateRunScriptHint', currentLang)}\n\n${t('updateOpenGitHub', currentLang)}?`)) {
+                window.open(release.html_url || 'https://github.com/SSSHMUEL/GemMCP/releases', '_blank');
+              }
+            }, 300);
+          } else {
+            showStatus(`${t('updateUpToDate', currentLang)} (v${currentVersion})`, 'success');
+          }
+        } else {
+          // If no releases yet, check latest commit info or notify up-to-date
+          const manifestVer = chrome.runtime.getManifest().version;
+          showStatus(`${t('updateUpToDate', currentLang)} (v${manifestVer})`, 'success');
+        }
+      } catch (err) {
+        showStatus(`${t('updateError', currentLang)}: ${err.message}`, 'error');
+      } finally {
+        setTimeout(() => {
+          checkForUpdateBtn.classList.remove('spinning');
+        }, 600);
+      }
+    });
+  }
+
   function showStatus(text, type) {
     if (!statusMessage) return;
     statusMessage.textContent = text;
