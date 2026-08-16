@@ -591,6 +591,38 @@ async function executeGitHub(toolCall, config) {
     return await res.json();
   }
 
+  if (action === 'create_repo' || action === 'github:create_repo') {
+    const { name, description = '', private: isPrivate = false, auto_init = true } = toolCall;
+    if (!name) throw new Error('חסר שם המאגר (name) ליצירה ב-GitHub');
+    const res = await fetch('https://api.github.com/user/repos', {
+      method: 'POST',
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: name.trim(),
+        description: description || '',
+        private: !!isPrivate,
+        auto_init: !!auto_init
+      })
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(`GitHub error (${res.status}): ${errData.message || res.statusText}`);
+    }
+    const repo = await res.json();
+    return {
+      message: `המאגר '${repo.full_name}' נוצר בהצלחה ב-GitHub!`,
+      name: repo.name,
+      full_name: repo.full_name,
+      private: repo.private,
+      html_url: repo.html_url,
+      clone_url: repo.clone_url,
+      description: repo.description
+    };
+  }
+
   throw new Error(`פעולת GitHub לא נתמכת: ${action}`);
 }
 

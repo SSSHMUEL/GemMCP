@@ -61,14 +61,18 @@ const OMNI_MCP_REGISTRY = {
     id: 'github',
     name: 'GitHub Integration (ניהול קוד ומאגרים)',
     icon: '🐙',
-    description: 'חיבור לחשבון ה-GitHub של המשתמש. מאפשר משיכת רשימת מאגרים (Repositories), קריאת קבצי קוד מקור, ויצירת Issues/PRs.',
-    userIntentMapping: 'כל בקשה שקשורה ל: "גיטהאב", "GitHub", "ריפו", "מאגרים", "קוד מקור", "קרא קובץ מגיטהאב", "Issue" - הכוונה היא לחיבור GitHub!',
+    description: 'חיבור לחשבון ה-GitHub של המשתמש. מאפשר יצירת מאגרים (create_repo), משיכת רשימת מאגרים (Repositories), קריאת קבצי קוד מקור, ויצירת Issues.',
+    userIntentMapping: 'כל בקשה שקשורה ל: "גיטהאב", "GitHub", "ריפו", "צור ריפו", "מאגרים", "קוד מקור", "קרא קובץ מגיטהאב", "Issue" - הכוונה היא לחיבור GitHub!',
     schema: {
-      action: 'list_repos | get_file | create_issue',
+      action: 'list_repos | get_file | create_issue | create_repo',
       repo: 'owner/repo_name',
+      name: 'שם המאגר החדש ליצירה (ב-create_repo)',
+      description: 'תיאור המאגר (אופציונלי)',
+      private: 'true / false (האם המאגר פרטי)',
       path: 'נתיב הקובץ במאגר'
     },
     examples: [
+      '{"service": "github", "action": "create_repo", "name": "my-new-app", "description": "My project", "private": true}',
       '{"service": "github", "action": "list_repos"}',
       '{"service": "github", "action": "get_file", "repo": "owner/repo", "path": "package.json"}'
     ]
@@ -167,8 +171,13 @@ const OMNI_DEFAULT_TOOL_PROMPTS = {
 {"service": "notion", "action": "get_page", "page_id": "PAGE_ID"}
 \`\`\``,
 
-  github: `ניהול מאגרים וקוד ב-GitHub: רשימת מאגרים, קריאת קוד מקור וניהול Issues.
+  github: `ניהול מאגרים וקוד ב-GitHub: יצירת מאגרים חדשים, רשימת מאגרים, קריאת קוד מקור וניהול Issues.
 כשמבקשים פעולות מול GitHub, אל תבצע בעצמך – המשתמש מריץ עצמאית. החזר ישירות בלוק JSON בפורמט המתאים:
+
+יצירת מאגר (Repository) חדש:
+\`\`\`json
+{"service": "github", "action": "create_repo", "name": "my-new-project", "description": "תיאור הפרויקט", "private": true}
+\`\`\`
 
 רשימת מאגרים (Repositories):
 \`\`\`json
@@ -254,8 +263,13 @@ Read full page by ID:
 {"service": "notion", "action": "get_page", "page_id": "PAGE_ID"}
 \`\`\``,
 
-  github: `GitHub code repository management: List repositories, read source files and manage issues.
+  github: `GitHub code repository management: Create repositories, list repositories, read source files and manage issues.
 When GitHub operations are requested, directly return a single JSON block:
+
+Create new Repository:
+\`\`\`json
+{"service": "github", "action": "create_repo", "name": "my-new-app", "description": "Project description", "private": true}
+\`\`\`
 
 List Repositories:
 \`\`\`json
