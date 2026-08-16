@@ -1364,12 +1364,21 @@
 
   function getAvailableMentionTools() {
     const list = [];
+    const ICONS = {
+      supabase: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21.362 9.354H12V.304a.796.796 0 0 0-1.396-.534L1.879 11.238a1.59 1.59 0 0 0 1.097 2.656h9.362v9.05a.796.796 0 0 0 1.396.534l8.725-11.468a1.59 1.59 0 0 0-1.097-2.656z" fill="#3ECF8E"/></svg>`,
+      notion: `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.373L18.423 2.15c-.466-.467-1.12-.934-2.334-.84L2.872 2.384c-.373.047-.466.327-.326.56l1.913 1.264zm.933 3.36v13.533c0 .84.42 1.12 1.306 1.073l14.15-.84c.886-.046 1.12-.513 1.12-1.353V6.775c0-.607-.233-.887-.793-.84l-14.99.886c-.56.047-.793.327-.793.747zm13.12 1.493c.093.42 0 .84-.42.887l-.746.14v8.307c0 .653-.28 1.026-.98 1.073-.653.047-1.213-.14-1.633-.7l-4.713-7.467v7.047l1.4.28c.094.42-.186.793-.606.84l-3.92.233c-.093-.42.093-.84.513-.886l.933-.187V9.754l-1.306-.14c-.094-.42.186-.793.606-.84l3.92-.234 4.853 7.514V9.38l-1.12-.233c-.094-.42.186-.793.606-.84l3.08-.187c-.046.327 0 .653.046.934z"/></svg>`,
+      windows: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="1.5" y="1.5" width="9.5" height="9.5" rx="0.5" fill="#0078D4"/><rect x="13" y="1.5" width="9.5" height="9.5" rx="0.5" fill="#0078D4"/><rect x="1.5" y="13" width="9.5" height="9.5" rx="0.5" fill="#0078D4"/><rect x="13" y="13" width="9.5" height="9.5" rx="0.5" fill="#0078D4"/></svg>`,
+      github: `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>`,
+      fetch: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+      custom: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6m0 8v6M2 12h6m8 0h6M4.93 4.93l4.24 4.24m5.66 5.66l4.24 4.24M4.93 19.07l4.24-4.24m5.66-5.66l4.24-4.24"/></svg>`
+    };
+
     const meta = {
-      supabase: { id: 'supabase', tag: 'Supabase', name: 'Supabase Database', desc: 'שאילתות SQL ונתונים', icon: '⚡' },
-      notion: { id: 'notion', tag: 'Notion', name: 'Notion Workspace', desc: 'חיפוש, פתקים ומשימות', icon: '📝' },
-      windows: { id: 'windows', tag: 'Windows', name: 'Windows OS Tools', desc: 'שליטה במחשב, אפליקציות וקבצים', icon: '🪟' },
-      github: { id: 'github', tag: 'GitHub', name: 'GitHub Integration', desc: 'מאגרים, קוד מקור ו-Issues', icon: '🐙' },
-      fetch: { id: 'fetch', tag: 'Fetch', name: 'Web Fetch & Scraper', desc: 'סריקת אתרים ציבוריים ואישיים מחוברים', icon: '🌐' }
+      supabase: { id: 'supabase', tag: 'Supabase', name: 'Supabase Database', desc: 'שאילתות SQL ונתונים', icon: ICONS.supabase },
+      notion: { id: 'notion', tag: 'Notion', name: 'Notion Workspace', desc: 'חיפוש, פתקים ומשימות', icon: ICONS.notion },
+      windows: { id: 'windows', tag: 'Windows', name: 'Windows OS Tools', desc: 'שליטה במחשב, אפליקציות וקבצים', icon: ICONS.windows },
+      github: { id: 'github', tag: 'GitHub', name: 'GitHub Integration', desc: 'מאגרים, קוד מקור ו-Issues', icon: ICONS.github },
+      fetch: { id: 'fetch', tag: 'Fetch', name: 'Web Fetch & Scraper', desc: 'סריקת אתרים ציבוריים ואישיים מחוברים', icon: ICONS.fetch }
     };
 
     // הוספת שירותים פעילים ומחוברים
@@ -1389,7 +1398,7 @@
           tag: tagName,
           name: cs.name ? cs.name : `Custom MCP #${idx + 1}`,
           desc: cs.customPrompt ? cs.customPrompt.slice(0, 45) + '...' : 'שרת MCP מותאם אישית',
-          icon: '🔌',
+          icon: ICONS.custom,
           isCustom: true,
           customConfig: cs
         });

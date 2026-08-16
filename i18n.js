@@ -89,7 +89,7 @@ const I18N_DICT = {
 
     // Custom MCP Card
     customTitle: 'שרתי MCP מותאמים',
-    customDesc: 'הוספת שרטים מותאמים, קוד חיבור ופרומפטים',
+    customDesc: 'הוספת שרתים מותאמים, קוד חיבור ופרומפטים',
     customCountPill: ' מוגדרים',
     customAddBtn: 'הוסף שרת MCP מותאם אישית',
     customServerNamePlaceholder: 'שם השרת (לדוגמה: Filesystem)',
