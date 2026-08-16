@@ -5,8 +5,10 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 cd /d "%~dp0bridge-server"
+if not exist node_modules (
+    call npm install
+)
 netstat -ano | findstr ":3000 " | findstr "LISTENING" >nul
 if %errorlevel% neq 0 (
     node server.js
 )
-

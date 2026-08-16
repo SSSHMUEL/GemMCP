@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const { exec, execFile } = require('child_process');
 const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
@@ -15,7 +16,9 @@ process.on('unhandledRejection', (reason) => {
 });
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+// פורט מאומת: מתעלם מערכים לא תקינים (0, ריק, לא מספר) כדי להבטיח שהשרת תמיד עולה על פורט אמיתי
+const rawPort = Number(process.env.PORT);
+const PORT = Number.isInteger(rawPort) && rawPort > 0 ? rawPort : 3000;
 const HOST = '127.0.0.1'; // נעילת שרת ל-localhost בלבד למניעת חשיפה ברשת
 
 // הגדרת CORS מאובטחת - מאשר רק את תוסף הכרום ו-Localhost
@@ -405,6 +408,27 @@ function checkDangerousWindowsCommands(cmd) {
   }
 }
 
+// הרחבת נתיב משתמש: ~ (תיקיית הבית) ומשתני סביבה בסגנון %VAR% (למשל %USERPROFILE%)
+function expandPath(inputPath) {
+  if (!inputPath || typeof inputPath !== 'string') return inputPath;
+  let p = inputPath.trim();
+
+  // הרחבת ~ לתיקיית הבית של המשתמש (Windows: C:\Users\<user>)
+  if (p === '~') {
+    p = os.homedir();
+  } else if (p.startsWith('~/') || p.startsWith('~\\')) {
+    p = path.join(os.homedir(), p.slice(2));
+  }
+
+  // הרחבת משתני סביבה בסגנון %VAR% (חיפוש לא תלוי רישיות)
+  p = p.replace(/%([^%]+)%/g, (match, name) => {
+    const key = Object.keys(process.env).find(k => k.toLowerCase() === name.toLowerCase());
+    return key ? process.env[key] : match;
+  });
+
+  return p;
+}
+
 // קבלת הרשאות מהתוסף (req.body.permissions) עם ברירות מחדל וגיבוי של .env
 function resolvePermissions(clientPerms = {}) {
   return {
@@ -413,7 +437,7 @@ function resolvePermissions(clientPerms = {}) {
     runCommands: clientPerms.runCommands !== undefined ? !!clientPerms.runCommands : (process.env.WIN_PERM_COMMANDS === 'true'),
     launchApps: clientPerms.launchApps !== undefined ? !!clientPerms.launchApps : (process.env.WIN_PERM_APPS !== 'false'),
     clipboard: clientPerms.clipboard !== undefined ? !!clientPerms.clipboard : (process.env.WIN_PERM_CLIPBOARD !== 'false'),
-    allowedPath: (clientPerms.allowedPath ? path.resolve(clientPerms.allowedPath) : (process.env.WIN_ALLOWED_PATH ? path.resolve(process.env.WIN_ALLOWED_PATH) : null))
+    allowedPath: (clientPerms.allowedPath ? path.resolve(expandPath(clientPerms.allowedPath)) : (process.env.WIN_ALLOWED_PATH ? path.resolve(expandPath(process.env.WIN_ALLOWED_PATH)) : null))
   };
 }
 
@@ -426,7 +450,7 @@ app.post('/api/windows/execute', async (req, res) => {
     // בדיקת נתיב מותר (Allowed Directory Scope)
     function validatePathInScope(targetPath) {
       if (!targetPath) return;
-      const resolved = path.resolve(targetPath);
+      const resolved = path.resolve(expandPath(targetPath));
       if (perms.allowedPath && !resolved.toLowerCase().startsWith(perms.allowedPath.toLowerCase())) {
         throw new Error(`הגישה לנתיב '${targetPath}' נחסמה. הנתיב המורשה בהגדרות השרת הוא: ${perms.allowedPath}`);
       }

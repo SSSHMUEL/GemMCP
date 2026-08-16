@@ -44,6 +44,7 @@ GemMCP connects your browser (Gemini Web, AI chat interfaces) directly to local 
 
 #### Option A: One-Click Startup (Recommended)
 Double-click `start-bridge.bat` (or `bridge-launcher.bat`) located in the root project folder.
+> 💡 **Auto-Setup:** On the first run, the script automatically installs all required dependencies (`npm install`) if missing, and immediately starts the server on `http://localhost:3000`.
 
 #### Option B: Manual Terminal Startup
 1. Open PowerShell or Command Prompt inside the `bridge-server/` directory:
@@ -86,7 +87,8 @@ Double-click `start-bridge.bat` (or `bridge-launcher.bat`) located in the root p
 ### 3️⃣ הפעלת שרת ה-Windows Bridge
 
 #### אפשרות א': הפעלה בלחיצה אחת (מומלץ)
-לחצו לחיצה כפולה על הקובץ `start-bridge.bat` (או `bridge-launcher.bat`) הנמצא בתיקייה הראשית של הפרויקט.
+לחצו לחיצה כפולה על הקובץ `start-bridge.bat` (או `bridge-launcher.bat`) הנמצא בתיקייה הראשית של הפרויקט.  
+> 💡 **התקנה אוטומטית:** בהפעלה הראשונה, הסקריפט מזהה אוטומטית אם חסרות ספריות ומבצע `npm install` עצמאית ברקע, ולאחר מכן מפעיל מיד את השרת בכתובת `http://localhost:3000`.
 
 #### אפשרות ב': הפעלה ידנית דרך הטרמינל
 1. פתחו את ה-PowerShell או ה-CMD בתוך תיקיית `bridge-server`:
