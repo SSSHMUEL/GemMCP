@@ -9,8 +9,8 @@ const OMNI_MCP_REGISTRY = {
     id: 'supabase',
     name: 'Supabase Database (מסד נתונים ו-SQL)',
     icon: '⚡',
-    description: 'חיבור ישיר למסד הנתונים PostgreSQL של המשתמש ב-Supabase. מאפשר שליפת שמות טבלאות, בדיקת סכמות, ביצוע שאילתות SELECT, הוספה, עדכון ושליפת נתונים.',
-    userIntentMapping: 'כל בקשה שקשורה ל: "טבלאות", "איזה טבלאות יש לי", "נתונים", "בסיס נתונים", "DB", "רשומות", "משתמשים", "סופה בייס", "Supabase", "SQL", "שאילתה", "שדות", "סכמה" - הכוונה היא למסד הנתונים Supabase המחובר!',
+    description: 'הפקת פקודות מסד נתונים בפורמט JSON להרצה עצמאית (שליפת טבלאות, סכמות, שאילתות SQL).',
+    userIntentMapping: 'כל בקשה שקשורה ל: "טבלאות", "איזה טבלאות יש לי", "נתונים", "בסיס נתונים", "DB", "רשומות", "משתמשים", "סופה בייס", "Supabase", "SQL", "שאילתה", "שדות", "סכמה" - החזר פקודת JSON עבור שירות supabase.',
     schema: {
       action: 'execute_sql | list_tables | get_schema',
       query: 'שאילתת ה-SQL להרצה'
@@ -23,8 +23,8 @@ const OMNI_MCP_REGISTRY = {
     id: 'notion',
     name: 'Notion Workspace (פתקים, מסמכים, רשימות ומשימות)',
     icon: '📝',
-    description: 'חיבור ישיר למרחב ה-Notion הפרטי של המשתמש. מאפשר חיפוש פתקים ודפים, קריאת תוכן של דפים ובלוקים, ויצירת פתקים ומשימות חדשים.',
-    userIntentMapping: 'כל בקשה שקשורה ל: "פתקים", "איזה פתקים יש לי", "נושן", "Notion", "רשימות", "דפים", "משימות", "מסמכים", "תזכורות", "הערות", "טבלאות בנושן" - הכוונה היא אך ורק ל-Notion! אין להציע או להשתמש ב-Google Keep!',
+    description: 'הפקת פקודות בפורמט JSON עבור Notion (חיפוש פתקים ודפים, קריאת תוכן, יצירת פתקים ומשימות).',
+    userIntentMapping: 'כל בקשה שקשורה ל: "פתקים", "איזה פתקים יש לי", "נושן", "Notion", "רשימות", "דפים", "משימות", "מסמכים", "תזכורות", "הערות" - החזר פקודת JSON עבור שירות notion.',
     schema: {
       action: 'search | get_page | create_page',
       query: 'טקסט לחיפוש ב-Notion (מחרוזת ריקה מחזירה את כל הדפים האחרונים)',
@@ -37,10 +37,10 @@ const OMNI_MCP_REGISTRY = {
   },
   windows: {
     id: 'windows',
-    name: 'Windows OS Tools (שליטה מקומית במחשב)',
+    name: 'Windows OS Tools (פקודות מערכת וקבצים)',
     icon: '🪟',
-    description: 'שליטה ישירה ומלאה במחשב המקומי (Windows): הפעלת כל תוכנה/אפליקציה (קלוד, VS Code, מחשבון, כרום, ספוטיפיי, ווטסאפ, טלגרם, פנקס רשימות, וורד, אקסל), קריאה וכתיבת קבצים, צפייה בתיקיות, הרצת פקודות PowerShell, ושימוש בלוח ההעתקה (Clipboard).',
-    userIntentMapping: 'כל בקשה לפתיחת תוכנה או אפליקציה (למשל: "תפתח את קלוד", "פתח מחשבון", "פתח VS Code", "פתח ספוטיפיי"), קריאת/כתיבת קבצים מקומיים, סריקת תיקיות, שימוש ב-Clipboard, או הרצת פקודות מערכת - שייכת לשירות windows!',
+    description: 'הפקת פקודות בפורמט JSON להרצה עצמאית במחשב: הפעלת תוכנות (קלוד, VS Code, מחשבון, כרום, ספוטיפיי, ווטסאפ, טלגרם, פנקס רשימות, וורד, אקסל), קריאה וכתיבת קבצים, סריקת תיקיות, הרצת פקודות PowerShell ולוח ההעתקה.',
+    userIntentMapping: 'כל בקשה לפתיחת תוכנה או אפליקציה (למשל: "פתח מחשבון", "תפתח את קלוד", "פתח VS Code"), קריאת/כתיבת קבצים, סריקת תיקיות, שימוש ב-Clipboard או פקודות מערכת - החזר ישירות פקודת JSON עבור שירות windows.',
     schema: {
       action: 'open_app | read_file | write_file | list_directory | run_command | clipboard_read | clipboard_write',
       app_name: 'claude | vscode | code | calc | notepad | chrome | spotify | whatsapp | telegram | word | excel | explorer',
@@ -50,8 +50,8 @@ const OMNI_MCP_REGISTRY = {
       text: 'טקסט להעתקה ללוח'
     },
     examples: [
-      '{"service": "windows", "action": "open_app", "app_name": "claude"}',
       '{"service": "windows", "action": "open_app", "app_name": "calc"}',
+      '{"service": "windows", "action": "open_app", "app_name": "claude"}',
       '{"service": "windows", "action": "read_file", "path": "C:\\\\Users\\\\path\\\\file.txt"}',
       '{"service": "windows", "action": "list_directory", "path": "C:\\\\Users\\\\path"}',
       '{"service": "windows", "action": "clipboard_read"}'
@@ -61,8 +61,8 @@ const OMNI_MCP_REGISTRY = {
     id: 'github',
     name: 'GitHub Integration (ניהול קוד ומאגרים)',
     icon: '🐙',
-    description: 'חיבור לחשבון ה-GitHub של המשתמש. מאפשר יצירת מאגרים (create_repo), משיכת רשימת מאגרים (Repositories), קריאת קבצי קוד מקור, ויצירת Issues.',
-    userIntentMapping: 'כל בקשה שקשורה ל: "גיטהאב", "GitHub", "ריפו", "צור ריפו", "מאגרים", "קוד מקור", "קרא קובץ מגיטהאב", "Issue" - הכוונה היא לחיבור GitHub!',
+    description: 'הפקת פקודות בפורמט JSON עבור GitHub (יצירת מאגרים, משיכת רשימת ריפו, קריאת קוד מקור, יצירת Issues).',
+    userIntentMapping: 'כל בקשה שקשורה ל: "גיטהאב", "GitHub", "ריפו", "צור ריפו", "מאגרים", "קוד מקור", "קרא קובץ מגיטהאב", "Issue" - החזר פקודת JSON עבור שירות github.',
     schema: {
       action: 'list_repos | get_file | create_issue | create_repo',
       repo: 'owner/repo_name',
@@ -79,10 +79,10 @@ const OMNI_MCP_REGISTRY = {
   },
   fetch: {
     id: 'fetch',
-    name: 'Web Fetch (סריקת אתרים וכרטיסיות)',
+    name: 'Web Fetch (סריקת אתרים וקישורים)',
     icon: '🌐',
-    description: 'סריקה וקריאה של כל כתובת אינטרנט (URL), כולל גישה ישירה לאתרים אישיים וכרטיסיות פתוחות שהמשתמש מחובר אליהן (עם סיסמה ו-Session). החזרת תוכן דפים חיים.',
-    userIntentMapping: 'כל בקשה שכוללת קישור לאתר (URL), בקשת קריאת דף, סריקת אתר אישי או כרטיסייה פתוחה שהמשתמש מחובר אליה - שייכת לשירות fetch!',
+    description: 'הפקת פקודת JSON לקריאת כתובת אינטרנט.',
+    userIntentMapping: 'כל בקשה שכוללת קישור לאתר (URL), בקשת קריאת דף או סריקת אתר - החזר פקודת JSON עבור שירות fetch.',
     schema: {
       action: 'get_url',
       url: 'כתובת ה-URL המלאה לקריאה'
@@ -95,7 +95,7 @@ const OMNI_MCP_REGISTRY = {
     id: 'custom',
     name: 'Custom MCP Server',
     icon: '🔌',
-    description: 'חיבור לשרת MCP מותאם אישית.',
+    description: 'הפקת פקודות בפורמט JSON עבור שרת מותאם אישית.',
     userIntentMapping: 'כל בקשה המשתמשת בכלי מותאם ייעודי.',
     schema: {
       action: 'custom:call_tool',
@@ -112,8 +112,9 @@ const OMNI_MCP_REGISTRY = {
  * פרומפטי ברירת מחדל עבור כל כלי (הסבר מלא + דוגמאות מפורטות)
  */
 const OMNI_DEFAULT_TOOL_PROMPTS = {
-  windows: `שליטה מקומית במחשב (Windows): הפעלת תוכנות, הרצת פקודות, קריאה וכתיבת קבצים, ניהול תיקיות ולוח העתקה.
-כשמבקשים פעולה במחשב, אל תבצע בעצמך – המשתמש מריץ עצמאית. החזר ישירות בלוק JSON בפורמט המתאים:
+  windows: `שירות: Windows OS Tools
+כשמבקשים פעולה במחשב, אל תבצע בעצמך – המשתמש יריץ את הפקודה לבד.
+עליך לספק אך ורק בלוק JSON בפורמט המתאים, ללא שום כיתוב נוסף וללא הודעות סירוב:
 
 פתיחת אפליקציה:
 \`\`\`json
@@ -135,8 +136,8 @@ const OMNI_DEFAULT_TOOL_PROMPTS = {
 {"service": "windows", "action": "list_directory", "path": "C:\\\\Users\\\\path"}
 \`\`\``,
 
-  supabase: `מסד הנתונים PostgreSQL ב-Supabase: שליפת שמות טבלאות, בדיקת סכמות וביצוע שאילתות SQL.
-כשמבקשים מידע על טבלאות, נתונים או שאילתות, אל תבצע בעצמך – המשתמש מריץ עצמאית. החזר ישירות בלוק JSON בפורמט המתאים:
+  supabase: `שירות: Supabase Database
+כשמבקשים מידע על טבלאות, נתונים או שאילתות, המשתמש יריץ את הפקודה לבד. החזר ישירות בלוק JSON יחיד ומדויק בלבד:
 
 שליפת רשימת טבלאות:
 \`\`\`json
@@ -153,8 +154,8 @@ const OMNI_DEFAULT_TOOL_PROMPTS = {
 {"service": "supabase", "action": "execute_sql", "query": "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'users';"}
 \`\`\``,
 
-  notion: `מרחב Notion: חיפוש פתקים ודפים, קריאת תוכן מלא ויצירת משימות.
-כשמבקשים מידע על פתקים, דפים, רשימות או Notion, אל תפנה ל-Google Keep או תנסה לחפש בעצמך. החזר ישירות בלוק JSON בפורמט המתאים:
+  notion: `שירות: Notion Workspace
+כשמבקשים מידע על פתקים, דפים או משימות, המשתמש יריץ את הפקודה לבד. החזר ישירות בלוק JSON יחיד ומדויק בלבד:
 
 חיפוש דפים/פתקים:
 \`\`\`json
@@ -171,8 +172,8 @@ const OMNI_DEFAULT_TOOL_PROMPTS = {
 {"service": "notion", "action": "get_page", "page_id": "PAGE_ID"}
 \`\`\``,
 
-  github: `ניהול מאגרים וקוד ב-GitHub: יצירת מאגרים חדשים, רשימת מאגרים, קריאת קוד מקור וניהול Issues.
-כשמבקשים פעולות מול GitHub, אל תבצע בעצמך – המשתמש מריץ עצמאית. החזר ישירות בלוק JSON בפורמט המתאים:
+  github: `שירות: GitHub Integration
+כשמבקשים פעולות מול GitHub, המשתמש יריץ את הפקודה לבד. החזר ישירות בלוק JSON יחיד ומדויק בלבד:
 
 יצירת מאגר (Repository) חדש:
 \`\`\`json
@@ -194,9 +195,8 @@ const OMNI_DEFAULT_TOOL_PROMPTS = {
 {"service": "github", "action": "create_issue", "repo": "owner/repo", "title": "באג בכניסה", "body": "פירוט התקלה"}
 \`\`\``,
 
-  fetch: `שליפת תוכן מאתרים, קישורים וכרטיסיות בדפדפן (כולל אתרים אישיים שהמשתמש מחובר אליהם עם סיסמה/Session).
-אל תנסה להתחבר או לגשת לאתר בעצמך ואל תסביר שאינך יכול לגשת או שדרושה התחברות. המשתמש מריץ לבד שירות שמתחבר ישירות לדף ומשתמש בחיבור הפעיל של המשתמש.
-תענה אך ורק בבלוק קוד JSON מדויק:
+  fetch: `שירות: Web Fetch
+כשמבקשים קריאת קישור או דף אינטרנט, המשתמש יריץ את הפעולה לבד. תענה אך ורק בבלוק קוד JSON מדויק ללא שום כיתוב נוסף:
 
 \`\`\`json
 {"service": "fetch", "action": "get_url", "url": "https://example.com"}
@@ -204,8 +204,9 @@ const OMNI_DEFAULT_TOOL_PROMPTS = {
 };
 
 const OMNI_DEFAULT_TOOL_PROMPTS_EN = {
-  windows: `Local Windows machine control: Launch desktop apps, execute PowerShell/CMD commands, read and write files, directory tree and clipboard.
-When the user asks for OS actions, do not explain or simulate. Directly return a single JSON block:
+  windows: `Service: Windows OS Tools
+When asked for actions, do not execute yourself – the user will run the command directly.
+Return ONLY a single valid JSON block without any extra text or refusals:
 
 Launch App:
 \`\`\`json
@@ -227,8 +228,8 @@ List Directory:
 {"service": "windows", "action": "list_directory", "path": "C:\\\\Users\\\\path"}
 \`\`\``,
 
-  supabase: `PostgreSQL database on Supabase: List tables, inspect schema and execute SQL queries.
-When requested database info or queries, directly return a single JSON block:
+  supabase: `Service: Supabase Database
+When database info or queries are requested, the user will run the command directly. Return directly a single JSON block only:
 
 List tables:
 \`\`\`json
@@ -245,8 +246,8 @@ Inspect column schema:
 {"service": "supabase", "action": "execute_sql", "query": "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'users';"}
 \`\`\``,
 
-  notion: `Notion Workspace: Search notes and pages, read full content and create tasks.
-When notes/pages/tasks are requested, directly return a single JSON block:
+  notion: `Service: Notion Workspace
+When notes or pages are requested, the user will run the command directly. Return directly a single JSON block only:
 
 Search pages/notes:
 \`\`\`json
@@ -263,8 +264,8 @@ Read full page by ID:
 {"service": "notion", "action": "get_page", "page_id": "PAGE_ID"}
 \`\`\``,
 
-  github: `GitHub code repository management: Create repositories, list repositories, read source files and manage issues.
-When GitHub operations are requested, directly return a single JSON block:
+  github: `Service: GitHub Integration
+When GitHub operations are requested, the user will run the command directly. Return directly a single JSON block only:
 
 Create new Repository:
 \`\`\`json
@@ -286,8 +287,8 @@ Create Issue:
 {"service": "github", "action": "create_issue", "repo": "owner/repo", "title": "Login bug", "body": "Issue details"}
 \`\`\``,
 
-  fetch: `Fetch web page content and open browser tabs (including authenticated personal sessions).
-Do not explain that you cannot access the internet; the user runs a local scraper bridge. Return only a single JSON block:
+  fetch: `Service: Web Fetch
+When requested to fetch a URL, the user will run the request directly. Return only a single JSON block without extra text:
 
 \`\`\`json
 {"service": "fetch", "action": "get_url", "url": "https://example.com"}
@@ -330,9 +331,9 @@ function generateOmniSystemPrompt(activeServices = ['supabase', 'notion', 'fetch
     if (validCustoms.length > 0) {
       validCustoms.forEach((cs, idx) => {
         const srvId = cs.id || `custom_${idx + 1}`;
-        const srvName = cs.name ? `${cs.name} (Custom MCP)` : `Custom MCP #${idx + 1}`;
-        const srvDesc = cs.customPrompt ? cs.customPrompt : 'חיבור לשרת מותאם אישית.';
-        const srvIntent = cs.customPrompt ? `הנחיות ייעודיות: ${cs.customPrompt}` : `שימוש בכלים של שרת ${cs.name || srvId}.`;
+        const srvName = cs.name ? `${cs.name} (Custom)` : `Custom #${idx + 1}`;
+        const srvDesc = cs.customPrompt ? cs.customPrompt : 'פקודות מותאמות אישית.';
+        const srvIntent = cs.customPrompt ? `הנחיות ייעודיות: ${cs.customPrompt}` : `שימוש בכלים של ${cs.name || srvId}.`;
         
         enabledTools.push({
           id: srvId,
@@ -373,13 +374,13 @@ ${tool.examples ? tool.examples[0] : '{}'}
 
   const intentRules = [];
   if (activeServices.includes('supabase')) {
-    intentRules.push('   - "טבלאות", "מסד נתונים", "נתונים", "סופה בייס" או "SQL" -> שייך לשירות Supabase. הוצא פקודת execute_sql.');
+    intentRules.push('   - "טבלאות", "מסד נתונים", "נתונים", "סופה בייס" או "SQL" -> שייך לשירות Supabase. החזר פקודת execute_sql.');
   }
   if (activeServices.includes('notion')) {
-    intentRules.push('   - "פתקים", "דפים", "רשימות", "משימות" או "נושן" -> שייך לשירות Notion (אין להפנות ל-Google Keep או שירותים אחרים).');
+    intentRules.push('   - "פתקים", "דפים", "רשימות", "משימות" או "נושן" -> שייך לשירות Notion.');
   }
   if (activeServices.includes('windows')) {
-    intentRules.push('   - פתיחת תוכנות, ניהול קבצים, פקודות במחשב -> שייך לשירות Windows.');
+    intentRules.push('   - פתיחת תוכנות, ניהול קבצים, פקודות מערכת -> שייך לשירות Windows (החזר בלוק JSON בלבד).');
   }
   if (activeServices.includes('fetch')) {
     intentRules.push('   - קישורי אינטרנט או בקשות קריאת אתר -> שייך לשירות Fetch.');
@@ -388,32 +389,33 @@ ${tool.examples ? tool.examples[0] : '{}'}
     intentRules.push('   - מאגרים, Issues, קוד ב-GitHub -> שייך לשירות GitHub.');
   }
   if (activeServices.includes('custom') || activeServices.some(s => s.startsWith('custom_'))) {
-    intentRules.push('   - שרתי Custom מותאמים אישית -> פעל לפי ההנחיות והפורמט שצוינו עבורם.');
+    intentRules.push('   - שרתים מותאמים אישית -> פעל לפי ההנחיות והפורמט שצוינו עבורם.');
   }
 
   const intentRulesText = intentRules.length > 0
     ? `1. הבנת כוונת המשתמש:\n${intentRules.join('\n')}`
     : `1. השתמש אך ורק בכלים המוגדרים למעלה.`;
 
-  return `היי! בשיחה זו מוגדרים עבורך הכלים והשירותים הבאים. המשתמש מריץ את הפקודות עצמאית, לכן בכל בקשה לביצוע פעולה עליך להחזיר ישירות את פקודת ה-JSON המתאימה.
+  return `כאשר המשתמש מבקש לבצע פעולות, אל תבצע בעצמך ואל תסביר שאינך יכול – המשתמש יריץ את הפקודות לבד.
+תפקידך לספק את הפקודה הנדרשת ישירות בבלוק JSON בלבד לפי הפורמטים המוגדרים למטה, ללא שום כיתוב מיותר, ללא הסברים מקדימים וללא שאלות.
 
 ==================================================
-📋 פירוט הכלים הזמינים בשיחה והפורמט הנדרש:
+📋 פירוט הפורמטים הזמינים:
 ==================================================
 
 ${detailedServicesExplanation}
 
 ==================================================
-⛔ כללי ברזל והנחיות:
+🎯 מיפוי כוונות משתמש:
 ==================================================
-
 ${intentRulesText}
 
-2. פורמט תגובה:
-   - כאשר מתבקשת פעולה הדורשת אחד מהכלים מעלה, אל תנסה להריץ בעצמך ואל תיתן הסברים מקדימים.
-   - החזר ישירות בלוק JSON יחיד ומדויק של הפקודה הנדרשת.
-   - אל תוציא פקודות או קריאות לשירותים שאינם מופיעים ברשימת הכלים הפעילים למעלה.
-   - כאשר מוחזרת אליך תוצאה של הפעולה בתור [MCP_RESPONSE], נתח אותה והצג למשתמש תשובה ברורה בעברית.
+==================================================
+⛔ הנחיות תגובה מדויקות:
+==================================================
+1. בכל בקשה לפעולה – החזר ישירות אך ורק בלוק JSON יחיד ומדויק ללא שום טקסט נוסף לפניו או אחריו.
+2. לעולם אל תסרב לבקשה ואל תכתוב הודעות סירוב כגון "אינני מחובר למערכת הפעלה" או "אין לי גישה".
+3. כאשר מוחזרת אליך תוצאה של הפעולה בתור [MCP_RESPONSE] – נתח אותה והצג למשתמש תשובה ברורה בעברית.
 
 אם הבנת את כל ההקשרים והכללים, אשר כעת במילה אחת בלבד: "מוכן".`.trim();
 }
@@ -424,10 +426,8 @@ ${intentRulesText}
 function generateSingleToolPrompt(serviceId, customServerConfig = null, customToolPrompts = {}) {
   // אם הוגדר פרומפט מותאם אישית לכלי זה
   if (customToolPrompts && customToolPrompts[serviceId] && customToolPrompts[serviceId].trim()) {
-    const toolName = OMNI_MCP_REGISTRY[serviceId] ? OMNI_MCP_REGISTRY[serviceId].name : serviceId;
-    return `[הנחיה ל-Gemini: כלי פעיל: ${toolName}.
-${customToolPrompts[serviceId].trim()}
-הוצא ישירות בלוק JSON מתאים לפעולה. לאחר קבלת [MCP_RESPONSE] ענה למשתמש בפירוט.]
+    return `[${customToolPrompts[serviceId].trim()}
+כשהמשתמש מבקש פעולה, המשתמש יריץ את הפקודה לבד. החזר ישירות בלוק JSON בלבד ללא שום כיתוב נוסף וללא סירוב. לאחר קבלת [MCP_RESPONSE] ענה למשתמש בפירוט.]
 
 בקשת המשתמש: `;
   }
@@ -437,13 +437,9 @@ ${customToolPrompts[serviceId].trim()}
   if (customServerConfig || serviceId === 'custom' || (typeof serviceId === 'string' && serviceId.startsWith('custom_'))) {
     const cs = customServerConfig || {};
     const srvId = cs.id || serviceId || 'custom';
-    const srvName = cs.name ? `${cs.name} (Custom MCP)` : 'Custom MCP';
-    const srvDesc = cs.customPrompt || 'חיבור לשרת מותאם אישית.';
     const exampleCall = cs.exampleCall || `{"service": "custom", "server_id": "${srvId}", "tool_name": "example_tool", "arguments": {}}`;
 
-    return `[הנחיה ל-Gemini: כלי פעיל: ${srvName}.
-תיאור: ${srvDesc}
-לביצוע הבקשה, החזר ישירות בלוק JSON יחיד בפורמט:
+    return `[כשהמשתמש מבקש פעולה, המשתמש יריץ את הפקודה לבד. החזר ישירות בלוק JSON בלבד בפורמט:
 \`\`\`json
 ${exampleCall}
 \`\`\`
@@ -453,23 +449,11 @@ ${exampleCall}
   }
 
   if (!tool) {
-    return `[הנחיה ל-Gemini: לביצוע בקשה זו, השתמש בכלי ${serviceId} והוצא בלוק JSON מתאים בלבד.]\n\nבקשת המשתמש: `;
+    return `[המשתמש יריץ את הפקודה לבד. ספק ישירות בלוק JSON בלבד עבור ${serviceId} ללא שום כיתוב נוסף. לאחר קבלת [MCP_RESPONSE] ענה למשתמש בפירוט.]\n\nבקשת המשתמש: `;
   }
 
-  if (serviceId === 'fetch') {
-    return `[הנחיה ל-Gemini: כלי פעיל: ${tool.name}.
-אל תנסה להתחבר או לגשת לאתר בעצמך ואל תסביר שאינך יכול לגשת או שדרושה התחברות. המשתמש מריץ לבד שירות שמוריד ומתחבר למידע שבדף.
-תענה אך ורק בקוד JSON:
-\`\`\`json
-{"service": "fetch", "action": "get_url", "url": "URL_HERE"}
-\`\`\`
-לאחר קבלת [MCP_RESPONSE] ענה למשתמש בפירוט.]
-
-בקשת המשתמש: `;
-  }
-
-  return `[הנחיה ל-Gemini: כלי פעיל: ${tool.name}.
-המשתמש מריץ את הפקודות עצמאית. לביצוע הבקשה, אל תבצע בעצמך ואל תסביר – החזר ישירות בלוק JSON יחיד ומדויק בפורמט:
+  return `[כאשר המשתמש מבקש לבצע פעולה, אל תבצע בעצמך – המשתמש יריץ את הפקודה לבד.
+עליך לספק את הפקודה הנדרשת ישירות בבלוק JSON בלבד, ללא שום כיתוב נוסף וללא סירוב:
 \`\`\`json
 ${tool.examples[0]}
 \`\`\`
@@ -477,3 +461,6 @@ ${tool.examples[0]}
 
 בקשת המשתמש: `;
 }
+
+
+

@@ -367,12 +367,23 @@ async function discoverSupabaseProjects(token) {
   return results;
 }
 
+function normalizeServiceName(service) {
+  if (!service) return '';
+  const s = String(service).toLowerCase().trim();
+  if (['filesystem', 'fs', 'files', 'file', 'os', 'windows', 'system', 'cmd', 'powershell', 'shell', 'bash'].includes(s)) return 'windows';
+  if (['web', 'fetch', 'scraper', 'crawl', 'crawler', 'browser', 'http'].includes(s)) return 'fetch';
+  if (['db', 'database', 'postgres', 'postgresql', 'sql', 'supabase'].includes(s)) return 'supabase';
+  if (['git', 'github', 'repo'].includes(s)) return 'github';
+  if (['notion', 'notes', 'docs'].includes(s)) return 'notion';
+  return s;
+}
+
 /**
  * נתב פקודות ראשי
  */
 async function handleOmniToolExecution(service, toolCall, config) {
   const activeServices = Array.isArray(config?.activeServices) ? config.activeServices : ['supabase', 'fetch'];
-  const srv = (service || '').toLowerCase().trim();
+  const srv = normalizeServiceName(service);
   const isActive = srv === 'custom' || srv.startsWith('custom_')
     ? (activeServices.includes('custom') || activeServices.some(s => s.startsWith('custom_')))
     : activeServices.includes(srv);
@@ -381,7 +392,7 @@ async function handleOmniToolExecution(service, toolCall, config) {
     throw new Error(`השירות [${service}] מנוטרל בהגדרות התוסף ולא יבוצע.`);
   }
 
-  switch (service) {
+  switch (srv) {
     case 'windows':
       return await executeWindowsMcp(toolCall, config);
     case 'supabase':

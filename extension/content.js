@@ -1029,8 +1029,10 @@
         else if (appLow === 'clock' || appLow === 'שעון') parsed.app_name = 'clock';
       }
       
-      // זיהוי שירות אוטומטי אם חסר
-      if (!parsed.service) {
+      // נרמול וזיהוי שירות אוטומטי
+      if (parsed.service) {
+        parsed.service = normalizeServiceName(parsed.service);
+      } else {
         if (parsed.action && parsed.action.startsWith('windows')) parsed.service = 'windows';
         else if (['read_file', 'write_file', 'list_directory', 'run_command', 'open_app', 'clipboard_read', 'clipboard_write'].includes(parsed.action) || parsed.app_name) parsed.service = 'windows';
         else if (parsed.action && (parsed.action.startsWith('github') || ['get_file', 'list_repos', 'create_issue'].includes(parsed.action))) parsed.service = 'github';
@@ -1047,9 +1049,20 @@
     return null;
   }
 
+  function normalizeServiceName(service) {
+    if (!service) return '';
+    const s = String(service).toLowerCase().trim();
+    if (['filesystem', 'fs', 'files', 'file', 'os', 'windows', 'system', 'cmd', 'powershell', 'shell', 'bash'].includes(s)) return 'windows';
+    if (['web', 'fetch', 'scraper', 'crawl', 'crawler', 'browser', 'http'].includes(s)) return 'fetch';
+    if (['db', 'database', 'postgres', 'postgresql', 'sql', 'supabase'].includes(s)) return 'supabase';
+    if (['git', 'github', 'repo'].includes(s)) return 'github';
+    if (['notion', 'notes', 'docs'].includes(s)) return 'notion';
+    return s;
+  }
+
   function isServiceActive(service) {
     if (!service) return false;
-    const srv = service.toLowerCase().trim();
+    const srv = normalizeServiceName(service);
     if (srv === 'custom' || srv.startsWith('custom_')) {
       return activeServices.includes('custom') || activeServices.some(s => s.startsWith('custom_'));
     }
@@ -1057,7 +1070,8 @@
   }
 
   function handleDetectedToolCall(toolCall) {
-    const service = toolCall.service || 'supabase';
+    const service = normalizeServiceName(toolCall.service || 'supabase');
+    toolCall.service = service;
 
     // בדיקה האם השירות דלוק ומורשה לפעול
     if (!isServiceActive(service)) {

@@ -6,6 +6,5 @@ REM Run this script to enable protocol-based launcher support.
 REM ============================================================================
 
 echo Registering gemmcp:// and omnimcp:// Protocols in Windows Registry...
-powershell -NoProfile -Command "$vbsPath = '%~dp0bridge-launcher-silent.vbs'; foreach ($proto in @('gemmcp', 'omnimcp')) { $regPath = \"HKCU:\Software\Classes\$proto\"; New-Item -Path $regPath -Force | Out-Null; Set-ItemProperty -Path $regPath -Name '(default)' -Value \"URL:GemMCP Protocol\"; Set-ItemProperty -Path $regPath -Name 'URL Protocol' -Value ''; $cmdPath = \"$regPath\shell\open\command\"; New-Item -Path $cmdPath -Force | Out-Null; Set-ItemProperty -Path $cmdPath -Name '(default)' -Value ('wscript.exe \"' + $vbsPath + '\" \"%1\"'); Write-Output \"Protocol $proto:// registered successfully!\"; }"
-echo Done!
+powershell -NoProfile -Command "$vbs = (Resolve-Path '%~dp0bridge-launcher-silent.vbs').Path; $cmd = 'wscript.exe \"' + $vbs + '\" \"%%1\"'; foreach ($p in @('gemmcp', 'omnimcp')) { $bk = 'HKCU:\Software\Classes\' + $p; New-Item -Path $bk -Force | Out-Null; Set-ItemProperty -Path $bk -Name '(default)' -Value 'URL:GemMCP Protocol'; Set-ItemProperty -Path $bk -Name 'URL Protocol' -Value ''; $ck = $bk + '\shell\open\command'; New-Item -Path $ck -Force | Out-Null; Set-ItemProperty -Path $ck -Name '(default)' -Value $cmd; }; Write-Output 'Protocols registered successfully!'"
 pause
