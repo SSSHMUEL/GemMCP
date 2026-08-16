@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" style="width: 380px !important; height: 580px !important; background-color: #f4f6f9 !important; overflow-y: auto;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GemMCP for Gemini</title>
+  <style>
+    html {
+      width: 380px !important;
+      height: 580px !important;
+      background-color: #f4f6f9 !important;
+      overflow-y: auto;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      width: 380px !important;
+      min-height: 100% !important;
+      background-color: #f4f6f9 !important;
+      margin: 0;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+  </style>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <div class="title-row">
+      <div class="logo-box">
+        <img src="../icons/icon32.png" alt="GemMCP Logo" class="brand-logo-img" onerror="this.outerHTML='<svg class=\'brand-svg-main\' viewBox=\'0 0 24 24\' fill=\'none\'><path d=\'M13 10V3L4 14h7v7l9-11h-7z\' fill=\'#38bdf8\' stroke=\'#0284c7\' stroke-width=\'2\'/></svg>'">
+      </div>
+      <h1 data-i18n="extName">GemMCP</h1>
+      <div class="header-actions-group">
+        <button class="btn-lang-toggle" id="langToggleBtn" title="Switch language / החלף שפה">EN</button>
+        <button class="btn-help-trigger" id="helpModalOpenBtn" title="מדריך והסבר: מה זה עושה ואיך להשתמש?">?</button>
+      </div>
+    </div>
+    <p class="subtitle" data-i18n="subtitle">חיבור שירותי MCP חיצוניים ישירות ל-Gemini</p>
+  </div>
+
+  <!-- רשימת שירותים מתרחבת עם התחברות בקליק + ידנית -->
+  <div class="services-list">
+    
+    <!-- Windows OS MCP Card -->
+    <div class="service-card" data-service="windows">
+      <div class="service-header">
+        <div class="service-meta">
+          <div class="service-icon-wrap windows-bg">
+            <!-- Windows 11 logo -->
+            <svg class="official-svg" viewBox="0 0 24 24" fill="#0078d4">
+              <path d="M2 2h9.2v9.2H2V2zm10.8 0H22v9.2h-9.2V2zM2 12.8h9.2V22H2v-9.2zm10.8 0H22V22h-9.2v-9.2z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="service-title-row">
+              <span class="service-name" data-i18n="winTitle">Windows MCP</span>
+              <span class="auth-pill auth-pill-windows" id="pill-windows" data-i18n="winPillLocal">מקומי</span>
+              <svg class="expand-chevron" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <div class="service-desc" data-i18n="winDesc">שליטה, קבצים, פקודות ואוטומציה ב-Windows</div>
+          </div>
+        </div>
+        <div class="service-actions">
+          <label class="switch">
+            <input type="checkbox" id="srv-windows" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="service-body">
+        <div class="permissions-header-box">
+          <span class="perm-badge" data-i18n="winPermHeader">🛡️ בקרת הרשאות ואבטחה</span>
+          <p class="perm-desc" data-i18n="winPermSub">בחר אילו פעולות לג'מיני מותר לבצע במחשב שלך:</p>
+        </div>
+
+        <div class="permissions-grid">
+          <label class="perm-checkbox-row">
+            <input type="checkbox" id="win-perm-read" checked>
+            <div class="perm-text">
+              <span class="perm-title" data-i18n="winPermReadTitle">📖 קריאת קבצים ותיקיות (Read)</span>
+              <span class="perm-sub" data-i18n="winPermReadSub">מאפשר לג'מיני לקרוא קבצי קוד, טקסט ולראות רשימת קבצים</span>
+            </div>
+          </label>
+
+          <label class="perm-checkbox-row">
+            <input type="checkbox" id="win-perm-write">
+            <div class="perm-text">
+              <span class="perm-title" data-i18n="winPermWriteTitle">✍️ כתיבה ויצירת קבצים (Write)</span>
+              <span class="perm-sub" data-i18n="winPermWriteSub">מאפשר לג'מיני ליצור קבצים חדשים או לשנות קבצים קיימים</span>
+            </div>
+          </label>
+
+          <label class="perm-checkbox-row">
+            <input type="checkbox" id="win-perm-command">
+            <div class="perm-text">
+              <span class="perm-title" data-i18n="winPermCmdTitle">⚡ הרצת פקודות PowerShell / CMD</span>
+              <span class="perm-sub" data-i18n="winPermCmdSub">הרצת סקריפטים, התקנת חבילות ופקודות טרמינל</span>
+            </div>
+          </label>
+
+          <label class="perm-checkbox-row">
+            <input type="checkbox" id="win-perm-app" checked>
+            <div class="perm-text">
+              <span class="perm-title" data-i18n="winPermAppTitle">🚀 הפעלת יישומים (Launch Apps)</span>
+              <span class="perm-sub" data-i18n="winPermAppSub">פתיחת אפליקציות מותקנות (Notepad, VSCode, Chrome וכו')</span>
+            </div>
+          </label>
+
+          <label class="perm-checkbox-row">
+            <input type="checkbox" id="win-perm-clipboard" checked>
+            <div class="perm-text">
+              <span class="perm-title" data-i18n="winPermClipTitle">📋 לוח העתקה (Clipboard)</span>
+              <span class="perm-sub" data-i18n="winPermClipSub">קריאה והדבקה מלוח ההעתקה של Windows</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <label data-i18n="winAllowedPathLabel">נתיב עבודה מורשה (Allowed Directory Scope)</label>
+          <input type="text" id="winAllowedPath" placeholder="לדוגמה: C:\Users\SHMUEL\Projects (או השאר ריק לכל הכונן)" dir="ltr">
+          <div class="input-helper" data-i18n="winAllowedPathHelper">הגבלת גישה לתיקייה ספציפית בלבד מטעמי אבטחה.</div>
+        </div>
+
+        <!-- עריכת פרומפט והנחיות ל-Gemini -->
+        <div class="prompt-editor-section">
+          <button type="button" class="prompt-toggle-btn" data-target="prompt-section-windows">
+            <span data-i18n="promptEditorToggle">📝 עריכת פרומפט והנחיות ל-Gemini</span>
+            <span class="toggle-arrow">▾</span>
+          </button>
+          <div class="prompt-edit-body" id="prompt-section-windows">
+            <div class="prompt-header-row">
+              <span class="prompt-label" id="lbl-prompt-windows">הנחיות לכלי Windows</span>
+              <button type="button" class="btn-reset-prompt" data-service="windows" title="שחזר להנחיות ברירת המחדל" data-i18n="promptResetBtn">↺ שחזר לברירת מחדל</button>
+            </div>
+            <textarea class="tool-prompt-textarea" id="prompt-windows" placeholder="הוראות עבור כלי Windows..."></textarea>
+            <div class="input-helper" data-i18n="promptHelper">הנחיות אלו מוזרקות לג'מיני כשהשירות פעיל ובתפריט ה-@.</div>
+          </div>
+        </div>
+
+        <!-- שורת שרת כבוי רגילה עם כפתור הפעלה -->
+        <div id="win-bridge-offline-bar" style="margin-top:12px; display:none; justify-content:space-between; align-items:center; background:#f8fafc; border:1px solid var(--border); padding:8px 10px; border-radius:8px;">
+          <span style="font-size:11.5px; color:var(--text-muted); font-weight:600;" data-i18n="winOfflineBar">שרת Windows Bridge כבוי 🔴</span>
+          <button type="button" id="btn-quick-start-bridge" class="btn-banner-action" style="padding:4px 9px; font-size:11px;">
+            <span data-i18n="winStartBtn">⚡ הפעל שרת</span>
+          </button>
+        </div>
+
+        <!-- באנר התרעה שמופיע רק אם ההפעלה נכשלה בגלל היעדר Node.js -->
+        <div id="win-bridge-node-missing-box" class="bridge-status-banner offline" style="display:none;">
+          <div class="bridge-banner-title">
+            <span class="bridge-status-dot"></span>
+            <span data-i18n="winMissingNodeTitle">הפעלת השרת נכשלה (דרוש Node.js)</span>
+          </div>
+          <div class="bridge-banner-desc" data-i18n="winMissingNodeDesc">
+            שרת ה-Bridge לא הצליח לעלות. ייתכן ש-Node.js אינו מותקן במחשב שלך.
+          </div>
+          <div class="bridge-banner-actions">
+            <a href="https://nodejs.org/" target="_blank" class="btn-banner-link">
+              <span>📥</span> <span data-i18n="winDownloadNodeBtn">הורדת Node.js חינם</span>
+            </a>
+            <button type="button" id="btn-retry-start-bridge" class="btn-banner-action">
+              <span>🔄</span> <span data-i18n="winRetryBtn">נסה שוב</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="actions-group">
+          <button class="btn btn-outline" id="testWindowsBtn" data-i18n="winTestBtn">בדוק חיבור ל-Windows Bridge</button>
+          <div class="inline-test-result-block" id="result-windows"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Web Scraper Card -->
+    <div class="service-card" data-service="fetch">
+      <div class="service-header">
+        <div class="service-meta">
+          <div class="service-icon-wrap fetch-bg">
+            <svg class="official-svg" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="service-title-row">
+              <span class="service-name" data-i18n="fetchTitle">Web Scraper</span>
+              <span class="auth-pill auth-pill-active" data-i18n="fetchPillAlways">פעיל תמיד</span>
+              <svg class="expand-chevron" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <div class="service-desc" data-i18n="fetchDesc">סריקת אתרים ציבוריים ואישיים מחוברים</div>
+          </div>
+        </div>
+        <div class="service-actions">
+          <label class="switch">
+            <input type="checkbox" id="srv-fetch" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="service-body">
+        <div class="info-box">
+          <span class="info-badge" data-i18n="fetchInfoBadge">גישה לאתרים וחשבונות</span>
+          <p data-i18n="fetchInfoText">שירות ה-Web Scraper מאפשר לג'מיני לקרוא כל אתר אינטרנט ציבורי, וכן לגשת ישירות לאתרים אישיים וכרטיסיות פתוחות שהמשתמש כבר מחובר אליהם בחשבונו האישי.</p>
+        </div>
+
+        <!-- עריכת פרומפט והנחיות ל-Gemini -->
+        <div class="prompt-editor-section">
+          <button type="button" class="prompt-toggle-btn" data-target="prompt-section-fetch">
+            <span data-i18n="promptEditorToggle">📝 עריכת פרומפט והנחיות ל-Gemini</span>
+            <span class="toggle-arrow">▾</span>
+          </button>
+          <div class="prompt-edit-body" id="prompt-section-fetch">
+            <div class="prompt-header-row">
+              <span class="prompt-label" id="lbl-prompt-fetch">הנחיות לכלי Web Scraper</span>
+              <button type="button" class="btn-reset-prompt" data-service="fetch" title="שחזר להנחיות ברירת המחדל" data-i18n="promptResetBtn">↺ שחזר לברירת מחדל</button>
+            </div>
+            <textarea class="tool-prompt-textarea" id="prompt-fetch" placeholder="הוראות עבור כלי Web Scraper..."></textarea>
+            <div class="input-helper" data-i18n="promptHelper">הנחיות אלו מוזרקות לג'מיני כשהשירות פעיל ובתפריט ה-@.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Supabase Card -->
+    <div class="service-card" data-service="supabase">
+      <div class="service-header">
+        <div class="service-meta">
+          <div class="service-icon-wrap supabase-bg">
+            <svg class="official-svg" viewBox="0 0 24 24" fill="none">
+              <path d="M13.35 0.77C13.06 0.28 12.39 0.21 12.01 0.63L1.57 12.31C1.09 12.85 1.47 13.71 2.19 13.71H10.8V23.23C10.8 23.77 11.45 24.05 11.85 23.68L22.43 13.93C23.01 13.39 22.63 12.43 21.84 12.43H13.35V0.77Z" fill="url(#supabase-grad)"/>
+              <path d="M13.35 0.77C13.06 0.28 12.39 0.21 12.01 0.63L1.57 12.31C1.09 12.85 1.47 13.71 2.19 13.71H10.8V23.23L13.35 0.77Z" fill="#3ECF8E" fill-opacity="0.2"/>
+              <defs>
+                <linearGradient id="supabase-grad" x1="12" y1="0.5" x2="12" y2="23.5" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#249361"/>
+                  <stop offset="1" stop-color="#3ECF8E"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div>
+            <div class="service-title-row">
+              <span class="service-name" data-i18n="supabaseTitle">Supabase</span>
+              <span class="auth-pill auth-pill-supabase" id="pill-supabase" data-i18n="pillDisconnected">מנותק</span>
+              <svg class="expand-chevron" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <div class="service-desc" data-i18n="supabaseDesc">מסד נתונים ו-SQL בזמן אמת</div>
+          </div>
+        </div>
+        <div class="service-actions">
+          <label class="switch">
+            <input type="checkbox" id="srv-supabase" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="service-body">
+        <!-- חיבור מהיר או ניהול חיבור פעיל -->
+        <div class="oauth-section">
+          <button class="btn btn-oauth btn-oauth-supabase" id="oauthSupabaseBtn">
+            <svg class="oauth-icon" viewBox="0 0 24 24" fill="none"><path d="M21.362 9.354H12V.344a.344.344 0 0 0-.6-.23L.78 12.637a.86.86 0 0 0 .638 1.488h9.362v9.01a.344.344 0 0 0 .6.23l10.62-12.523a.86.86 0 0 0-.638-1.488z" fill="#3ECF8E"/></svg>
+            <span id="label-oauth-supabase" data-i18n="supabaseOauthBtn">התחברות ל-Supabase</span>
+          </button>
+          <div class="connected-actions-row" id="connected-row-supabase" style="display: none;">
+            <button class="btn btn-outline" id="testSupabaseBtn" data-i18n="testConnBtn">בדוק חיבור</button>
+            <button class="btn btn-disconnect" id="disconnectSupabaseBtn" data-i18n="disconnectBtn">התנתק</button>
+          </div>
+          <div class="inline-test-result-block" id="result-supabase"></div>
+        </div>
+
+        <button type="button" class="manual-toggle-btn" data-target="manual-supabase">
+          <span data-i18n="supabaseManualToggle">⚙️ הגדרת מפתחות ידנית</span>
+          <span class="toggle-arrow">▾</span>
+        </button>
+
+        <div class="manual-section" id="manual-supabase">
+          <div class="form-group">
+            <label data-i18n="supabaseUrlLabel">Project URL</label>
+            <input type="text" id="supabaseUrl" placeholder="https://xyz.supabase.co" dir="ltr">
+          </div>
+          <div class="form-group">
+            <label data-i18n="supabaseKeyLabel">API Key (service_role / anon)</label>
+            <input type="password" id="supabaseKey" placeholder="eyJhbGci..." dir="ltr">
+          </div>
+        </div>
+
+        <!-- עריכת פרומפט והנחיות ל-Gemini -->
+        <div class="prompt-editor-section">
+          <button type="button" class="prompt-toggle-btn" data-target="prompt-section-supabase">
+            <span data-i18n="promptEditorToggle">📝 עריכת פרומפט והנחיות ל-Gemini</span>
+            <span class="toggle-arrow">▾</span>
+          </button>
+          <div class="prompt-edit-body" id="prompt-section-supabase">
+            <div class="prompt-header-row">
+              <span class="prompt-label" id="lbl-prompt-supabase">הנחיות לכלי Supabase</span>
+              <button type="button" class="btn-reset-prompt" data-service="supabase" title="שחזר להנחיות ברירת המחדל" data-i18n="promptResetBtn">↺ שחזר לברירת מחדל</button>
+            </div>
+            <textarea class="tool-prompt-textarea" id="prompt-supabase" placeholder="הוראות עבור כלי Supabase..."></textarea>
+            <div class="input-helper" data-i18n="promptHelper">הנחיות אלו מוזרקות לג'מיני כשהשירות פעיל ובתפריט ה-@.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notion Card -->
+    <div class="service-card" data-service="notion">
+      <div class="service-header">
+        <div class="service-meta">
+          <div class="service-icon-wrap notion-bg">
+            <!-- Notion logo -->
+            <svg class="official-svg" viewBox="0 0 122 122" fill="none">
+              <path class="notion-page" d="M6 12.5 74.5 7.5c8.4-.7 10.6-.2 15.9 3.6l21.9 15.4c3.6 2.6 4.8 3.3 4.8 6.2v83.4c0 5.3-1.9 8.4-8.6 8.9l-79.5 4.8c-5.1.2-7.5-.5-10.2-3.8L4.7 105.9C1.8 102 .6 99.1.6 95.7V21.4C.6 17.1 2.5 13.5 6 12.5Z"/>
+              <path class="notion-mark" fill-rule="evenodd" clip-rule="evenodd" d="M74.5 7.5 6 12.5C2.5 13.5.6 17.1.6 21.4v74.3c0 3.4 1.2 6.3 4.1 10.2l14.1 18.3c2.7 3.3 5.1 4 10.2 3.8l79.5-4.8c6.7-.5 8.6-3.6 8.6-8.9V32.7c0-2.7-1.1-3.5-4.3-5.8l-.5-.4-21.9-15.4c-5.3-3.8-7.5-4.3-15.9-3.6ZM31 24.4c-6.5.4-8 .5-11.7-2.5L9.9 14.4c-1-1-.5-2.2.9-2.4l65.9-4.8c5.5-.5 8.4 1.4 10.6 3.1l11.4 8.2c.3.2 1.1 1.2.1 1.2l-68 4.1-.2.1ZM23.4 111V39.3c0-3.1 1-4.6 3.9-4.8l78-4.6c2.7-.2 3.9 1.5 3.9 4.6v71.2c0 3.1-.5 5.8-4.8 6l-74.6 4.3c-4.3.2-6.4-1.2-6.4-5Zm73.7-68c.5 2.2 0 4.3-2.2 4.6l-3.6.7v52.8c-3.1 1.7-6 2.7-8.4 2.7-3.9 0-4.8-1.2-7.7-4.8L51.5 61.9v35.9l7.5 1.7s0 4.3-6 4.3l-16.6 1c-.5-1 0-3.4 1.7-3.9l4.3-1.2V50.5l-6-.5c-.5-2.2.7-5.3 4.1-5.5l17.8-1.2 24.5 37.5V47.6l-6.3-.7c-.5-2.7 1.4-4.6 3.9-4.8l17-1Z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="service-title-row">
+              <span class="service-name" data-i18n="notionTitle">Notion</span>
+              <span class="auth-pill auth-pill-notion" id="pill-notion" data-i18n="pillDisconnected">מנותק</span>
+              <svg class="expand-chevron" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <div class="service-desc" data-i18n="notionDesc">ניהול פתקים, מסמכים ומשימות</div>
+          </div>
+        </div>
+        <div class="service-actions">
+          <label class="switch">
+            <input type="checkbox" id="srv-notion">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="service-body">
+        <!-- חיבור מהיר או ניהול חיבור פעיל -->
+        <div class="oauth-section">
+          <button class="btn btn-oauth btn-oauth-notion" id="oauthNotionBtn">
+            <svg class="oauth-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.093-.373L18.423 2.39c-.56-.42-1.307-.7-2.333-.607L2.965 2.856c-.466.047-.56.327-.373.513l1.867 1.839zm.933 3.965v12.268c0 .793.42 1.073 1.26 1.026l14.195-.84c.84-.046.933-.56.933-1.12V7.194c0-.606-.233-.886-.793-.84l-14.802.84c-.56.046-.793.373-.793.979z"/></svg>
+            <span id="label-oauth-notion" data-i18n="notionOauthBtn">התחברות ל-Notion</span>
+          </button>
+          <div class="connected-actions-row" id="connected-row-notion" style="display: none;">
+            <button class="btn btn-outline" id="testNotionBtn" data-i18n="testConnBtn">בדוק חיבור</button>
+            <button class="btn btn-disconnect" id="disconnectNotionBtn" data-i18n="disconnectBtn">התנתק</button>
+          </div>
+          <div class="inline-test-result-block" id="result-notion"></div>
+        </div>
+
+        <button type="button" class="manual-toggle-btn" data-target="manual-notion">
+          <span data-i18n="notionManualToggle">⚙️ הגדרת מפתחות ידנית</span>
+          <span class="toggle-arrow">▾</span>
+        </button>
+
+        <div class="manual-section" id="manual-notion">
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label data-i18n="notionSecretLabel">Internal Integration Secret</label>
+              <a href="https://www.notion.so/my-integrations" target="_blank" class="helper-link" data-i18n="notionCreateSecretLink">יצירת אינטגרציה ↗</a>
+            </div>
+            <input type="password" id="notionApiKey" placeholder="secret_..." dir="ltr">
+            <div class="input-helper" data-i18n="notionSecretHelper">וודא ששיתפת את דפי ה-Notion שלך עם ה-Integration שיצרת.</div>
+          </div>
+        </div>
+
+        <!-- עריכת פרומפט והנחיות ל-Gemini -->
+        <div class="prompt-editor-section">
+          <button type="button" class="prompt-toggle-btn" data-target="prompt-section-notion">
+            <span data-i18n="promptEditorToggle">📝 עריכת פרומפט והנחיות ל-Gemini</span>
+            <span class="toggle-arrow">▾</span>
+          </button>
+          <div class="prompt-edit-body" id="prompt-section-notion">
+            <div class="prompt-header-row">
+              <span class="prompt-label" id="lbl-prompt-notion">הנחיות לכלי Notion</span>
+              <button type="button" class="btn-reset-prompt" data-service="notion" title="שחזר להנחיות ברירת המחדל" data-i18n="promptResetBtn">↺ שחזר לברירת מחדל</button>
+            </div>
+            <textarea class="tool-prompt-textarea" id="prompt-notion" placeholder="הוראות עבור כלי Notion..."></textarea>
+            <div class="input-helper" data-i18n="promptHelper">הנחיות אלו מוזרקות לג'מיני כשהשירות פעיל ובתפריט ה-@.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GitHub Card -->
+    <div class="service-card" data-service="github">
+      <div class="service-header">
+        <div class="service-meta">
+          <div class="service-icon-wrap github-bg">
+            <svg class="official-svg" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" fill="#181717"/>
+            </svg>
+          </div>
+          <div>
+            <div class="service-title-row">
+              <span class="service-name" data-i18n="githubTitle">GitHub</span>
+              <span class="auth-pill auth-pill-github" id="pill-github" data-i18n="pillDisconnected">מנותק</span>
+              <svg class="expand-chevron" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <div class="service-desc" data-i18n="githubDesc">קריאת קוד, Repos ו-Issues</div>
+          </div>
+        </div>
+        <div class="service-actions">
+          <label class="switch">
+            <input type="checkbox" id="srv-github">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="service-body">
+        <!-- חיבור מהיר או ניהול חיבור פעיל -->
+        <div class="oauth-section">
+          <button class="btn btn-oauth btn-oauth-github" id="oauthGithubBtn">
+            <svg class="oauth-icon" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+            <span id="label-oauth-github" data-i18n="githubOauthBtn">התחברות עם GitHub</span>
+          </button>
+          <div class="connected-actions-row" id="connected-row-github" style="display: none;">
+            <button class="btn btn-outline" id="testGithubBtn" data-i18n="testConnBtn">בדוק חיבור</button>
+            <button class="btn btn-disconnect" id="disconnectGithubBtn" data-i18n="disconnectBtn">התנתק</button>
+          </div>
+          <div class="inline-test-result-block" id="result-github"></div>
+        </div>
+
+        <button type="button" class="manual-toggle-btn" data-target="manual-github">
+          <span data-i18n="githubManualToggle">⚙️ הגדרת מפתחות ידנית</span>
+          <span class="toggle-arrow">▾</span>
+        </button>
+
+        <div class="manual-section" id="manual-github">
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label data-i18n="githubTokenLabel">Personal Access Token (PAT)</label>
+              <a href="https://github.com/settings/tokens" target="_blank" class="helper-link" data-i18n="githubCreateTokenLink">יצירת טוקן ↗</a>
+            </div>
+            <input type="password" id="githubToken" placeholder="ghp_... או github_pat_..." dir="ltr">
+            <div class="input-helper" data-i18n="githubTokenHelper">דרושות הרשאות <code>repo</code> או <code>read:user</code>.</div>
+          </div>
+        </div>
+
+        <!-- עריכת פרומפט והנחיות ל-Gemini -->
+        <div class="prompt-editor-section">
+          <button type="button" class="prompt-toggle-btn" data-target="prompt-section-github">
+            <span data-i18n="promptEditorToggle">📝 עריכת פרומפט והנחיות ל-Gemini</span>
+            <span class="toggle-arrow">▾</span>
+          </button>
+          <div class="prompt-edit-body" id="prompt-section-github">
+            <div class="prompt-header-row">
+              <span class="prompt-label" id="lbl-prompt-github">הנחיות לכלי GitHub</span>
+              <button type="button" class="btn-reset-prompt" data-service="github" title="שחזר להנחיות ברירת המחדל" data-i18n="promptResetBtn">↺ שחזר לברירת מחדל</button>
+            </div>
+            <textarea class="tool-prompt-textarea" id="prompt-github" placeholder="הוראות עבור כלי GitHub..."></textarea>
+            <div class="input-helper" data-i18n="promptHelper">הנחיות אלו מוזרקות לג'מיני כשהשירות פעיל ובתפריט ה-@.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom MCP Servers Card -->
+    <div class="service-card" data-service="custom">
+      <div class="service-header">
+        <div class="service-meta">
+          <div class="service-icon-wrap custom-bg">
+            <svg class="official-svg" viewBox="0 0 24 24" fill="none" stroke="#9333ea" stroke-width="2">
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+              <path d="M2 8h16v8H2z"></path>
+              <line x1="6" y1="1" x2="6" y2="4"></line>
+              <line x1="10" y1="1" x2="10" y2="4"></line>
+              <line x1="14" y1="1" x2="14" y2="4"></line>
+            </svg>
+          </div>
+          <div>
+            <div class="service-title-row">
+              <span class="service-name" data-i18n="customTitle">שרתי MCP מותאמים</span>
+              <span class="auth-pill auth-pill-custom" id="pill-custom">0 מוגדרים</span>
+              <svg class="expand-chevron" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <div class="service-desc" data-i18n="customDesc">הוספת שרתים מותאמים, קוד חיבור ופרומפטים</div>
+          </div>
+        </div>
+        <div class="service-actions">
+          <label class="switch" title="הפעל/השבת את כל השרתים המותאמים">
+            <input type="checkbox" id="srv-custom">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="service-body">
+        <div id="customMcpServersList" class="custom-servers-list">
+          <!-- Dynamic custom server items will be rendered here -->
+        </div>
+
+        <button type="button" class="btn btn-outline btn-add-custom-server" id="addCustomServerBtn">
+          <svg viewBox="0 0 20 20" fill="currentColor" style="width:14px;height:14px;">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+          </svg>
+          <span data-i18n="customAddBtn">הוסף שרת MCP מותאם אישית</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <button class="btn btn-primary" id="saveBtn" data-i18n="saveAllSettings">שמור את כל ההגדרות</button>
+    <div id="statusMessage" class="status-msg"></div>
+  </div>
+
+  <!-- מודאל הסבר ומדריך שימוש מלא -->
+  <div class="help-modal-overlay" id="helpModalOverlay">
+    <div class="help-modal-content">
+      <div class="help-modal-header">
+        <div class="help-modal-title">
+          <span class="help-icon-badge">💡</span>
+          <h3 data-i18n="helpModalTitle">מה זה GemMCP ואיך משתמשים?</h3>
+        </div>
+        <button class="help-modal-close" id="helpModalCloseBtn" title="סגור">✕</button>
+      </div>
+
+      <div class="help-modal-body">
+        
+        <!-- כרטיס מה זה עושה -->
+        <div class="help-card-section">
+          <div class="help-section-title">
+            <span class="help-emoji">🚀</span>
+            <strong data-i18n="helpWhatTitle">מה התוסף הזה עושה?</strong>
+          </div>
+          <p class="help-section-text" data-i18n="helpWhatDesc">
+            <strong>GemMCP</strong> מחבר את ממשק Gemini Web הרגיל בדפדפן לעולם החיצון (Model Context Protocol). הוא מעניק לג'מיני "ידיים ורגליים" לבצע פעולות אמיתיות:
+          </p>
+          <ul class="help-feature-list">
+            <li data-i18n="helpFeatWin">💻 <strong>Windows MCP</strong> – קריאה וכתיבה של קבצים, הרצת פקודות טרמינל (PowerShell/CMD), והפעלת תוכנות במחשב.</li>
+            <li data-i18n="helpFeatSupa">⚡ <strong>Supabase</strong> – תשאול וניהול טבלאות SQL ומסדי נתונים ישירות מהשיחה.</li>
+            <li data-i18n="helpFeatNotion">📝 <strong>Notion</strong> – קריאה וכתיבה של דפים, משימות ומאגרי מידע ב-Notion.</li>
+            <li data-i18n="helpFeatGit">🐙 <strong>GitHub</strong> – חיפוש מאגרי קוד, קריאת קבצים, Issues ו-Pull Requests.</li>
+            <li data-i18n="helpFeatFetch">🌐 <strong>Web Scraper</strong> – גלישה וקריאת תוכן מאתרים חיים בזמן אמת.</li>
+            <li data-i18n="helpFeatCustom">🧩 <strong>שרתי MCP מותאמים</strong> – הוספת כל שרת MCP חיצוני (Local או SSE / Remote).</li>
+          </ul>
+        </div>
+
+        <!-- מדריך צעד-אחר-צעד: איך להשתמש -->
+        <div class="help-card-section">
+          <div class="help-section-title">
+            <span class="help-emoji">🎯</span>
+            <strong data-i18n="helpHowTitle">איך משתמשים בזה? (3 צעדים פשוטים)</strong>
+          </div>
+
+          <div class="help-step-item">
+            <div class="help-step-number">1</div>
+            <div class="help-step-content">
+              <strong data-i18n="helpStep1Title">חיבור והפעלת השירותים הרצויים:</strong>
+              <p data-i18n="helpStep1Desc">בחלון זה, לחץ על השירות שברצונך לחבר (התחברות בקליק או הזנת API Key) והפעל את המתג שלו למצב פעיל (ON). לחץ על <em>"שמור את כל ההגדרות"</em>.</p>
+            </div>
+          </div>
+
+          <div class="help-step-item">
+            <div class="help-step-number">2</div>
+            <div class="help-step-content">
+              <strong data-i18n="helpStep2Title">גלישה לאתר Gemini:</strong>
+              <p data-i18n="helpStep2Desc">פתח את <a href="https://gemini.google.com" target="_blank" class="help-link">gemini.google.com ↗</a>. תראה בפינת המסך את הווידג'ט הצף של GemMCP.</p>
+            </div>
+          </div>
+
+          <div class="help-step-item">
+            <div class="help-step-number">3</div>
+            <div class="help-step-content">
+              <strong data-i18n="helpStep3Title">הפעלת הפרומפט ודיבור חופשי:</strong>
+              <p data-i18n="helpStep3Desc">לחץ על כפתור <strong>"הפעל GemMCP"</strong> בווידג'ט להזרקת ההנחיות (או תייג <code>@GemMCP</code>). כעת בקש מג'מיני כל משימה (למשל: <em>"צור קובץ index.html על שולחן העבודה"</em> או <em>"בדוק אילו טבלאות יש לי ב-Supabase"</em>).</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- מצב Auto-Run ואבטחה -->
+        <div class="help-card-section">
+          <div class="help-section-title">
+            <span class="help-emoji">🛡️</span>
+            <strong data-i18n="helpSecTitle">אישור אוטומטי (Auto Run) ובקרת אבטחה</strong>
+          </div>
+          <p class="help-section-text" data-i18n="helpSecDesc">
+            בברירת מחדל, מצב <strong>Auto Run</strong> מופעל ומבצע פעולות מיד. במידה ותרצה לאשר כל פקודה/קובץ ידנית לפני ביצועה, כבה את מתג ה-Auto Run בווידג'ט הצף.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="help-modal-footer">
+        <button class="btn btn-primary" id="helpModalGotItBtn" data-i18n="helpCloseBtn">הבנתי, תודה!</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../i18n.js"></script>
+  <script src="../prompt.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

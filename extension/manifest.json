@@ -1,0 +1,72 @@
+{
+  "manifest_version": 3,
+  "name": "GemMCP for Gemini",
+  "version": "2.0.0",
+  "description": "חבר שירותי MCP (Supabase, GitHub, Web Scraper, Custom MCP) ישירות ל-Google Gemini Web",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "identity",
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "https://gemini.google.com/*",
+    "http://127.0.0.1:3000/*",
+    "http://localhost:3000/*",
+    "https://*.supabase.co/*",
+    "https://api.supabase.com/*",
+    "https://api.github.com/*",
+    "https://api.notion.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "GemMCP for Gemini",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://gemini.google.com/*"
+      ],
+      "js": [
+        "i18n.js",
+        "prompt.js",
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "i18n.js",
+        "popup/oauth-success.html",
+        "icons/*"
+      ],
+      "matches": [
+        "https://gemini.google.com/*",
+        "http://localhost:3000/*",
+        "http://127.0.0.1:3000/*"
+      ]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

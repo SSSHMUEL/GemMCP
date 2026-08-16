@@ -1,0 +1,814 @@
+/* ============================================
+   GemMCP in-page widget — Luxury Light Silver
+   ============================================ */
+#omni-mcp-floating-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999999;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  direction: rtl;
+  /* הווידג'ט "עוגן" לכפתור בלבד - הפאנל צף מעליו ולא משפיע על הגודל/המיקום */
+  width: max-content;
+  height: max-content;
+
+  --omni-bg: rgba(255, 255, 255, 0.98);
+  --omni-surface: #f7f9fc;
+  --omni-text: #1f2937;
+  --omni-muted: #6b7280;
+  --omni-faint: #9ca3af;
+  --omni-accent: #0ea5e9;
+  --omni-border: #e5e9ef;
+  --omni-border-strong: #d6dce4;
+  --omni-border-active: #7dd3fc;
+  --omni-metal: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 55%, #0284c7 100%);
+}
+
+.omni-mcp-badge-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: linear-gradient(145deg, #ffffff, #f5f8fc);
+  color: var(--omni-text);
+  border: 1.5px solid var(--omni-border-strong);
+  border-radius: 9999px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+  cursor: grab;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.16);
+  backdrop-filter: blur(14px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.omni-mcp-badge-btn:hover {
+  border-color: var(--omni-border-active);
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08), 0 12px 30px rgba(14, 165, 233, 0.28);
+  color: #0f172a;
+}
+
+/* מצב פעיל / קריאה וכתיבה - כל הכפתור עוטה גלי גרדיאנט עדינים של כחול, ירוק וצהוב (כמו Gemini בנייד) */
+.omni-mcp-badge-btn.busy {
+  background: linear-gradient(
+    120deg,
+    rgba(66, 133, 244, 0.22) 0%,
+    rgba(52, 168, 83, 0.18) 35%,
+    rgba(251, 188, 5, 0.20) 70%,
+    rgba(66, 133, 244, 0.22) 100%
+  ), #ffffff;
+  background-size: 250% 250%;
+  border-color: transparent;
+  animation: omniGeminiWave 2.8s ease-in-out infinite alternate, omniGeminiGlow 2.2s ease-in-out infinite alternate;
+}
+
+/* מסגרת קו הילה זוהרת בצבעי Gemini */
+.omni-mcp-badge-btn.busy::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  padding: 1.5px;
+  background: linear-gradient(
+    90deg,
+    #4285F4,
+    #34A853,
+    #FBBC05,
+    #4285F4
+  );
+  background-size: 250% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: omniGeminiBorderFlow 2.4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes omniGeminiWave {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes omniGeminiBorderFlow {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 250% 0%; }
+}
+
+@keyframes omniGeminiGlow {
+  0% {
+    box-shadow: 0 4px 20px rgba(66, 133, 244, 0.30), 0 0 12px rgba(52, 168, 83, 0.20);
+  }
+  50% {
+    box-shadow: 0 4px 26px rgba(52, 168, 83, 0.35), 0 0 18px rgba(251, 188, 5, 0.28);
+  }
+  100% {
+    box-shadow: 0 4px 22px rgba(251, 188, 5, 0.32), 0 0 14px rgba(66, 133, 244, 0.25);
+  }
+}
+
+.omni-mcp-panel {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 10px;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 120px);
+  background: var(--omni-bg);
+  border: 1px solid var(--omni-border-strong);
+  border-radius: 20px;
+  color: var(--omni-text);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 24px 52px rgba(15, 23, 42, 0.22);
+  overflow: hidden;
+  flex-direction: column;
+  backdrop-filter: blur(18px);
+}
+
+.omni-mcp-panel.open {
+  display: flex;
+  animation: omniFadeIn 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* היפוך כיוון פתיחה כשהכפתור נגרר לקצה העליון */
+.omni-mcp-panel.flip-down {
+  bottom: auto;
+  top: 100%;
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+
+/* היפוך צד כשהכפתור נגרר לקצה השמאלי */
+.omni-mcp-panel.flip-left {
+  right: auto;
+  left: 0;
+}
+
+@keyframes omniFadeIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.omni-mcp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: linear-gradient(180deg, #ffffff, #f5f8fc);
+  border-bottom: 1px solid var(--omni-border);
+  cursor: move;
+  user-select: none;
+}
+
+.omni-mcp-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.1px;
+  background: var(--omni-metal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.omni-mcp-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--omni-muted);
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.omni-mcp-close-btn:hover {
+  color: #0f172a;
+}
+
+.omni-mcp-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.omni-mcp-body::-webkit-scrollbar { width: 8px; }
+.omni-mcp-body::-webkit-scrollbar-track { background: transparent; }
+.omni-mcp-body::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 8px;
+}
+
+.omni-mcp-btn-rescan-icon {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.omni-mcp-btn-rescan-icon:hover {
+  background: #f1f5f9;
+  color: #0284c7;
+  border-color: #e2e8f0;
+}
+
+.omni-mcp-btn-rescan-icon:active svg {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}
+
+.omni-mcp-action-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--omni-metal);
+  color: #ffffff;
+  border: 1px solid rgba(2, 132, 199, 0.5);
+  border-radius: 12px;
+  padding: 11px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 4px 14px rgba(14, 165, 233, 0.35);
+  transition: all 0.2s ease;
+}
+
+/* החץ צמוד מימין לטקסט */
+.omni-mcp-action-arrow {
+  position: static;
+  transform: none;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.omni-mcp-action-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 8px 22px rgba(14, 165, 233, 0.45);
+}
+
+.omni-mcp-services-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.omni-service-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--omni-surface);
+  color: var(--omni-muted);
+  border: 1px solid var(--omni-border);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.omni-service-chip:hover {
+  border-color: var(--omni-border-active);
+  color: var(--omni-text);
+  background: #eef7fe;
+}
+
+.omni-service-chip.active {
+  background: #e0f2fe;
+  border-color: #7dd3fc;
+  color: #0369a1;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(14, 165, 233, 0.18);
+}
+
+.omni-mcp-bridge-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 6px 10px;
+  transition: all 0.2s ease;
+}
+
+.omni-mcp-bridge-mini-btn {
+  border: 1px solid transparent;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.2s ease;
+}
+
+.omni-mcp-bridge-mini-btn.start {
+  background: #f0f9ff;
+  color: #0284c7;
+  border-color: #bae6fd;
+}
+
+.omni-mcp-bridge-mini-btn.start:hover {
+  background: #e0f2fe;
+}
+
+.omni-mcp-bridge-mini-btn.stop {
+  background: #f1f5f9;
+  color: #475569;
+  border-color: #cbd5e1;
+}
+
+.omni-mcp-bridge-mini-btn.stop:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.omni-mcp-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--omni-text);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 9px 0;
+  border-top: 1px solid var(--omni-border);
+  border-bottom: 1px solid var(--omni-border);
+}
+
+.omni-mcp-logs-details {
+  border-top: 1px solid var(--omni-border);
+  padding-top: 8px;
+}
+
+.omni-mcp-logs-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b7280;
+  user-select: none;
+}
+
+.omni-mcp-logs-summary::-webkit-details-marker { display: none; }
+
+.omni-mcp-logs-arrow {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+  transform: rotate(-90deg);
+}
+
+.omni-mcp-logs-details[open] .omni-mcp-logs-arrow {
+  transform: rotate(0deg);
+}
+
+.omni-mcp-logs-error-badge {
+  margin-inline-start: auto;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.omni-mcp-log-item {
+  font-size: 11px;
+  color: #475569;
+  background: #f7f9fc;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--omni-border);
+  border-right: 3px solid var(--omni-accent);
+  direction: ltr;
+  text-align: left;
+  word-break: break-all;
+  font-weight: 500;
+}
+
+.omni-mcp-log-item.error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fecaca;
+  border-right-color: #ef4444;
+}
+
+.omni-mcp-query-card {
+  background: #ffffff;
+  border: 1px solid var(--omni-border-strong);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 4px 14px rgba(15, 23, 42, 0.08);
+}
+
+.omni-mcp-query-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--omni-text);
+}
+
+.omni-mcp-sql-preview {
+  background: #f1f5f9;
+  color: #0f172a;
+  padding: 9px;
+  border-radius: 8px;
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  max-height: 80px;
+  overflow-y: auto;
+  direction: ltr;
+  text-align: left;
+  border: 1px solid var(--omni-border);
+  font-weight: 500;
+}
+
+.omni-mcp-btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.omni-mcp-btn-approve {
+  flex: 1;
+  background: linear-gradient(135deg, #38bdf8, #0284c7);
+  color: #ffffff;
+  border: 1px solid rgba(2, 132, 199, 0.5);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 2px 8px rgba(14, 165, 233, 0.3);
+  transition: filter 0.2s ease;
+}
+
+.omni-mcp-btn-approve:hover { filter: brightness(1.06); }
+
+.omni-mcp-btn-reject {
+  background: #ffffff;
+  color: var(--omni-muted);
+  border: 1px solid var(--omni-border-strong);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.omni-mcp-btn-reject:hover {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+/* ================================================= */
+/* 🌟 Mention Popup (@) Menu Styles                   */
+/* ================================================= */
+
+#omni-mcp-mention-popup {
+  position: absolute;
+  z-index: 999999;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.15), 0 0 1px rgba(15, 23, 42, 0.1);
+  width: 320px;
+  max-height: 280px;
+  overflow-y: auto;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  direction: rtl;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: omniMentionFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  #omni-mcp-mention-popup {
+    background: rgba(30, 41, 59, 0.94);
+    border-color: rgba(51, 65, 85, 0.8);
+    box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.45);
+  }
+}
+
+@keyframes omniMentionFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.omni-mention-header {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  padding: 6px 10px 4px 10px;
+  letter-spacing: 0.3px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+  margin-bottom: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .omni-mention-header {
+    color: #94a3b8;
+    border-bottom-color: rgba(51, 65, 85, 0.6);
+  }
+}
+
+.omni-mention-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.12s ease, transform 0.1s ease;
+  user-select: none;
+}
+
+.omni-mention-item:hover,
+.omni-mention-item.selected {
+  background: #eff6ff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .omni-mention-item:hover,
+  .omni-mention-item.selected {
+    background: rgba(59, 130, 246, 0.18);
+  }
+}
+
+.omni-mention-icon {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(241, 245, 249, 0.8);
+  border-radius: 7px;
+  flex-shrink: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .omni-mention-icon {
+    background: rgba(51, 65, 85, 0.5);
+  }
+}
+
+.omni-mention-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+}
+
+.omni-mention-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (prefers-color-scheme: dark) {
+  .omni-mention-title {
+    color: #f1f5f9;
+  }
+}
+
+.omni-mention-desc {
+  font-size: 11px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (prefers-color-scheme: dark) {
+  .omni-mention-desc {
+    color: #94a3b8;
+  }
+}
+
+.omni-mention-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .omni-mention-badge {
+    background: rgba(14, 165, 233, 0.2);
+    color: #38bdf8;
+  }
+}
+
+/* ================================================= */
+/* 🌟 Onboarding @ Mention Hint Tooltip / Toast     */
+/* ================================================= */
+
+.omni-mention-onboarding-hint {
+  position: fixed;
+  bottom: 90px;
+  right: 28px;
+  z-index: 999998;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.98));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  border-radius: 16px;
+  padding: 14px 18px;
+  max-width: 360px;
+  box-shadow: 0 12px 36px -4px rgba(37, 99, 235, 0.2), 0 0 1px rgba(15, 23, 42, 0.1);
+  direction: rtl;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  animation: omniHintSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .omni-mention-onboarding-hint {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.96), rgba(15, 23, 42, 0.96));
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 14px 40px -4px rgba(0, 0, 0, 0.5), 0 0 15px rgba(59, 130, 246, 0.15);
+  }
+}
+
+@keyframes omniHintSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.omni-hint-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.omni-hint-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.omni-hint-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.omni-hint-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+@media (prefers-color-scheme: dark) {
+  .omni-hint-title {
+    color: #f8fafc;
+  }
+}
+
+.omni-hint-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  line-height: 1;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.omni-hint-close:hover {
+  background: rgba(226, 232, 240, 0.6);
+  color: #475569;
+}
+
+@media (prefers-color-scheme: dark) {
+  .omni-hint-close:hover {
+    background: rgba(51, 65, 85, 0.6);
+    color: #f1f5f9;
+  }
+}
+
+.omni-hint-body {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #475569;
+  margin-bottom: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .omni-hint-body {
+    color: #cbd5e1;
+  }
+}
+
+.omni-hint-body strong {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+@media (prefers-color-scheme: dark) {
+  .omni-hint-body strong {
+    color: #60a5fa;
+  }
+}
+
+.omni-hint-code {
+  display: inline-block;
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 5px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  font-size: 12px;
+  direction: ltr;
+}
+
+@media (prefers-color-scheme: dark) {
+  .omni-hint-code {
+    background: rgba(59, 130, 246, 0.2);
+    color: #93c5fd;
+    border-color: rgba(59, 130, 246, 0.35);
+  }
+}
+
+.omni-hint-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.omni-hint-btn {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.omni-hint-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+

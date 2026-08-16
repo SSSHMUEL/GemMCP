@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>סימולטור בדיקה: Gemini MCP Bridge</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0b0f19;
+      color: #f1f5f9;
+      padding: 30px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #1e293b;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    h1 { color: #60a5fa; margin-bottom: 8px; font-size: 24px; }
+    .desc { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
+    .chat-box {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 16px;
+      min-height: 250px;
+      margin-bottom: 16px;
+      overflow-y: auto;
+    }
+    .msg {
+      margin-bottom: 14px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      max-width: 80%;
+      font-size: 14px;
+    }
+    .msg-user {
+      background: #2563eb;
+      color: white;
+      margin-left: auto;
+    }
+    .msg-gemini {
+      background: #334155;
+      color: #f8fafc;
+      margin-right: auto;
+    }
+    pre {
+      background: #020617;
+      padding: 10px;
+      border-radius: 6px;
+      color: #38bdf8;
+      font-family: monospace;
+      direction: ltr;
+      text-align: left;
+      overflow-x: auto;
+    }
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: white;
+      font-size: 14px;
+    }
+    button {
+      padding: 12px 24px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:hover { background: #2563eb; }
+    .guide-card {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🧪 סימולטור אימות עבור Gemini MCP Bridge</h1>
+    <p class="desc">דף זה מאפשר לבדוק את אופן זיהוי הפקודות והתקשורת של התוסף עם Supabase.</p>
+
+    <div class="chat-box" id="chat">
+      <div class="msg msg-gemini">
+        שלום! אני ג'מיני. כיצד אוכל לעזור לך עם מסד הנתונים Supabase שלך היום?
+      </div>
+    </div>
+
+    <div class="input-row">
+      <input type="text" id="userInput" placeholder="הקלד בקשה (למשל: 'תציג לי את רשימת הטבלאות')...">
+      <button id="sendBtn">שלח</button>
+    </div>
+
+    <div class="guide-card">
+      <strong>💡 איך להפעיל את התוסף בכרום:</strong>
+      <ol style="margin-right: 20px; margin-top: 6px;">
+        <li>פתח את <code>chrome://extensions</code> בדפדפן.</li>
+        <li>הפעל את <strong>Developer mode</strong> (מצב מפתח) בפינה העליונה.</li>
+        <li>לחץ על <strong>Load unpacked</strong> ובחר את התיקייה <code>gemini MCP/extension</code>.</li>
+        <li>היכנס ל-<code>https://gemini.google.com</code> ותראה את הכפתור הכחול הצף <strong>⚡ Supabase MCP</strong>!</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    sendBtn.addEventListener('click', () => {
+      const text = input.value.trim();
+      if (!text) return;
+
+      // הוספת הודעת משתמש
+      addMessage(text, 'user');
+      input.value = '';
+
+      // סימולציית תגובת ג'מיני עם קריאת כלי MCP
+      setTimeout(() => {
+        const mockGeminiResponse = `אני אבדוק את רשימת הטבלאות עבורך במסד הנתונים באמצעות כלי ה-MCP:
+\`\`\`mcp:supabase
+{
+  "action": "execute_sql",
+  "query": "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' LIMIT 20;"
+}
+\`\`\``;
+        addMessage(mockGeminiResponse, 'gemini');
+      }, 700);
+    });
+
+    function addMessage(content, sender) {
+      const div = document.createElement('div');
+      div.className = `msg msg-${sender}`;
+      
+      if (content.includes('```')) {
+        div.innerHTML = content.replace(/```mcp:supabase\n([\s\S]*?)\n```/g, '<pre><code>$1</code></pre>');
+      } else {
+        div.textContent = content;
+      }
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+  </script>
+</body>
+</html>
