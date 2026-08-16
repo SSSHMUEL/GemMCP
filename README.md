@@ -35,7 +35,7 @@ GemMCP connects your browser (Gemini Web, AI chat interfaces) directly to local 
 1. Open Google Chrome and go to `chrome://extensions/` (or click **Menu (⋮)** > **Extensions** > **Manage Extensions**).
 2. Turn ON **Developer mode** (מצב מפתח) in the top-right corner.
 3. Click the **Load unpacked** (טען פריט שלא נארז) button in the top-left corner.
-4. ⚠️ **Select only the `extension` folder** inside the extracted directory (do NOT select the root folder or other subfolders).
+4. Select the project root folder (the folder containing `manifest.json`).
 5. (Recommended) Click the puzzle piece icon in Chrome and **Pin GemMCP** to your toolbar.
 
 ---
@@ -79,7 +79,7 @@ Double-click `start-bridge.bat` (or `bridge-launcher.bat`) located in the root p
 1. פתחו את דפדפן Chrome והיכנסו לכתובת: `chrome://extensions/` (או דרך תפריט 3 הנקודות > **תוספים** > **ניהול תוספים**).
 2. הפעילו את מתג **מצב מפתח (Developer mode)** בפינה העליונה.
 3. לחצו על הכפתור **טען פריט שלא נארז (Load unpacked)**.
-4. ⚠️ **בחרו אך ורק את תיקיית `extension`** הנמצאת בתוך התיקייה שחילצתם (אל תבחרו את התיקייה הראשית כולה!).
+4. בחרו ישירות את התיקייה הראשית של הפרויקט (המכילה את `manifest.json`).
 5. מומלץ: לחצו על סמל הפאזל בסרגל הדפדפן ונעצו (Pin) את **GemMCP** לסרגל הכלים.
 
 ---
@@ -101,8 +101,6 @@ Double-click `start-bridge.bat` (or `bridge-launcher.bat`) located in the root p
 
 ---
 
----
-
 ### 🔄 איך לעדכן גרסה (Updates)
 ישנן שתי דרכים פשוטות לעדכון הפרויקט:
 1. **בדיקת עדכון מתוך התוסף:** לחצו על סמל הריענון 🔄 בראש חלון התוסף (Popup) כדי לבדוק מול GitHub אם יש גרסה חדשה.
@@ -112,19 +110,20 @@ Double-click `start-bridge.bat` (or `bridge-launcher.bat`) located in the root p
 
 ## 📁 Project Architecture
 
-```
+```text
 gemmcp/
+├── manifest.json          # Chrome Extension Manifest (V3)
+├── background.js          # Service worker & message router
+├── content.js             # Gemini Web page script injector
+├── content.css            # Injected UI styles
+├── popup/                 # Settings UI & OAuth callback handlers
+├── icons/                 # Extension Icons
 ├── bridge-server/         # Node.js backend bridge
 │   ├── server.js          # Express & WebSocket server handling MCP & OAuth
 │   ├── setup_rpc.sql      # Supabase schema & RPC configuration
 │   └── .env.example       # Environment template
-│
-├── extension/             # Chrome Extension (Manifest V3)
-│   ├── background.js      # Service worker & message router
-│   ├── content.js         # Gemini Web page script injector
-│   ├── content.css        # Injected UI styles
-│   └── popup/             # Settings UI & OAuth callback handlers
-│
+├── start-bridge.bat       # Windows Bridge launcher
+├── update.bat             # Git pull + npm install + registry update
 └── test-simulator.html    # Standalone browser test suite
 ```
 
