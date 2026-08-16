@@ -136,5 +136,26 @@ gemmcp/
 
 ---
 
+## ⚠️ Disclaimer & Liability / כתב ויתור והצהרת אחריות
+
+### 🇬🇧 English:
+> **IMPORTANT SECURITY NOTICE:**  
+> This project is provided as **open-source software on an "AS IS" basis**, without warranty of any kind, express or implied.
+> - **Local Access & System Permissions:** GemMCP can bridge AI interfaces with your local operating system and active browser tabs. Granting automated tools or AI models access to execute local commands, modify files, or interact with authenticated sessions carries inherent security risks.
+> - **User Responsibility:** You are solely responsible for reviewing the tools and MCP servers you configure, the commands permitted, and any data accessed. Always exercise caution and verify actions before running potentially destructive operations.
+> - **Code Audit:** It is strongly recommended to review the source code and configuration files prior to installation and execution.
+
+---
+
+### 🇮🇱 עברית:
+> **הודעת אבטחה ואחריות חשובה:**  
+> פרויקט זה מופץ כתוכנת **קוד פתוח "כמות שהוא" (AS IS)**, והשימוש בו הוא **באחריות המשתמש בלבד**.
+> - **גישה למחשב ולדפדפן:** המערכת מאפשרת לגשר בין מודל ה-AI לבין מערכת ההפעלה המקומית וכרטיסיות הדפדפן שלכם. מתן הרשאות להרצת פקודות מקומיות, גישה לקבצים או אינטראקציה עם חשבונות מחוברים דורשת זהירות מרבית.
+> - **אחריות בלעדית:** המשתמש נושא באחריות המלאה והבלעדית לכל פעולה, שינוי, מחיקה או נזק שעלולים להיגרם כתוצאה מהרצת פקודות או חיבור שרתי MCP.
+> - **בדיקת הקוד:** מומלץ מאוד לעבור על קוד המקור, הסקריפטים וקובצי ההגדרות לפני ההתקנה וההפעלה במחשבכם.
+
+---
+
 ## 📄 License
 MIT License. Created by [SSSHMUEL](https://github.com/SSSHMUEL).
+
