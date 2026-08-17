@@ -87,6 +87,11 @@
     const panel = document.getElementById('omni-mcp-panel');
     if (!panel) return;
     panel.classList.add('open');
+    // הרחבת הכפתור לרוחב הפאנל
+    const toggleBtn = document.getElementById('omni-mcp-toggle-btn');
+    if (toggleBtn) {
+      toggleBtn.classList.add('expanded');
+    }
     // חישוב כיוון הפתיחה לפי המיקום הנוכחי - הכפתור נשאר במקומו
     const widget = document.getElementById('omni-mcp-floating-widget');
     if (widget && typeof widget._omniUpdateDirection === 'function') {
@@ -97,6 +102,11 @@
   function closePanel() {
     const panel = document.getElementById('omni-mcp-panel');
     if (panel) panel.classList.remove('open');
+    // החזרת הכפתור לגודלו המקורי
+    const toggleBtn = document.getElementById('omni-mcp-toggle-btn');
+    if (toggleBtn) {
+      toggleBtn.classList.remove('expanded');
+    }
   }
 
   function setBadgeBusy(busy) {
@@ -195,7 +205,7 @@
       </div>
 
       <button class="omni-mcp-badge-btn" id="omni-mcp-toggle-btn" title="GemMCP">
-        <img src="${chrome.runtime.getURL('icons/icon32.png')}" style="width:18px;height:18px;object-fit:contain;border-radius:3px;" onerror="this.style.display='none'">
+        <img src="${chrome.runtime.getURL('icons/icon32.png')}" style="width:20px;height:20px;object-fit:contain;border-radius:4px;" onerror="this.style.display='none'">
         <span>GemMCP</span>
       </button>
     `;
@@ -226,6 +236,14 @@
     });
 
     closeBtn.addEventListener('click', () => closePanel());
+
+    // Close panel when clicking outside the widget
+    document.addEventListener('click', (e) => {
+      const widget = document.getElementById('omni-mcp-floating-widget');
+      if (widget && !widget.contains(e.target) && panel.classList.contains('open')) {
+        closePanel();
+      }
+    });
 
     autoToggle.addEventListener('change', (e) => {
       isAutoExecute = e.target.checked;
@@ -260,15 +278,21 @@
     }
 
     let launchFailedDueToMissingNode = false;
+    let isShuttingDown = false;
 
     async function checkBridgeStatus() {
       updateBridgeCardVisibility();
-      if (!bridgeIndicator || !bridgeStatusText) return;
-      if (!activeServices || !activeServices.includes('windows')) return;
+      if (isShuttingDown) return false;
+      if (!bridgeIndicator || !bridgeStatusText) return false;
+      if (!activeServices || !activeServices.includes('windows')) return false;
       if (!chrome.runtime || !chrome.runtime.id) return false;
 
       return new Promise((resolve) => {
         chrome.runtime.sendMessage({ action: 'TEST_SERVICE_CONNECTION', service: 'windows' }, (res) => {
+          if (isShuttingDown) {
+            resolve(false);
+            return;
+          }
           if (chrome.runtime.lastError) {
             resolve(false);
             return;
@@ -305,7 +329,7 @@
     if (startBridgeBtn) {
       let isStarting = false;
       startBridgeBtn.addEventListener('click', () => {
-        if (isStarting) return;
+        if (isStarting || isShuttingDown) return;
         isStarting = true;
         launchFailedDueToMissingNode = false;
         if (bridgeOfflineHint) bridgeOfflineHint.style.display = 'none';
@@ -339,11 +363,20 @@
 
     if (stopBridgeBtn) {
       stopBridgeBtn.addEventListener('click', () => {
+        if (isShuttingDown) return;
+        isShuttingDown = true;
         bridgeStatusText.textContent = 'מכבה... ⏳';
         bridgeStatusText.style.color = '#64748b';
         chrome.runtime.sendMessage({ action: 'SHUTDOWN_BRIDGE_SERVER' }, () => {
+          isShuttingDown = false;
+          bridgeIndicator.style.background = '#94a3b8';
+          bridgeIndicator.style.boxShadow = 'none';
+          bridgeStatusText.textContent = 'כבוי';
+          bridgeStatusText.style.color = '#64748b';
+          if (startBridgeBtn) startBridgeBtn.style.display = 'flex';
+          if (stopBridgeBtn) stopBridgeBtn.style.display = 'none';
+          if (bridgeOfflineHint) bridgeOfflineHint.style.display = 'none';
           addLog('🛑 שרת Windows Bridge כובה.');
-          setTimeout(checkBridgeStatus, 600);
         });
       });
     }

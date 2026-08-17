@@ -811,15 +811,21 @@ app.post('/api/update', async (req, res) => {
 app.post('/api/shutdown', (req, res) => {
   res.json({ success: true, message: 'שרת ה-Bridge נסגר בהצלחה.' });
   console.log('🛑 התקבלה בקשת כיבוי שרת מהתוסף - סוגר תהליך...');
+  try {
+    if (typeof server !== 'undefined' && server.close) {
+      server.close();
+    }
+  } catch (e) {}
   setTimeout(() => {
     process.exit(0);
-  }, 400);
+  }, 100);
 });
 
 // הפעלת השרת
-app.listen(PORT, HOST, () => {
+const server = app.listen(PORT, HOST, () => {
   console.log(`\n==================================================`);
   console.log(`🚀 Windows Bridge Server רץ ומאזין בכתובת: http://${HOST}:${PORT}`);
   console.log(`🔒 נעול לגישה מקומית בלבד (Localhost / Extensions)`);
   console.log(`==================================================\n`);
 });
+

@@ -324,15 +324,20 @@ async function triggerBridgeUpdate() {
  * 🛑 כיבוי שרת ה-Bridge
  */
 async function shutdownBridgeServer() {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 2000);
   try {
     const res = await fetch('http://127.0.0.1:3000/api/shutdown', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
     if (res.ok) {
       return 'שרת ה-Bridge כובה בהצלחה.';
     }
   } catch (e) {
+    clearTimeout(timeoutId);
     // השרת נסגר וניתק את החיבור
     return 'שרת ה-Bridge נסגר.';
   }
