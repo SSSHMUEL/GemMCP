@@ -75,7 +75,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Accordion Logic: Click header to expand/collapse card
+  // Inject real version from manifest into footer
+  const versionFooter = document.getElementById('version-footer');
+  if (versionFooter) {
+    versionFooter.textContent = 'v' + chrome.runtime.getManifest().version;
+  }
+
+
   const serviceCards = document.querySelectorAll('.service-card');
 
   serviceCards.forEach(card => {
