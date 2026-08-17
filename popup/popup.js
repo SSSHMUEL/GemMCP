@@ -949,17 +949,40 @@ document.addEventListener('DOMContentLoaded', () => {
           const currentVersion = (chrome.runtime.getManifest().version || '').trim();
 
           if (latestTag && latestTag !== currentVersion) {
-            showStatus(`${t('updateAvailable', currentLang)} (v${latestTag})`, 'success');
-            setTimeout(() => {
-              if (confirm(`${t('updateAvailable', currentLang)} (v${latestTag})\n\n${t('updateRunScriptHint', currentLang)}\n\n${t('updateOpenGitHub', currentLang)}?`)) {
-                window.open(release.html_url || 'https://github.com/SSSHMUEL/GemMCP/releases', '_blank');
+            // בדיקה האם שרת ה-Bridge פעיל כדי להציע עדכון אוטומטי
+            chrome.runtime.sendMessage({ action: 'TEST_SERVICE_CONNECTION', service: 'windows' }, (bridgeRes) => {
+              const isBridgeOnline = bridgeRes && bridgeRes.success;
+
+              if (isBridgeOnline) {
+                const confirmMsg = (t('updateBridgeAutoConfirm', currentLang) || '').replace('{version}', `v${latestTag}`);
+                if (confirm(confirmMsg)) {
+                  showStatus(t('updateDownloading', currentLang), 'info');
+                  checkForUpdateBtn.classList.add('spinning');
+
+                  chrome.runtime.sendMessage({ action: 'TRIGGER_BRIDGE_UPDATE' }, (updateRes) => {
+                    checkForUpdateBtn.classList.remove('spinning');
+                    if (updateRes && updateRes.success) {
+                      showStatus(t('updateSuccessReload', currentLang), 'success');
+                      setTimeout(() => {
+                        chrome.runtime.reload();
+                      }, 1500);
+                    } else {
+                      showStatus(`${t('updateError', currentLang)}: ${updateRes?.error || 'שגיאה לא ידועה'}`, 'error');
+                    }
+                  });
+                  return;
+                }
+              } else {
+                const hint = `${t('updateAvailable', currentLang)} (v${latestTag})\n\n${t('updateBridgeOffline', currentLang)}\n\n${t('updateOpenGitHub', currentLang)}?`;
+                if (confirm(hint)) {
+                  window.open(release.html_url || 'https://github.com/SSSHMUEL/GemMCP/releases', '_blank');
+                }
               }
-            }, 300);
+            });
           } else {
             showStatus(`${t('updateUpToDate', currentLang)} (v${currentVersion})`, 'success');
           }
         } else {
-          // If no releases yet, check latest commit info or notify up-to-date
           const manifestVer = chrome.runtime.getManifest().version;
           showStatus(`${t('updateUpToDate', currentLang)} (v${manifestVer})`, 'success');
         }

@@ -695,6 +695,118 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', bridge: 'GemMCP-Gemini-Bridge', platform: process.platform });
 });
 
+// עדכון אוטומטי של התוסף ושרת ה-Bridge ישירות מ-GitHub
+app.post('/api/update', async (req, res) => {
+  console.log('🔄 התקבלה בקשת עדכון אוטומטי מהתוסף...');
+  const rootDir = path.resolve(__dirname, '..');
+  const bridgeDir = path.resolve(__dirname);
+  const isGitRepo = fs.existsSync(path.join(rootDir, '.git'));
+
+  const runCmd = (cmd, cwd) => {
+    return new Promise((resolve, reject) => {
+      exec(cmd, { cwd, shell: 'powershell.exe', timeout: 60000 }, (error, stdout, stderr) => {
+        if (error) {
+          reject(new Error(stderr?.toString() || stdout?.toString() || error.message));
+        } else {
+          resolve((stdout || '').toString().trim());
+        }
+      });
+    });
+  };
+
+  let updateMethod = 'git';
+  let updateLog = [];
+
+  try {
+    if (isGitRepo) {
+      updateLog.push('מבצע git pull origin main...');
+      try {
+        const gitOut = await runCmd('git pull origin main', rootDir);
+        updateLog.push(`Git output: ${gitOut}`);
+      } catch (gitErr) {
+        console.warn('⚠️ Git pull נכשל, מנסה מסלול הורדת ZIP ישירה:', gitErr.message);
+        updateMethod = 'zip';
+      }
+    } else {
+      updateMethod = 'zip';
+    }
+
+    if (updateMethod === 'zip') {
+      updateLog.push('מוריד חבילת עדכון אחרונה מ-GitHub...');
+      const zipUrl = 'https://github.com/SSSHMUEL/GemMCP/archive/refs/heads/main.zip';
+      const psScript = `
+        $ProgressPreference = 'SilentlyContinue'
+        $zipPath = Join-Path $env:TEMP "GemMCP-latest.zip"
+        $extractPath = Join-Path $env:TEMP "GemMCP-extracted"
+        if (Test-Path $extractPath) { Remove-Item -Recurse -Force $extractPath }
+        Invoke-WebRequest -Uri "${zipUrl}" -OutFile $zipPath -UseBasicParsing
+        Expand-Archive -Path $zipPath -DestinationPath $extractPath -Force
+        $innerFolder = Get-ChildItem -Path $extractPath | Where-Object { $_.PSIsContainer } | Select-Object -First 1
+        if ($innerFolder) {
+          Get-ChildItem -Path $innerFolder.FullName -Recurse | ForEach-Object {
+            $rel = $_.FullName.Substring($innerFolder.FullName.Length + 1)
+            $target = Join-Path "${rootDir.replace(/\\/g, '\\\\')}" $rel
+            if ($rel -notmatch '^bridge-server\\\\(\\.env|node_modules)') {
+              if ($_.PSIsContainer) {
+                if (-not (Test-Path $target)) { New-Item -ItemType Directory -Path $target -Force | Out-Null }
+              } else {
+                $targetDir = Split-Path $target -Parent
+                if (-not (Test-Path $targetDir)) { New-Item -ItemType Directory -Path $targetDir -Force | Out-Null }
+                Copy-Item -Path $_.FullName -Destination $target -Force
+              }
+            }
+          }
+        }
+        Remove-Item -Recurse -Force $extractPath -ErrorAction SilentlyContinue
+        Remove-Item -Force $zipPath -ErrorAction SilentlyContinue
+      `;
+      await runCmd(psScript, rootDir);
+      updateLog.push('הקבצים חולצו ועודכנו בהצלחה!');
+    }
+
+    // עדכון תלויות npm ב-bridge-server
+    try {
+      updateLog.push('מעדכן תלויות ב-bridge-server...');
+      await runCmd('npm install --no-audit --no-fund', bridgeDir);
+      updateLog.push('npm install הושלם בהצלחה.');
+    } catch (npmErr) {
+      console.warn('⚠️ npm install נתקל באזהרה (העדכון עדיין הושלם):', npmErr.message);
+    }
+
+    // רישום מחדש של הפרוטוקול
+    const regBat = path.join(rootDir, 'register-protocol.bat');
+    if (fs.existsSync(regBat)) {
+      try {
+        await runCmd(`cmd.exe /c "${regBat}"`, rootDir);
+      } catch (e) {}
+    }
+
+    // קריאת גרסה עדכנית מ-manifest.json
+    let newVersion = '2.1.1';
+    try {
+      const manifestRaw = fs.readFileSync(path.join(rootDir, 'manifest.json'), 'utf8');
+      const manifest = JSON.parse(manifestRaw);
+      newVersion = manifest.version || newVersion;
+    } catch (e) {}
+
+    console.log('✅ העדכון הושלם בהצלחה לגרסה:', newVersion);
+    return res.json({
+      success: true,
+      message: 'העדכון הושלם בהצלחה!',
+      newVersion,
+      updateMethod,
+      logs: updateLog
+    });
+  } catch (err) {
+    console.error('❌ שגיאה בביצוע עדכון דרך ה-Bridge:', err.message);
+    return res.status(500).json({
+      success: false,
+      error: `שגיאה בעדכון: ${err.message}`,
+      logs: updateLog
+    });
+  }
+});
+
 // כיבוי שרת ה-Bridge לפי בקשת המשתמש
 app.post('/api/shutdown', (req, res) => {
   res.json({ success: true, message: 'שרת ה-Bridge נסגר בהצלחה.' });

@@ -23,6 +23,10 @@ const I18N_DICT = {
     updateError: 'שגיאה בבדיקת עדכון',
     updateOpenGitHub: 'פתח עמוד עדכון ↗',
     updateRunScriptHint: 'להתקנת עדכון: הפעל את update.bat בתיקיית הפרויקט',
+    updateBridgeAutoConfirm: 'גרסה חדשה זמינה ({version})!\n\nשרת ה-Bridge פעיל. האם להוריד ולהתקין את העדכון אוטומטית כעת דרך ה-Bridge?',
+    updateDownloading: '⏳ מוריד ומתקין עדכון דרך שרת ה-Bridge...',
+    updateSuccessReload: '✅ העדכון הותקן בהצלחה! מרענן את התוסף...',
+    updateBridgeOffline: 'שרת ה-Bridge כבוי. הפעל אותו כדי לעדכן אוטומטית בלחיצה אחת, או פתח את GitHub.',
 
     // Windows MCP Card
     winTitle: 'Windows MCP',
@@ -173,6 +177,10 @@ const I18N_DICT = {
     updateError: 'Failed to check for updates',
     updateOpenGitHub: 'Open Release Page ↗',
     updateRunScriptHint: 'To update: Run update.bat in project folder',
+    updateBridgeAutoConfirm: 'New version available ({version})!\n\nWindows Bridge is online. Would you like to download and install the update automatically now?',
+    updateDownloading: '⏳ Downloading and applying update via Bridge...',
+    updateSuccessReload: '✅ Update installed successfully! Reloading extension...',
+    updateBridgeOffline: 'Bridge server is offline. Start it to update in 1-click, or open GitHub.',
 
     // Windows MCP Card
     winTitle: 'Windows MCP',

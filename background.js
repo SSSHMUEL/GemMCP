@@ -276,6 +276,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 
+  // 🔄 הפעלת עדכון אוטומטי מלא דרך שרת ה-Bridge
+  if (request.action === 'TRIGGER_BRIDGE_UPDATE') {
+    triggerBridgeUpdate()
+      .then((res) => sendResponse({ success: true, data: res }))
+      .catch((err) => sendResponse({ success: false, error: err.message || err }));
+    return true;
+  }
+
   // 🚀 משיכת פרויקטים ומפתחות אוטומטית מ-Supabase לפי Access Token
   if (request.action === 'SUPABASE_AUTO_DISCOVER') {
     discoverSupabaseProjects(request.token)
@@ -284,6 +292,33 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 });
+
+/**
+ * 🔄 הרצת עדכון אוטומטי מלא דרך שרת ה-Bridge
+ */
+async function triggerBridgeUpdate() {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 90000);
+  try {
+    const res = await fetch('http://127.0.0.1:3000/api/update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || `שרת ה-Bridge החזיר שגיאה: ${res.status}`);
+    }
+    return await res.json();
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err.name === 'AbortError') {
+      throw new Error('תהליך העדכון לקח זמן רב מדי והופסק (Timeout).');
+    }
+    throw err;
+  }
+}
 
 /**
  * 🛑 כיבוי שרת ה-Bridge
