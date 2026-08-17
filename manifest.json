@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "GemMCP for Gemini",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "חבר שירותי MCP (Supabase, GitHub, Web Scraper, Custom MCP) ישירות ל-Google Gemini Web",
   "permissions": [
     "storage",

@@ -1,6 +1,6 @@
 {
   "name": "gemini-mcp-bridge-server",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "שרת גשר מקומי קל לביצוע שאילתות Supabase וחיבור לפרוטוקול MCP עבור Gemini Web",
   "main": "server.js",
   "scripts": {
