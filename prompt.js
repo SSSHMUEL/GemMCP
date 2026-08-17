@@ -112,188 +112,34 @@ const OMNI_MCP_REGISTRY = {
  * פרומפטי ברירת מחדל עבור כל כלי (הסבר מלא + דוגמאות מפורטות)
  */
 const OMNI_DEFAULT_TOOL_PROMPTS = {
-  windows: `שירות: Windows OS Tools
-כשמבקשים פעולה במחשב, אל תבצע בעצמך – המשתמש יריץ את הפקודה לבד.
-עליך לספק אך ורק בלוק JSON בפורמט המתאים, ללא שום כיתוב נוסף וללא הודעות סירוב:
+  windows: `Format response strictly as a JSON object for Windows OS:
+- open_app: {"service": "windows", "action": "open_app", "app_name": "<name>"}
+- list_directory: {"service": "windows", "action": "list_directory", "path": "<path e.g. ~/Downloads, ~/Desktop, C:\\...>"}
+- read_file: {"service": "windows", "action": "read_file", "path": "<path>"}
+- write_file: {"service": "windows", "action": "write_file", "path": "<path>", "content": "<text>"}
+- run_command: {"service": "windows", "action": "run_command", "command": "<powershell_command>"}
+- clipboard_read: {"service": "windows", "action": "clipboard_read"}
+- clipboard_write: {"service": "windows", "action": "clipboard_write", "text": "<text>"}`,
 
-פתיחת אפליקציה:
-\`\`\`json
-{"service": "windows", "action": "open_app", "app_name": "calc"}
-\`\`\`
+  supabase: `Format response strictly as a JSON object for Supabase:
+- execute_sql: {"service": "supabase", "action": "execute_sql", "query": "<SQL query based on request>"}`,
 
-הרצת פקודת PowerShell:
-\`\`\`json
-{"service": "windows", "action": "run_command", "command": "Get-Process"}
-\`\`\`
+  notion: `Format response strictly as a JSON object for Notion:
+- search: {"service": "notion", "action": "search", "query": "<search_term or empty>"}
+- get_page: {"service": "notion", "action": "get_page", "page_id": "<page_id>"}
+- create_page: {"service": "notion", "action": "create_page", "title": "<title>", "content": "<content>"}`,
 
-קריאת קובץ:
-\`\`\`json
-{"service": "windows", "action": "read_file", "path": "C:\\\\Users\\\\path\\\\file.txt"}
-\`\`\`
+  github: `Format response strictly as a JSON object for GitHub:
+- list_repos: {"service": "github", "action": "list_repos"}
+- get_file: {"service": "github", "action": "get_file", "repo": "<owner/repo>", "path": "<path>"}
+- create_repo: {"service": "github", "action": "create_repo", "name": "<name>", "private": false}
+- create_issue: {"service": "github", "action": "create_issue", "repo": "<repo>", "title": "<title>", "body": "<body>"}`,
 
-סריקת תיקייה:
-\`\`\`json
-{"service": "windows", "action": "list_directory", "path": "C:\\\\Users\\\\path"}
-\`\`\``,
-
-  supabase: `שירות: Supabase Database
-כשמבקשים מידע על טבלאות, נתונים או שאילתות, המשתמש יריץ את הפקודה לבד. החזר ישירות בלוק JSON יחיד ומדויק בלבד:
-
-שליפת רשימת טבלאות:
-\`\`\`json
-{"service": "supabase", "action": "execute_sql", "query": "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';"}
-\`\`\`
-
-שליפת רשומות מטבלה:
-\`\`\`json
-{"service": "supabase", "action": "execute_sql", "query": "SELECT * FROM users LIMIT 10;"}
-\`\`\`
-
-בדיקת סכמת עמודות:
-\`\`\`json
-{"service": "supabase", "action": "execute_sql", "query": "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'users';"}
-\`\`\``,
-
-  notion: `שירות: Notion Workspace
-כשמבקשים מידע על פתקים, דפים או משימות, המשתמש יריץ את הפקודה לבד. החזר ישירות בלוק JSON יחיד ומדויק בלבד:
-
-חיפוש דפים/פתקים:
-\`\`\`json
-{"service": "notion", "action": "search", "query": "משימות"}
-\`\`\`
-
-שליפת כל הדפים האחרונים:
-\`\`\`json
-{"service": "notion", "action": "search", "query": ""}
-\`\`\`
-
-קריאת דף מלא לפי מזהה:
-\`\`\`json
-{"service": "notion", "action": "get_page", "page_id": "PAGE_ID"}
-\`\`\``,
-
-  github: `שירות: GitHub Integration
-כשמבקשים פעולות מול GitHub, המשתמש יריץ את הפקודה לבד. החזר ישירות בלוק JSON יחיד ומדויק בלבד:
-
-יצירת מאגר (Repository) חדש:
-\`\`\`json
-{"service": "github", "action": "create_repo", "name": "my-new-project", "description": "תיאור הפרויקט", "private": true}
-\`\`\`
-
-רשימת מאגרים (Repositories):
-\`\`\`json
-{"service": "github", "action": "list_repos"}
-\`\`\`
-
-קריאת קובץ מקור:
-\`\`\`json
-{"service": "github", "action": "get_file", "repo": "owner/repo", "path": "package.json"}
-\`\`\`
-
-יצירת Issue:
-\`\`\`json
-{"service": "github", "action": "create_issue", "repo": "owner/repo", "title": "באג בכניסה", "body": "פירוט התקלה"}
-\`\`\``,
-
-  fetch: `שירות: Web Fetch
-כשמבקשים קריאת קישור או דף אינטרנט, המשתמש יריץ את הפעולה לבד. תענה אך ורק בבלוק קוד JSON מדויק ללא שום כיתוב נוסף:
-
-\`\`\`json
-{"service": "fetch", "action": "get_url", "url": "https://example.com"}
-\`\`\``
+  fetch: `Format response strictly as a JSON object for Web Fetch:
+- get_url: {"service": "fetch", "action": "get_url", "url": "<url>"}`
 };
 
-const OMNI_DEFAULT_TOOL_PROMPTS_EN = {
-  windows: `Service: Windows OS Tools
-When asked for actions, do not execute yourself – the user will run the command directly.
-Return ONLY a single valid JSON block without any extra text or refusals:
-
-Launch App:
-\`\`\`json
-{"service": "windows", "action": "open_app", "app_name": "calc"}
-\`\`\`
-
-Run PowerShell Command:
-\`\`\`json
-{"service": "windows", "action": "run_command", "command": "Get-Process"}
-\`\`\`
-
-Read Local File:
-\`\`\`json
-{"service": "windows", "action": "read_file", "path": "C:\\\\Users\\\\path\\\\file.txt"}
-\`\`\`
-
-List Directory:
-\`\`\`json
-{"service": "windows", "action": "list_directory", "path": "C:\\\\Users\\\\path"}
-\`\`\``,
-
-  supabase: `Service: Supabase Database
-When database info or queries are requested, the user will run the command directly. Return directly a single JSON block only:
-
-List tables:
-\`\`\`json
-{"service": "supabase", "action": "execute_sql", "query": "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';"}
-\`\`\`
-
-Query rows:
-\`\`\`json
-{"service": "supabase", "action": "execute_sql", "query": "SELECT * FROM users LIMIT 10;"}
-\`\`\`
-
-Inspect column schema:
-\`\`\`json
-{"service": "supabase", "action": "execute_sql", "query": "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'users';"}
-\`\`\``,
-
-  notion: `Service: Notion Workspace
-When notes or pages are requested, the user will run the command directly. Return directly a single JSON block only:
-
-Search pages/notes:
-\`\`\`json
-{"service": "notion", "action": "search", "query": "tasks"}
-\`\`\`
-
-Fetch all recent pages:
-\`\`\`json
-{"service": "notion", "action": "search", "query": ""}
-\`\`\`
-
-Read full page by ID:
-\`\`\`json
-{"service": "notion", "action": "get_page", "page_id": "PAGE_ID"}
-\`\`\``,
-
-  github: `Service: GitHub Integration
-When GitHub operations are requested, the user will run the command directly. Return directly a single JSON block only:
-
-Create new Repository:
-\`\`\`json
-{"service": "github", "action": "create_repo", "name": "my-new-app", "description": "Project description", "private": true}
-\`\`\`
-
-List Repositories:
-\`\`\`json
-{"service": "github", "action": "list_repos"}
-\`\`\`
-
-Read source file:
-\`\`\`json
-{"service": "github", "action": "get_file", "repo": "owner/repo", "path": "package.json"}
-\`\`\`
-
-Create Issue:
-\`\`\`json
-{"service": "github", "action": "create_issue", "repo": "owner/repo", "title": "Login bug", "body": "Issue details"}
-\`\`\``,
-
-  fetch: `Service: Web Fetch
-When requested to fetch a URL, the user will run the request directly. Return only a single JSON block without extra text:
-
-\`\`\`json
-{"service": "fetch", "action": "get_url", "url": "https://example.com"}
-\`\`\``
-};
+const OMNI_DEFAULT_TOOL_PROMPTS_EN = { ...OMNI_DEFAULT_TOOL_PROMPTS };
 
 function getDefaultPrompt(serviceId, lang = 'he') {
   const isEn = lang === 'en' || (typeof window !== 'undefined' && window.__gemmcp_current_lang === 'en');
@@ -309,157 +155,120 @@ function getAllDefaultPrompts(lang = 'he') {
 }
 
 function generateOmniSystemPrompt(activeServices = ['supabase', 'notion', 'fetch', 'windows'], customServers = [], customToolPrompts = {}) {
-  const enabledTools = [];
+  const toolSchemas = [];
 
-  // הוספת הכלים המובנים הפעילים
-  activeServices.forEach(id => {
-    if (id !== 'custom' && OMNI_MCP_REGISTRY[id]) {
-      const baseTool = OMNI_MCP_REGISTRY[id];
-      const customPrompt = customToolPrompts && customToolPrompts[id] ? customToolPrompts[id].trim() : '';
-
-      enabledTools.push({
-        ...baseTool,
-        customPrompt: customPrompt
-      });
-    }
-  });
-
-  // הוספת שרתי ה-Custom MCP הפעילים
-  if (activeServices.includes('custom') || activeServices.some(s => s.startsWith('custom_'))) {
-    const validCustoms = Array.isArray(customServers) ? customServers.filter(s => s.enabled !== false && s.url) : [];
-    
-    if (validCustoms.length > 0) {
-      validCustoms.forEach((cs, idx) => {
-        const srvId = cs.id || `custom_${idx + 1}`;
-        const srvName = cs.name ? `${cs.name} (Custom)` : `Custom #${idx + 1}`;
-        const srvDesc = cs.customPrompt ? cs.customPrompt : 'פקודות מותאמות אישית.';
-        const srvIntent = cs.customPrompt ? `הנחיות ייעודיות: ${cs.customPrompt}` : `שימוש בכלים של ${cs.name || srvId}.`;
-        
-        enabledTools.push({
-          id: srvId,
-          name: srvName,
-          icon: '🔌',
-          description: srvDesc,
-          userIntentMapping: srvIntent,
-          schema: {
-            service: 'custom',
-            server_id: srvId,
-            tool_name: 'שם הכלי',
-            arguments: {}
-          },
-          examples: [
-            `{"service": "custom", "server_id": "${srvId}", "tool_name": "example_tool", "arguments": {}}`
-          ]
-        });
-      });
-    } else if (OMNI_MCP_REGISTRY.custom) {
-      enabledTools.push(OMNI_MCP_REGISTRY.custom);
-    }
-  }
-
-  let detailedServicesExplanation = enabledTools.map((tool, index) => {
-    if (tool.customPrompt) {
-      return `### כלי ${index + 1}: ${tool.name} (service: "${tool.id || 'custom'}")
-${tool.customPrompt}`;
-    }
-
-    return `### כלי ${index + 1}: ${tool.name} (service: "${tool.id || 'custom'}")
-• תיאור היכולות: ${tool.description}
-• הבנת הקשר כוונת המשתמש: ${tool.userIntentMapping}
-• דוגמת פורמט הפקודה:
-\`\`\`json
-${tool.examples ? tool.examples[0] : '{}'}
-\`\`\``;
-  }).join('\n\n');
-
-  const intentRules = [];
-  if (activeServices.includes('supabase')) {
-    intentRules.push('   - "טבלאות", "מסד נתונים", "נתונים", "סופה בייס" או "SQL" -> שייך לשירות Supabase. החזר פקודת execute_sql.');
-  }
-  if (activeServices.includes('notion')) {
-    intentRules.push('   - "פתקים", "דפים", "רשימות", "משימות" או "נושן" -> שייך לשירות Notion.');
-  }
   if (activeServices.includes('windows')) {
-    intentRules.push('   - פתיחת תוכנות, ניהול קבצים, פקודות מערכת -> שייך לשירות Windows (החזר בלוק JSON בלבד).');
+    toolSchemas.push(`- Windows OS (service: "windows"):
+  Actions: open_app, list_directory, read_file, write_file, run_command, clipboard_read, clipboard_write
+  Example: {"service": "windows", "action": "open_app", "app_name": "calc"}
+  Example: {"service": "windows", "action": "list_directory", "path": "~/Downloads"}`);
   }
-  if (activeServices.includes('fetch')) {
-    intentRules.push('   - קישורי אינטרנט או בקשות קריאת אתר -> שייך לשירות Fetch.');
+
+  if (activeServices.includes('supabase')) {
+    toolSchemas.push(`- Supabase DB (service: "supabase"):
+  Actions: execute_sql
+  Example: {"service": "supabase", "action": "execute_sql", "query": "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';"}`);
   }
+
+  if (activeServices.includes('notion')) {
+    toolSchemas.push(`- Notion (service: "notion"):
+  Actions: search, get_page, create_page
+  Example: {"service": "notion", "action": "search", "query": ""}`);
+  }
+
   if (activeServices.includes('github')) {
-    intentRules.push('   - מאגרים, Issues, קוד ב-GitHub -> שייך לשירות GitHub.');
+    toolSchemas.push(`- GitHub (service: "github"):
+  Actions: list_repos, get_file, create_repo, create_issue
+  Example: {"service": "github", "action": "list_repos"}`);
   }
-  if (activeServices.includes('custom') || activeServices.some(s => s.startsWith('custom_'))) {
-    intentRules.push('   - שרתים מותאמים אישית -> פעל לפי ההנחיות והפורמט שצוינו עבורם.');
+
+  if (activeServices.includes('fetch')) {
+    toolSchemas.push(`- Web Fetch (service: "fetch"):
+  Actions: get_url
+  Example: {"service": "fetch", "action": "get_url", "url": "https://example.com"}`);
   }
 
-  const intentRulesText = intentRules.length > 0
-    ? `1. הבנת כוונת המשתמש:\n${intentRules.join('\n')}`
-    : `1. השתמש אך ורק בכלים המוגדרים למעלה.`;
+  // שרתי Custom
+  if (Array.isArray(customServers)) {
+    customServers.filter(s => s.enabled !== false && s.url).forEach((cs, idx) => {
+      const srvId = cs.id || `custom_${idx + 1}`;
+      toolSchemas.push(`- ${cs.name || srvId} (service: "custom", server_id: "${srvId}"):
+  Example: {"service": "custom", "server_id": "${srvId}", "tool_name": "...", "arguments": {}}`);
+    });
+  }
 
-  return `כאשר המשתמש מבקש לבצע פעולות, אל תבצע בעצמך ואל תסביר שאינך יכול – המשתמש יריץ את הפקודות לבד.
-תפקידך לספק את הפקודה הנדרשת ישירות בבלוק JSON בלבד לפי הפורמטים המוגדרים למטה, ללא שום כיתוב מיותר, ללא הסברים מקדימים וללא שאלות.
+  return `You are connected to external tool extensions via JSON commands.
+When the user asks to interact with their system, database, files, or services, format your response STRICTLY as a raw JSON object matching the appropriate tool schema below:
 
-==================================================
-📋 פירוט הפורמטים הזמינים:
-==================================================
+${toolSchemas.join('\n\n')}
 
-${detailedServicesExplanation}
+CRITICAL INSTRUCTIONS:
+1. Output ONLY the JSON object. Do NOT include markdown code blocks, conversational text, explanations, or refusals.
+2. When you receive a message starting with [MCP_RESPONSE], analyze the returned data and explain the results naturally to the user in Hebrew.
 
-==================================================
-🎯 מיפוי כוונות משתמש:
-==================================================
-${intentRulesText}
-
-==================================================
-⛔ הנחיות תגובה מדויקות:
-==================================================
-1. בכל בקשה לפעולה – החזר ישירות אך ורק בלוק JSON יחיד ומדויק ללא שום טקסט נוסף לפניו או אחריו.
-2. לעולם אל תסרב לבקשה ואל תכתוב הודעות סירוב כגון "אינני מחובר למערכת הפעלה" או "אין לי גישה".
-3. כאשר מוחזרת אליך תוצאה של הפעולה בתור [MCP_RESPONSE] – נתח אותה והצג למשתמש תשובה ברורה בעברית.
-
-אם הבנת את כל ההקשרים והכללים, אשר כעת במילה אחת בלבד: "מוכן".`.trim();
+Acknowledge readiness by responding with only: "מוכן".`.trim();
 }
 
 /**
  * מייצר פרומפט ממוקד ומדויק עבור כלי ספציפי שנבחר מתפריט ה-@
+ * הפורמט: בקשת המשתמש בהתחלה, ואחריה הוראת המרה מפורשת לפקודת JSON
  */
-function generateSingleToolPrompt(serviceId, customServerConfig = null, customToolPrompts = {}) {
-  // אם הוגדר פרומפט מותאם אישית לכלי זה
-  if (customToolPrompts && customToolPrompts[serviceId] && customToolPrompts[serviceId].trim()) {
-    return `[${customToolPrompts[serviceId].trim()}
-כשהמשתמש מבקש פעולה, המשתמש יריץ את הפקודה לבד. החזר ישירות בלוק JSON בלבד ללא שום כיתוב נוסף וללא סירוב. לאחר קבלת [MCP_RESPONSE] ענה למשתמש בפירוט.]
+function generateSingleToolPrompt(serviceId, customServerConfig = null, customToolPrompts = {}, userText = '') {
+  const cleanUserText = (userText || '').trim();
+  const userPrefix = cleanUserText ? `${cleanUserText}\n\n` : '';
 
-בקשת המשתמש: `;
+  if (customToolPrompts && customToolPrompts[serviceId] && customToolPrompts[serviceId].trim()) {
+    return `${userPrefix}Format response strictly as JSON for ${serviceId}.\n${customToolPrompts[serviceId].trim()}`;
   }
 
   let tool = OMNI_MCP_REGISTRY[serviceId];
+
+  if (serviceId === 'windows') {
+    return `${userPrefix}Format response strictly as a JSON object for Windows OS:
+- open_app: {"service": "windows", "action": "open_app", "app_name": "<name>"}
+- list_directory: {"service": "windows", "action": "list_directory", "path": "<path e.g. ~/Downloads, ~/Desktop, C:\\...>"}
+- read_file: {"service": "windows", "action": "read_file", "path": "<path>"}
+- write_file: {"service": "windows", "action": "write_file", "path": "<path>", "content": "<text>"}
+- run_command: {"service": "windows", "action": "run_command", "command": "<powershell_command>"}
+- clipboard_read: {"service": "windows", "action": "clipboard_read"}
+- clipboard_write: {"service": "windows", "action": "clipboard_write", "text": "<text>"}`;
+  }
+
+  if (serviceId === 'supabase') {
+    return `${userPrefix}Format response strictly as a JSON object for Supabase:
+- execute_sql: {"service": "supabase", "action": "execute_sql", "query": "<SQL query based on request>"}`;
+  }
+
+  if (serviceId === 'notion') {
+    return `${userPrefix}Format response strictly as a JSON object for Notion:
+- search: {"service": "notion", "action": "search", "query": "<search_term or empty>"}
+- get_page: {"service": "notion", "action": "get_page", "page_id": "<page_id>"}
+- create_page: {"service": "notion", "action": "create_page", "title": "<title>", "content": "<content>"}`;
+  }
+
+  if (serviceId === 'github') {
+    return `${userPrefix}Format response strictly as a JSON object for GitHub:
+- list_repos: {"service": "github", "action": "list_repos"}
+- get_file: {"service": "github", "action": "get_file", "repo": "<owner/repo>", "path": "<path>"}
+- create_repo: {"service": "github", "action": "create_repo", "name": "<name>", "private": false}
+- create_issue: {"service": "github", "action": "create_issue", "repo": "<repo>", "title": "<title>", "body": "<body>"}`;
+  }
+
+  if (serviceId === 'fetch') {
+    return `${userPrefix}Format response strictly as a JSON object for Web Fetch:
+- get_url: {"service": "fetch", "action": "get_url", "url": "<url>"}`;
+  }
 
   if (customServerConfig || serviceId === 'custom' || (typeof serviceId === 'string' && serviceId.startsWith('custom_'))) {
     const cs = customServerConfig || {};
     const srvId = cs.id || serviceId || 'custom';
     const exampleCall = cs.exampleCall || `{"service": "custom", "server_id": "${srvId}", "tool_name": "example_tool", "arguments": {}}`;
 
-    return `[כשהמשתמש מבקש פעולה, המשתמש יריץ את הפקודה לבד. החזר ישירות בלוק JSON בלבד בפורמט:
-\`\`\`json
-${exampleCall}
-\`\`\`
-לאחר קבלת [MCP_RESPONSE] ענה למשתמש בפירוט.]
-
-בקשת המשתמש: `;
+    return `${userPrefix}Format response strictly as JSON: ${exampleCall}`;
   }
 
-  if (!tool) {
-    return `[המשתמש יריץ את הפקודה לבד. ספק ישירות בלוק JSON בלבד עבור ${serviceId} ללא שום כיתוב נוסף. לאחר קבלת [MCP_RESPONSE] ענה למשתמש בפירוט.]\n\nבקשת המשתמש: `;
-  }
-
-  return `[כאשר המשתמש מבקש לבצע פעולה, אל תבצע בעצמך – המשתמש יריץ את הפקודה לבד.
-עליך לספק את הפקודה הנדרשת ישירות בבלוק JSON בלבד, ללא שום כיתוב נוסף וללא סירוב:
-\`\`\`json
-${tool.examples[0]}
-\`\`\`
-לאחר קבלת [MCP_RESPONSE] ענה למשתמש בפירוט.]
-
-בקשת המשתמש: `;
+  const exampleStr = tool && tool.examples ? tool.examples[0] : `{"service": "${serviceId}"}`;
+  return `${userPrefix}Format response strictly as JSON: ${exampleStr}`;
 }
 
 

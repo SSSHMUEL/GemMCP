@@ -1262,9 +1262,35 @@
     }
 
     let text = (target.innerText || target.textContent || '').trim();
-    if (!text || text.includes('[GemMCP') || text.includes('[OmniMCP') || text.includes('[MCP_RESPONSE') || text.includes('[הנחיה ל-Gemini:')) {
+    if (!text || text.includes('[GemMCP') || text.includes('[OmniMCP') || text.includes('[MCP_RESPONSE') || text.includes('[SCHEMA') || text.includes('[הנחיה')) {
       return;
     }
+
+    const WINDOWS_SCHEMA = `Format response strictly as a JSON object for Windows OS:
+- open_app: {"service": "windows", "action": "open_app", "app_name": "<name>"}
+- list_directory: {"service": "windows", "action": "list_directory", "path": "<path e.g. ~/Downloads, ~/Desktop, C:\\...>"}
+- read_file: {"service": "windows", "action": "read_file", "path": "<path>"}
+- write_file: {"service": "windows", "action": "write_file", "path": "<path>", "content": "<text>"}
+- run_command: {"service": "windows", "action": "run_command", "command": "<powershell_command>"}
+- clipboard_read: {"service": "windows", "action": "clipboard_read"}
+- clipboard_write: {"service": "windows", "action": "clipboard_write", "text": "<text>"}`;
+
+    const SUPABASE_SCHEMA = `Format response strictly as a JSON object for Supabase:
+- execute_sql: {"service": "supabase", "action": "execute_sql", "query": "<SQL query based on request>"}`;
+
+    const NOTION_SCHEMA = `Format response strictly as a JSON object for Notion:
+- search: {"service": "notion", "action": "search", "query": "<search_term or empty>"}
+- get_page: {"service": "notion", "action": "get_page", "page_id": "<page_id>"}
+- create_page: {"service": "notion", "action": "create_page", "title": "<title>", "content": "<content>"}`;
+
+    const GITHUB_SCHEMA = `Format response strictly as a JSON object for GitHub:
+- list_repos: {"service": "github", "action": "list_repos"}
+- get_file: {"service": "github", "action": "get_file", "repo": "<owner/repo>", "path": "<path>"}
+- create_repo: {"service": "github", "action": "create_repo", "name": "<name>", "private": false}
+- create_issue: {"service": "github", "action": "create_issue", "repo": "<repo>", "title": "<title>", "body": "<body>"}`;
+
+    const FETCH_SCHEMA = `Format response strictly as a JSON object for Web Fetch:
+- get_url: {"service": "fetch", "action": "get_url", "url": "<url>"}`;
 
     // 1. בדיקה אם יש תיוג @כלי (לדוגמה @Supabase, @Notion, @Windows, @GitHub, @Fetch או @Custom)
     const availableTools = getAvailableMentionTools();
@@ -1277,21 +1303,20 @@
       const atId = `@${tool.id}`;
 
       if (text.includes(atTag) || text.includes(atName) || text.includes(atId)) {
-        let promptText = '';
-        if (typeof generateSingleToolPrompt === 'function') {
-          promptText = generateSingleToolPrompt(tool.id, tool.customConfig, customToolPrompts);
-        } else {
-          promptText = `[הנחיה ל-Gemini: יש לך גישה לחיבור ${tool.name} דרך תוסף GemMCP. פלוט בלוק JSON מתאים לביצוע הבקשה.]\n\nבקשת המשתמש: `;
-        }
-
-        // הסרת התגית מהטקסט של המשתמש והרכבת הפרומפט המלא
+        // הסרת התגית מהטקסט של המשתמש
         let userCleanText = text
           .replace(atTag, '')
           .replace(atName, '')
           .replace(atId, '')
           .trim();
 
-        const fullText = `${promptText}${userCleanText}`;
+        let fullText = '';
+        if (typeof generateSingleToolPrompt === 'function') {
+          fullText = generateSingleToolPrompt(tool.id, tool.customConfig, customToolPrompts, userCleanText);
+        } else {
+          fullText = `${userCleanText}\n\nFormat output strictly as JSON object with service "${tool.id}".`;
+        }
+
         const lines = fullText.split('\n');
         target.innerHTML = lines.map(line => `<p>${line.trim() === '' ? '<br>' : escapeHtml(line)}</p>`).join('');
         target.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true, data: fullText }));
@@ -1306,31 +1331,35 @@
 
     // זיהוי כוונות Notion
     if (activeServices.includes('notion') && (lower.includes('נושן') || lower.includes('notion') || lower.includes('פתק') || lower.includes('רשימ') || lower.includes('משימ') || lower.includes('דפים'))) {
-      directive = `\n(הנחיה ל-Gemini: חיבור Notion פעיל ב-GemMCP! הוצא אך ורק בלוק JSON עם action: "search" לחיפוש/שליפת הפתקים מ-Notion ללא טקסט מקדים וללא שימוש ב-Google Keep)`;
+      directive = `\n\n${NOTION_SCHEMA}`;
     }
     // זיהוי כוונות Supabase
-    else if (activeServices.includes('supabase') && (lower.includes('סופה') || lower.includes('supabase') || lower.includes('טבלא') || lower.includes('מסד נתונים') || lower.includes('sql') || lower.includes('בסיס נתונים'))) {
-      directive = `\n(הנחיה ל-Gemini: חיבור Supabase פעיל ב-GemMCP! הוצא אך ורק בלוק JSON עם שאילתת SQL ב-execute_sql לשליפת המידע המבוקש ללא טקסט מקדים)`;
+    else if (activeServices.includes('supabase') && (lower.includes('סופה') || lower.includes('supabase') || lower.includes('טבלא') || lower.includes('מסד נתונים') || lower.includes('sql') || lower.includes('בסיס נתונים') || lower.includes('שאילת'))) {
+      directive = `\n\n${SUPABASE_SCHEMA}`;
     }
-    // זיהוי כוונות Windows (פתיחת תוכנות, אפליקציות, קבצים, לוח, פקודות)
+    // זיהוי כוונות Windows
     else if (activeServices.includes('windows') && (
       lower.includes('פתח') || lower.includes('תפתח') || lower.includes('הפעל') || lower.includes('סגור') ||
-      lower.includes('קלוד') || lower.includes('claude') || lower.includes('chatgpt') || lower.includes('גפט') ||
-      lower.includes('vscode') || lower.includes('קוד') || lower.includes('מחשבון') || lower.includes('פנקס') ||
-      lower.includes('ספוטיפיי') || lower.includes('spotify') || lower.includes('ווטסאפ') || lower.includes('טלגרם') ||
-      lower.includes('מצלמה') || lower.includes('camera') || lower.includes('צייר') || lower.includes('וורד') || lower.includes('אקסל') ||
-      lower.includes('קובץ במחשב') || lower.includes('powershell') || lower.includes('ווינדוס') || lower.includes('windows') ||
-      lower.includes('כונן') || lower.includes('לוח') || lower.includes('clipboard')
+      lower.includes('הורדות') || lower.includes('שולחן עבודה') || lower.includes('מסמכים') || lower.includes('תיקיי') ||
+      lower.includes('קובץ') || lower.includes('סרוק') || lower.includes('קרא') || lower.includes('כתוב') || lower.includes('שמור') ||
+      lower.includes('powershell') || lower.includes('cmd') || lower.includes('ווינדוס') || lower.includes('windows') ||
+      lower.includes('מחשב') || lower.includes('לוח') || lower.includes('clipboard') || lower.includes('תהליכ') ||
+      lower.includes('זיכרון') || lower.includes('מחשבון') || lower.includes('וורד') || lower.includes('אקסל') ||
+      lower.includes('vscode') || lower.includes('קלוד') || lower.includes('ספוטיפיי') || lower.includes('כרום')
     )) {
-      directive = `\n(הנחיה ל-Gemini: חיבור Windows פעיל ב-GemMCP! הוצא אך ורק בלוק JSON להרצת הפעולה ב-Windows ללא טקסט מקדים)`;
+      directive = `\n\n${WINDOWS_SCHEMA}`;
     }
     // זיהוי כוונות GitHub
-    else if (activeServices.includes('github') && (lower.includes('גיטהאב') || lower.includes('github') || lower.includes('מאגר') || lower.includes('ריפו'))) {
-      directive = `\n(הנחיה ל-Gemini: חיבור GitHub פעיל ב-GemMCP! הוצא אך ורק בלוק JSON לפעולת GitHub ללא טקסט מקדים)`;
+    else if (activeServices.includes('github') && (lower.includes('גיטהאב') || lower.includes('github') || lower.includes('מאגר') || lower.includes('ריפו') || lower.includes('issue'))) {
+      directive = `\n\n${GITHUB_SCHEMA}`;
+    }
+    // זיהוי כוונות Fetch (קישורים ואתרים)
+    else if (activeServices.includes('fetch') && (lower.includes('http://') || lower.includes('https://') || lower.includes('אתר') || lower.includes('סרוק קישור') || lower.includes('קרא אתר'))) {
+      directive = `\n\n${FETCH_SCHEMA}`;
     }
 
     if (directive) {
-      const fullText = text + directive;
+      const fullText = text.trim() + directive;
       const lines = fullText.split('\n');
       target.innerHTML = lines.map(line => `<p>${line.trim() === '' ? '<br>' : escapeHtml(line)}</p>`).join('');
       target.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true, data: fullText }));
