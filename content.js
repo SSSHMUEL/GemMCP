@@ -7,6 +7,7 @@
   console.log('%c[GemMCP] 🚀 GemMCP Hub פעיל ומוכן על Gemini!', 'color: #3b82f6; font-weight: bold; font-size: 14px;');
 
   let isAutoExecute = true;
+  let isPaused = false;
   let activeServices = ['supabase', 'fetch'];
   let connectedServices = ['fetch', 'windows'];
   let processedHashes = new Set();
@@ -145,10 +146,14 @@
         </div>
 
         <div class="omni-mcp-body">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
             <button type="button" class="omni-mcp-btn-rescan-icon" id="omni-mcp-rescan-btn" title="${t('widgetRescanTitle', currentLang)}">
               <svg viewBox="0 0 24 24" style="width:13px;height:13px;" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
               <span>${t('widgetRescanBtn', currentLang)}</span>
+            </button>
+            <button type="button" class="omni-mcp-stop-btn-top" id="omni-mcp-stop-btn" title="${t('widgetStopTitle', currentLang)}">
+              <svg class="omni-mcp-stop-icon" id="omni-mcp-stop-icon" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>
+              <span id="omni-mcp-stop-btn-text">${t('widgetStopBtn', currentLang)}</span>
             </button>
           </div>
 
@@ -156,6 +161,11 @@
             <svg class="omni-mcp-action-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15l7-7 7 7"/></svg>
             <span>${t('widgetInjectBtn', currentLang)}</span>
           </button>
+
+          <div id="omni-mcp-paused-banner" class="omni-mcp-paused-banner" style="display:none;">
+            <span>⏸️ ${currentLang === 'he' ? 'שליחת וקבלת פקודות מושהית (עצירה פעילה)' : 'Command exchange is paused'}</span>
+            <button type="button" id="omni-mcp-resume-banner-btn" style="background:#0284c7; color:#fff; border:none; border-radius:4px; padding:2px 8px; font-size:10px; font-weight:700; cursor:pointer;">${t('widgetResumeBtn', currentLang)}</button>
+          </div>
 
           <div style="font-size: 12px; color: #6b7280; font-weight: 700; margin-top: 4px;">${t('widgetActiveServices', currentLang)}</div>
           <div class="omni-mcp-services-chips" id="omni-mcp-services-list">
@@ -216,12 +226,74 @@
     const panel = document.getElementById('omni-mcp-panel');
     const closeBtn = document.getElementById('omni-mcp-close-panel');
     const injectBtn = document.getElementById('omni-mcp-inject-prompt-btn');
+    const stopBtn = document.getElementById('omni-mcp-stop-btn');
+    const stopBtnText = document.getElementById('omni-mcp-stop-btn-text');
+    const stopIcon = document.getElementById('omni-mcp-stop-icon');
+    const pausedBanner = document.getElementById('omni-mcp-paused-banner');
+    const resumeBannerBtn = document.getElementById('omni-mcp-resume-banner-btn');
     const autoToggle = document.getElementById('omni-mcp-auto-toggle');
     const dragHeader = document.getElementById('omni-mcp-drag-header');
     logsContainer = document.getElementById('omni-mcp-logs');
 
     renderServicesList();
     initWidgetPosition(widgetContainer, toggleBtn, dragHeader, panel);
+
+    function updateStopButtonUI() {
+      if (!stopBtn || !stopBtnText || !stopIcon) return;
+      if (isPaused) {
+        stopBtn.classList.add('paused');
+        stopBtn.title = t('widgetResumeTitle', currentLang);
+        stopBtnText.textContent = t('widgetResumeBtn', currentLang);
+        stopIcon.innerHTML = '<polygon points="6 4 20 12 6 20 6 4" fill="currentColor"/>';
+        if (pausedBanner) pausedBanner.style.display = 'flex';
+      } else {
+        stopBtn.classList.remove('paused');
+        stopBtn.title = t('widgetStopTitle', currentLang);
+        stopBtnText.textContent = t('widgetStopBtn', currentLang);
+        stopIcon.innerHTML = '<rect x="5" y="5" width="14" height="14" rx="2" fill="currentColor"/>';
+        if (pausedBanner) pausedBanner.style.display = 'none';
+      }
+    }
+
+    function toggleStopResume() {
+      if (!isPaused) {
+        // עצירה מיידית מלאה
+        isPaused = true;
+
+        if (activeSendInterval) {
+          clearInterval(activeSendInterval);
+          activeSendInterval = null;
+        }
+
+        if (scanDebounceTimer) {
+          clearTimeout(scanDebounceTimer);
+          scanDebounceTimer = null;
+        }
+
+        isExecuting = false;
+        setBadgeBusy(false);
+
+        stopGeminiGeneration();
+
+        const pendingContainer = document.getElementById('omni-mcp-pending-actions');
+        if (pendingContainer) pendingContainer.innerHTML = '';
+
+        updateStopButtonUI();
+        addLog(t('widgetStoppedLog', currentLang), { error: false });
+      } else {
+        // חידוש פעילות
+        isPaused = false;
+        updateStopButtonUI();
+        addLog(t('widgetResumedLog', currentLang), { error: false });
+      }
+    }
+
+    if (stopBtn) {
+      stopBtn.addEventListener('click', toggleStopResume);
+    }
+    if (resumeBannerBtn) {
+      resumeBannerBtn.addEventListener('click', toggleStopResume);
+    }
 
     toggleBtn.addEventListener('click', (e) => {
       if (toggleBtn.dataset.justDragged === 'true') {
@@ -671,6 +743,21 @@
       return;
     }
 
+    if (isPaused) {
+      isPaused = false;
+      const stopBtn = document.getElementById('omni-mcp-stop-btn');
+      const stopBtnText = document.getElementById('omni-mcp-stop-btn-text');
+      const stopIcon = document.getElementById('omni-mcp-stop-icon');
+      const pausedBanner = document.getElementById('omni-mcp-paused-banner');
+      if (stopBtn && stopBtnText && stopIcon) {
+        stopBtn.classList.remove('paused');
+        stopBtn.title = t('widgetStopTitle', currentLang);
+        stopBtnText.textContent = t('widgetStopBtn', currentLang);
+        stopIcon.innerHTML = '<rect x="5" y="5" width="14" height="14" rx="2" fill="currentColor"/>';
+        if (pausedBanner) pausedBanner.style.display = 'none';
+      }
+    }
+
     if (activeServices.includes('windows')) {
       ensureWindowsBridgeRunning();
     }
@@ -697,7 +784,7 @@
   let activeSendInterval = null;
 
   function setInputValueAndSend(element, text) {
-    if (!element) return;
+    if (!element || isPaused) return;
     let target = element;
     if (element.tagName && element.tagName.toLowerCase() === 'rich-textarea') {
       target = element.querySelector('div[contenteditable="true"]') || element;
@@ -710,6 +797,7 @@
     }
 
     function injectText() {
+      if (isPaused) return;
       if (!target || !document.body.contains(target)) {
         const newTarget = findGeminiInputField();
         if (newTarget) {
@@ -737,6 +825,13 @@
     let hasLoggedWaiting = false;
 
     function attemptSend() {
+      if (isPaused) {
+        if (activeSendInterval) {
+          clearInterval(activeSendInterval);
+          activeSendInterval = null;
+        }
+        return;
+      }
       attempts++;
 
       // 1. בדיקה אם ג'מיני עדיין מייצר/מזרים את התשובה הנוכחית
@@ -900,6 +995,26 @@
     return false;
   }
 
+  function stopGeminiGeneration() {
+    const stopSelectors = [
+      'button[aria-label*="Stop" i]',
+      'button[aria-label*="עצור"]',
+      'button[aria-label*="הפסק"]',
+      'button[aria-label*="עצירת"]',
+      'button[data-test-id*="stop"]',
+      '.stop-button',
+      '.stop-btn'
+    ];
+    for (const sel of stopSelectors) {
+      const el = document.querySelector(sel);
+      if (el && !el.disabled && el.getAttribute('aria-disabled') !== 'true') {
+        el.click();
+        return true;
+      }
+    }
+    return false;
+  }
+
   let pageLoadedTimestamp = Date.now();
   let isInitialGracePeriod = true;
 
@@ -927,7 +1042,7 @@
   }
 
   function scanForToolCalls(forceRescan = false) {
-    if (isExecuting) return false;
+    if (isPaused || isExecuting) return false;
 
     // אם ג'מיני עדיין מקליד באופן פעיל, נמתין עוד רגע (אלא אם זו לחיצה ידנית)
     if (!forceRescan && isGeminiGenerating()) {
@@ -1103,6 +1218,11 @@
   }
 
   function handleDetectedToolCall(toolCall) {
+    if (isPaused) {
+      console.log('[GemMCP] Skipped tool call because GemMCP is paused/stopped');
+      return;
+    }
+
     const service = normalizeServiceName(toolCall.service || 'supabase');
     toolCall.service = service;
 
@@ -1125,6 +1245,7 @@
   }
 
   function promptUserApproval(service, toolCall) {
+    if (isPaused) return;
     const container = document.getElementById('omni-mcp-pending-actions');
     if (!container) return;
 
@@ -1168,8 +1289,8 @@
   }
 
   function executeTool(service, toolCall) {
-    if (isExecuting) {
-      console.log('[GemMCP] Tool already executing, waiting...');
+    if (isPaused || isExecuting) {
+      console.log('[GemMCP] Tool execution skipped (paused or busy)...');
       return;
     }
     isExecuting = true;
@@ -1218,6 +1339,12 @@
           },
           (response) => {
             clearTimeout(executionTimeout);
+            if (isPaused) {
+              console.log('[GemMCP] Execution finished but GemMCP is paused; ignoring response');
+              isExecuting = false;
+              setBadgeBusy(false);
+              return;
+            }
             const lastErr = chrome.runtime.lastError;
             if (lastErr) {
               const errMsg = lastErr.message || 'שגיאת תקשורת עם התוסף';
@@ -1260,6 +1387,7 @@
   }
 
   function sendResponseToGemini(service, resultData) {
+    if (isPaused) return;
     const inputField = findGeminiInputField();
     if (!inputField) return;
 
@@ -1289,6 +1417,7 @@
   }
 
   function enrichInputIfNeeded(inputField) {
+    if (isPaused) return;
     let target = inputField;
     if (inputField.tagName && inputField.tagName.toLowerCase() === 'rich-textarea') {
       target = inputField.querySelector('div[contenteditable="true"]') || inputField;
