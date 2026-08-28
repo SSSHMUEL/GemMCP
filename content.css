@@ -889,4 +889,242 @@
   transform: translateY(-1px);
 }
 
+/* ==========================================================================
+   GemMCP Collapsible Modern Tool Pill - Gemini Native Aesthetic
+   ========================================================================== */
+
+.gemmcp-tool-pill-container {
+  display: flex;
+  flex-direction: column;
+  margin: 16px 0;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: "Google Sans", "Google Sans Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  direction: rtl;
+  text-align: right;
+}
+
+.gemmcp-tool-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f0f4f9; /* Gemini Light theme bubble color */
+  color: #1f1f1f;
+  border: 1px solid transparent;
+  border-radius: 48px !important; /* Perfect large pill oval curve matching Gemini user bubble */
+  padding: 18px 28px !important;
+  cursor: pointer;
+  user-select: none;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 68px;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.gemmcp-tool-pill:hover {
+  background-color: #e5eaf2;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.gemmcp-tool-pill-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.gemmcp-tool-pill-icon {
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.gemmcp-tool-pill-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gemmcp-tool-pill-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gemmcp-tool-pill-subtitle {
+  font-size: 12px;
+  color: #575b61;
+  direction: ltr;
+  text-align: right;
+  opacity: 0.9;
+}
+
+.gemmcp-tool-pill-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gemmcp-tool-pill-status {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gemmcp-tool-pill-status.running {
+  background: rgba(11, 87, 208, 0.12);
+  color: #0b57d0;
+}
+
+.gemmcp-tool-pill-status.done {
+  background: rgba(20, 138, 77, 0.12);
+  color: #137333;
+}
+
+.gemmcp-tool-pill-status.error {
+  background: rgba(217, 48, 37, 0.12);
+  color: #c5221f;
+}
+
+.gemmcp-tool-spinner {
+  width: 11px;
+  height: 11px;
+  border: 2px solid rgba(11, 87, 208, 0.2);
+  border-top-color: #0b57d0;
+  border-radius: 50%;
+  animation: gemmcpSpin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes gemmcpSpin {
+  to { transform: rotate(360deg); }
+}
+
+.gemmcp-tool-chevron {
+  font-size: 10px;
+  color: #747775;
+  transition: transform 0.25s ease;
+}
+
+.gemmcp-tool-pill-container.expanded .gemmcp-tool-chevron {
+  transform: rotate(180deg);
+}
+
+.gemmcp-tool-pill-details {
+  display: none;
+  margin-top: 8px;
+  background-color: #f8fafd;
+  color: #1f1f1f !important;
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-size: 12.5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  direction: ltr;
+  text-align: left;
+  overflow-x: auto;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  max-height: 320px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.gemmcp-tool-pill-details pre,
+.gemmcp-tool-pill-details code {
+  color: inherit !important;
+  background: transparent !important;
+  font-family: inherit !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  margin: 4px 0 !important;
+  padding: 0 !important;
+  white-space: pre-wrap !important;
+  word-break: break-all !important;
+  display: block !important;
+}
+
+.gemmcp-tool-pill-container.expanded .gemmcp-tool-pill-details {
+  display: block !important;
+  animation: gemmcpSlideDown 0.2s ease-out;
+}
+
+@keyframes gemmcpSlideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Gemini Native Dark Mode (matched to dark body/theme classes)
+   ========================================================================== */
+
+/* Dark mode detection by system or Gemini dark classes */
+@media (prefers-color-scheme: dark) {
+  .gemmcp-tool-pill {
+    background-color: #1e1f20 !important; /* Exact Gemini Dark bubble */
+    color: #e3e3e3 !important;
+    border-color: transparent !important;
+  }
+  .gemmcp-tool-pill:hover {
+    background-color: #282a2c !important;
+  }
+  .gemmcp-tool-pill-icon {
+    background: rgba(255, 255, 255, 0.08) !important;
+  }
+  .gemmcp-tool-pill-subtitle {
+    color: #c4c7c5 !important;
+  }
+  .gemmcp-tool-pill-status.running {
+    background: rgba(168, 199, 250, 0.16) !important;
+    color: #a8c7fa !important;
+  }
+  .gemmcp-tool-pill-status.done {
+    background: rgba(196, 238, 206, 0.16) !important;
+    color: #a8dab5 !important;
+  }
+  .gemmcp-tool-pill-status.error {
+    background: rgba(242, 184, 181, 0.16) !important;
+    color: #f2b8b5 !important;
+  }
+  .gemmcp-tool-spinner {
+    border-color: rgba(168, 199, 250, 0.2) !important;
+    border-top-color: #a8c7fa !important;
+  }
+  .gemmcp-tool-chevron {
+    color: #8e918f !important;
+  }
+  .gemmcp-tool-pill-details {
+    background-color: #131314 !important;
+    color: #e3e3e3 !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
+/* Also support body.dark-theme or dark attributes on Gemini */
+body.dark-theme .gemmcp-tool-pill,
+body[data-theme="dark"] .gemmcp-tool-pill,
+html[theme="dark"] .gemmcp-tool-pill {
+  background-color: #1e1f20 !important;
+  color: #e3e3e3 !important;
+  border-color: transparent !important;
+}
+
+body.dark-theme .gemmcp-tool-pill-details,
+body[data-theme="dark"] .gemmcp-tool-pill-details,
+html[theme="dark"] .gemmcp-tool-pill-details {
+  background-color: #131314 !important;
+  color: #e3e3e3 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+
 

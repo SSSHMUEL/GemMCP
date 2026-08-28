@@ -942,11 +942,14 @@
 
   function observeGeminiResponses() {
     const observer = new MutationObserver(() => {
+      // 1. הסתרה מיידית בזמן אמת של תוכן טכני והודעות מענה (בלי שום השהיה)
+      scanAndCollapseUserResponses();
+
+      // 2. זיהוי וביצוע הפקודה בסיום ההזרמה
       clearTimeout(scanDebounceTimer);
-      // ממתינים חצי שנייה של שקט (Debounce) כדי שג'מיני יסיים להזרים את הטקסט/JSON
       scanDebounceTimer = setTimeout(() => {
         scanForToolCalls();
-      }, 600);
+      }, 300);
     });
 
     observer.observe(document.body, {
@@ -1024,30 +1027,236 @@
   }, 2500);
 
   function isElementAlreadyAnswered(el) {
-    // בדיקה האם יש הודעת משתמש חדשה יותר או תוצאת MCP לאחר התשובה הזו
+    // בדיקה האם יש הודעת משתמש חדשה יותר, תוצאת MCP או תגובת מודל נוספת עוקבת לאחר התשובה הזו
     const currentTurn = el.closest('[data-test-id="conversation-turn"]') || el.closest('model-response') || el.closest('message-content') || el.closest('.model-response-text');
     if (!currentTurn) return false;
 
-    // בדיקת אחים עוקבים ב-DOM
+    // 1. בדיקת אחים עוקבים ב-DOM
     let nextNode = currentTurn.nextElementSibling;
     while (nextNode) {
       const text = nextNode.innerText || nextNode.textContent || '';
-      if (text.includes('[MCP Result]') || text.includes('MCP Result') || text.includes('תוצאת ביצוע') || nextNode.querySelector('[data-test-id="user-turn"], .user-query, user-message, [data-is-user="true"], user-query-container')) {
+      if (text.includes('[MCP_RESPONSE') || text.includes('[MCP Result]') || text.includes('תוצאת ביצוע') || text.includes('תוצאות [') ||
+          nextNode.querySelector('[data-test-id="user-turn"], .user-query, user-message, [data-is-user="true"], user-query-container, model-response, [data-test-id="conversation-turn"]')) {
         return true;
       }
       nextNode = nextNode.nextElementSibling;
     }
 
+    // 2. בדיקה האם יש תור תשובה נוסף של ג'מיני אחרי הפקודה
+    const allTurns = Array.from(document.querySelectorAll('[data-test-id="conversation-turn"], model-response'));
+    const currIndex = allTurns.indexOf(currentTurn);
+    if (currIndex !== -1 && currIndex < allTurns.length - 1) {
+      return true;
+    }
+
     return false;
+  }
+
+  // מילון אייקונים ושמות ידידותיים עבור שירותי MCP
+  const GITHUB_OFFICIAL_ICON_SVG = `<svg viewBox="0 0 24 24" style="width:16px;height:16px;vertical-align:middle;display:inline-block;" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>`;
+  const NOTION_OFFICIAL_ICON_SVG = `<svg viewBox="0 0 122 122" style="width:16px;height:16px;vertical-align:middle;display:inline-block;" fill="none"><path d="M6 12.5 74.5 7.5c8.4-.7 10.6-.2 15.9 3.6l21.9 15.4c3.6 2.6 4.8 3.3 4.8 6.2v83.4c0 5.3-1.9 8.4-8.6 8.9l-79.5 4.8c-5.1.2-7.5-.5-10.2-3.8L4.7 105.9C1.8 102 .6 99.1.6 95.7V21.4C.6 17.1 2.5 13.5 6 12.5Z" fill="#ffffff"/><path fill-rule="evenodd" clip-rule="evenodd" d="M74.5 7.5 6 12.5C2.5 13.5.6 17.1.6 21.4v74.3c0 3.4 1.2 6.3 4.1 10.2l14.1 18.3c2.7 3.3 5.1 4 10.2 3.8l79.5-4.8c6.7-.5 8.6-3.6 8.6-8.9V32.7c0-2.7-1.1-3.5-4.3-5.8l-.5-.4-21.9-15.4c-5.3-3.8-7.5-4.3-15.9-3.6ZM31 24.4c-6.5.4-8 .5-11.7-2.5L9.9 14.4c-1-1-.5-2.2.9-2.4l65.9-4.8c5.5-.5 8.4 1.4 10.6 3.1l11.4 8.2c.3.2 1.1 1.2.1 1.2l-68 4.1-.2.1ZM23.4 111V39.3c0-3.1 1-4.6 3.9-4.8l78-4.6c2.7-.2 3.9 1.5 3.9 4.6v71.2c0 3.1-.5 5.8-4.8 6l-74.6 4.3c-4.3.2-6.4-1.2-6.4-5Zm73.7-68c.5 2.2 0 4.3-2.2 4.6l-3.6.7v52.8c-3.1 1.7-6 2.7-8.4 2.7-3.9 0-4.8-1.2-7.7-4.8L51.5 61.9v35.9l7.5 1.7s0 4.3-6 4.3l-16.6 1c-.5-1 0-3.4 1.7-3.9l4.3-1.2V50.5l-6-.5c-.5-2.2.7-5.3 4.1-5.5l17.8-1.2 24.5 37.5V47.6l-6.3-.7c-.5-2.7 1.4-4.6 3.9-4.8l17-1Z" fill="#000000"/></svg>`;
+
+  const SERVICE_UI_INFO = {
+    supabase: { name: 'Supabase Database', icon: '⚡', actionLabel: 'הרצת שאילתת SQL' },
+    windows: { name: 'Windows OS Tools', icon: '🪟', actionLabel: 'פעולת מערכת / קבצים' },
+    notion: { name: 'Notion Workspace', icon: NOTION_OFFICIAL_ICON_SVG, actionLabel: 'קריאה/כתיבה ב-Notion' },
+    github: { name: 'GitHub Integration', icon: GITHUB_OFFICIAL_ICON_SVG, actionLabel: 'פעולת גיטהאב' },
+    fetch: { name: 'Web Fetcher', icon: '🌐', actionLabel: 'סריקת אתר אינטרנט' },
+    custom: { name: 'Custom MCP Server', icon: '🔌', actionLabel: 'כלי מותאם אישית' }
+  };
+
+  function getServiceInfo(service) {
+    const s = normalizeServiceName(service);
+    return SERVICE_UI_INFO[s] || { name: `MCP [${service}]`, icon: '🛠️', actionLabel: 'קריאה לכלי' };
+  }
+
+  function getActionDescription(toolCall) {
+    const action = toolCall.action || toolCall.tool_name || '';
+    if (action === 'open_app') return `פתיחת אפליקציה (${toolCall.app_name || ''})`;
+    if (action === 'execute_sql') return `שאילתת SQL: ${toolCall.query ? toolCall.query.substring(0, 45) + (toolCall.query.length > 45 ? '...' : '') : ''}`;
+    if (action === 'read_file') return `קריאת קובץ: ${toolCall.path || ''}`;
+    if (action === 'write_file') return `כתיבה לקובץ: ${toolCall.path || ''}`;
+    if (action === 'list_directory') return `סריקת תיקייה: ${toolCall.path || ''}`;
+    if (action === 'run_command') return `פקודה: ${toolCall.command || ''}`;
+    if (action === 'get_url') return `טעינת כתובת: ${toolCall.url || ''}`;
+    if (action === 'list_repos') return 'שליפת רשימת מאגרים';
+    if (action === 'search') return `חיפוש ב-Notion: ${toolCall.query || 'הכל'}`;
+    return action || 'ביצוע פעולה';
+  }
+
+  function renderCollapsibleToolCard(targetEl, toolCall, service) {
+    if (!targetEl || targetEl.dataset.omniWidgetInjected === 'true') return;
+    targetEl.dataset.omniWidgetInjected = 'true';
+
+    // מציאת האלמנט העוטף שמציג את הקוד/JSON ב-Gemini
+    const codeBlockContainer = targetEl.closest('pre, code-block, .code-block, .formatted-code, .code-container') || targetEl;
+    
+    // הסתרת בלוק הקוד המקורי
+    codeBlockContainer.style.display = 'none';
+
+    const sInfo = getServiceInfo(service);
+    const actionDesc = getActionDescription(toolCall);
+    const rawJsonStr = JSON.stringify(toolCall, null, 2);
+
+    const widget = document.createElement('div');
+    widget.className = 'gemmcp-tool-pill-container';
+    widget.dataset.mcpCallId = `${service}_${toolCall.action || ''}`;
+    widget.dataset.callCount = '1';
+    widget.innerHTML = `
+      <div class="gemmcp-tool-pill" title="לחץ להצגה/הסתרה של פרטי השאילתה והתשובה">
+        <div class="gemmcp-tool-pill-left">
+          <span class="gemmcp-tool-pill-icon">${sInfo.icon}</span>
+          <div class="gemmcp-tool-pill-info">
+            <span class="gemmcp-tool-pill-title">${escapeHtml(sInfo.name)}</span>
+            <span class="gemmcp-tool-pill-subtitle">${escapeHtml(actionDesc)}</span>
+          </div>
+        </div>
+        <div class="gemmcp-tool-pill-right">
+          <div class="gemmcp-tool-pill-status running">
+            <span class="gemmcp-tool-spinner"></span>
+            <span>מבצע...</span>
+          </div>
+          <span class="gemmcp-tool-chevron">▼</span>
+        </div>
+      </div>
+      <div class="gemmcp-tool-pill-details">
+        <div class="gemmcp-step-item">
+          <div style="font-weight:700; color:#60a5fa; margin-bottom:4px;">📤 שאילתת MCP:</div>
+          <pre style="margin:0 0 6px 0; white-space:pre-wrap; word-break:break-all;">${escapeHtml(rawJsonStr)}</pre>
+        </div>
+      </div>
+    `;
+
+    codeBlockContainer.parentNode.insertBefore(widget, codeBlockContainer.nextSibling);
+    return widget;
+  }
+
+  function updateToolCardStatus(service, toolCall, isSuccess, errorMsg = '', resultData = null) {
+    const widgets = document.querySelectorAll('.gemmcp-tool-pill-container');
+    if (!widgets.length) return;
+
+    widgets.forEach((widget) => {
+      const statusEl = widget.querySelector('.gemmcp-tool-pill-status');
+      if (!statusEl) return;
+
+      if (statusEl.classList.contains('running')) {
+        if (isSuccess) {
+          statusEl.className = 'gemmcp-tool-pill-status done';
+          statusEl.innerHTML = `<span>✓</span><span>הושלם</span>`;
+          if (resultData) {
+            const details = widget.querySelector('.gemmcp-tool-pill-details');
+            if (details) {
+              const formattedData = typeof resultData === 'object' ? JSON.stringify(resultData, null, 2) : String(resultData);
+              if (!details.innerHTML.includes('gemmcp-section-response')) {
+                details.innerHTML += `
+                  <div class="gemmcp-section-response" style="margin-top:12px; padding-top:10px; border-top:1px dashed rgba(255,255,255,0.15);">
+                    <div style="font-weight:700; color:#34d399; margin-bottom:6px;">📥 תגובה שהתקבלה משרת ה-MCP:</div>
+                    <pre style="margin:0; white-space:pre-wrap; word-break:break-all;">${escapeHtml(formattedData)}</pre>
+                  </div>
+                `;
+              }
+            }
+          }
+        } else {
+          statusEl.className = 'gemmcp-tool-pill-status error';
+          statusEl.innerHTML = `<span>✕</span><span>שגיאה</span>`;
+          if (errorMsg) {
+            const details = widget.querySelector('.gemmcp-tool-pill-details');
+            if (details && !details.innerHTML.includes('gemmcp-section-error')) {
+              details.innerHTML += `
+                <div class="gemmcp-section-error" style="margin-top:12px; padding-top:10px; border-top:1px dashed rgba(239,68,68,0.4);">
+                  <div style="font-weight:700; color:#f87171; margin-bottom:6px;">⚠️ שגיאה בביצוע:</div>
+                  <pre style="margin:0; white-space:pre-wrap; word-break:break-all; color:#fca5a5;">${escapeHtml(errorMsg)}</pre>
+                </div>
+              `;
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function scanAndCollapseUserResponses() {
+    // 1. הסתרה מלאה ונקייה של הודעות [MCP_RESPONSE:] של המשתמש והצמדת התוצאות לווידג'ט הראשי
+    const userNodes = Array.from(document.querySelectorAll('[data-test-id="user-turn"], .user-query, user-message, [data-is-user="true"], user-query-container, .user-query-container'));
+    for (const node of userNodes) {
+      if (node.dataset.omniResponseHidden === 'true') continue;
+      const text = node.innerText || node.textContent || '';
+      if (text.includes('[MCP_RESPONSE:')) {
+        node.dataset.omniResponseHidden = 'true';
+        
+        // הסתרה של בועת המשתמש הזמנית
+        node.style.display = 'none';
+
+        // הוספת התוצאה לפרטי הווידג'ט המאוחד האחרון
+        const allExistingWidgets = document.querySelectorAll('.gemmcp-tool-pill-container');
+        if (allExistingWidgets.length > 0) {
+          const lastW = allExistingWidgets[allExistingWidgets.length - 1];
+          const details = lastW.querySelector('.gemmcp-tool-pill-details');
+          if (details && !details.innerHTML.includes('gemmcp-section-response')) {
+            details.innerHTML += `
+              <div class="gemmcp-section-response" style="margin-top:12px; padding-top:10px; border-top:1px dashed rgba(255,255,255,0.15);">
+                <div style="font-weight:700; color:#34d399; margin-bottom:6px;">📥 תגובה שהתקבלה משרת ה-MCP:</div>
+                <pre style="margin:0; white-space:pre-wrap; word-break:break-all;">${escapeHtml(text)}</pre>
+              </div>
+            `;
+          }
+        }
+
+        // עדכון סטטוס הווידג'טים להושלם
+        updateToolCardStatus('', null, true);
+      }
+    }
+
+    // 2. סריקת כל הווידג'טים שנמצאים ב-DOM: אם יש אחריהם תוכן שיחה, תגובת ג'מיני או שהשיחה המשיכה - הם הושלמו
+    const allWidgets = document.querySelectorAll('.gemmcp-tool-pill-container');
+    allWidgets.forEach(widget => {
+      const statusEl = widget.querySelector('.gemmcp-tool-pill-status');
+      if (statusEl && statusEl.classList.contains('running')) {
+        const turn = widget.closest('[data-test-id="conversation-turn"]') || widget.closest('model-response') || widget.closest('message-content') || widget.parentElement;
+        if (turn) {
+          // אם יש תורות שיחה נוספים אחרי הווידג'ט הזה, או שיש הודעת משתמש/מודל עוקבת
+          let next = turn.nextElementSibling;
+          let isFollowed = false;
+          while (next) {
+            if (next.textContent && next.textContent.trim().length > 0) {
+              isFollowed = true;
+              break;
+            }
+            next = next.nextElementSibling;
+          }
+          if (isFollowed) {
+            statusEl.className = 'gemmcp-tool-pill-status done';
+            statusEl.innerHTML = `<span>✓</span><span>הושלם</span>`;
+            widget.dataset.gemmcpFinalAnswerReached = 'true';
+          }
+        }
+      }
+    });
+
+    // 2. זיהוי והסתרה מיידית בזמן אמת (Instant Stream Hiding) של בלוקי קוד JSON בזמן שהם נוצרים
+    const rawBlocks = document.querySelectorAll('pre, code, .code-block, code-block, .formatted-code, .code-container');
+    for (const block of rawBlocks) {
+      if (block.dataset.omniStreamingHidden === 'true' || block.style.display === 'none') continue;
+      const txt = block.innerText || block.textContent || '';
+      if (txt.includes('{"service"') || txt.includes('"action"') || (txt.includes('{') && (txt.includes('supabase') || txt.includes('windows') || txt.includes('github') || txt.includes('notion') || txt.includes('fetch') || txt.includes('execute_sql')))) {
+        // מסתירים מיד את הבלוק הטכני כדי שהמשתמש לא יראה את הג'יבריש/קוד נשפך
+        block.dataset.omniStreamingHidden = 'true';
+        block.style.display = 'none';
+      }
+    }
   }
 
   function scanForToolCalls(forceRescan = false) {
     if (isPaused || isExecuting) return false;
 
-    // אם ג'מיני עדיין מקליד באופן פעיל, נמתין עוד רגע (אלא אם זו לחיצה ידנית)
+    // עיבוד והסתרת תגובות משתמש קודמות והסתרת הזרמות קוד בזמן אמת
+    scanAndCollapseUserResponses();
+
+    // אם ג'מיני עדיין מקליד באופן פעיל, נמתין לסיום הזרמת הפקודה
     if (!forceRescan && isGeminiGenerating()) {
       clearTimeout(scanDebounceTimer);
-      scanDebounceTimer = setTimeout(scanForToolCalls, 500);
+      scanDebounceTimer = setTimeout(scanForToolCalls, 150);
       return false;
     }
 
@@ -1074,10 +1283,15 @@
           const parentTurn = el.closest('[data-test-id="conversation-turn"]') || el.closest('model-response') || el.closest('message-content');
           if (parentTurn) parentTurn.dataset.omniProcessed = 'true';
 
+          // הסבה / מיזוג מיידי לווידג'ט מקופל אלגנטי
+          const srv = normalizeServiceName(toolCall.service || 'supabase');
+          renderCollapsibleToolCard(el, toolCall, srv);
+
           // אם מדובר בטעינה ראשונית של הדף או שההודעה הזו כבר נענתה בהיסטוריית הצ'אט (ולא נלחץ ריענון ידני)
           if (!forceRescan && (isInitialGracePeriod || isElementAlreadyAnswered(el))) {
             const callKey = `${toolCall.service}_${toolCall.action}_${JSON.stringify(toolCall)}`;
             processedHashes.add(callKey);
+            updateToolCardStatus(srv, toolCall, true);
             continue;
           }
 
@@ -1349,12 +1563,14 @@
             if (lastErr) {
               const errMsg = lastErr.message || 'שגיאת תקשורת עם התוסף';
               addLog(`שגיאה ב-[${service}]: ${errMsg}`);
+              updateToolCardStatus(service, toolCall, false, errMsg);
               sendResponseToGemini(service, {
                 status: "error",
                 error: errMsg
               });
             } else if (response && response.success) {
               addLog(`הפעולה עבור [${service}] הצליחה! מחזיר לג'מיני...`);
+              updateToolCardStatus(service, toolCall, true, '', response.data);
               sendResponseToGemini(service, {
                 status: "success",
                 action: toolCall.action,
@@ -1366,6 +1582,7 @@
                 triggerBridgeStartupProtocol();
               }
               addLog(`שגיאה ב-[${service}]: ${errorMsg}`);
+              updateToolCardStatus(service, toolCall, false, errorMsg);
               sendResponseToGemini(service, {
                 status: "error",
                 error: errorMsg
@@ -1381,6 +1598,7 @@
     } catch (e) {
       clearTimeout(executionTimeout);
       addLog('נא לרענן את הלשונית (F5)');
+      updateToolCardStatus(service, toolCall, false, e.message);
       isExecuting = false;
       setBadgeBusy(false);
     }
@@ -1391,7 +1609,7 @@
     const inputField = findGeminiInputField();
     if (!inputField) return;
 
-    const formattedResponse = `[MCP_RESPONSE: ${service}]\n\`\`\`json\n${JSON.stringify(resultData, null, 2)}\n\`\`\`\nנתח את התוצאות הנ"ל וענה למשתמש בשפה טבעית וברורה.`;
+    const formattedResponse = `[MCP_RESPONSE: ${service}]\n\`\`\`json\n${JSON.stringify(resultData, null, 2)}\n\`\`\`\nנתח את התוצאות הנ"ל וענה למשתמש בשפה טבעית, מלאה וברורה. אל תחזיר שוב פקודת JSON אלא הצג למשתמש את המידע שהתקבל.`;
     setInputValueAndSend(inputField, formattedResponse);
   }
 
@@ -1862,6 +2080,17 @@
     if (message && message.action === 'TRIGGER_BRIDGE_STARTUP') {
       triggerBridgeStartupProtocol();
       sendResponse({ status: 'triggered' });
+    }
+  });
+
+  // האזנה גלובלית ללחיצות על הווידג'ט לפתיחה/סגירה של פרטי השאילתות והתוצאות
+  document.addEventListener('click', (e) => {
+    const pill = e.target.closest('.gemmcp-tool-pill');
+    if (pill) {
+      const container = pill.closest('.gemmcp-tool-pill-container');
+      if (container) {
+        container.classList.toggle('expanded');
+      }
     }
   });
 

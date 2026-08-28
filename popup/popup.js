@@ -706,7 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isNotionConnected = !!(data.notionConnected || data.notionApiKey || (notionApiKeyInput && notionApiKeyInput.value.trim()));
     if (pillNotion) {
       if (isNotionConnected) {
-        pillNotion.textContent = data.notionWorkspaceName || 'מחובר 📝';
+        pillNotion.textContent = data.notionWorkspaceName || 'מחובר';
         pillNotion.className = 'auth-pill auth-pill-notion connected';
         if (oauthNotionBtn) oauthNotionBtn.style.display = 'none';
         const row = document.getElementById('connected-row-notion');
@@ -726,7 +726,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isGithubConnected = !!(data.githubConnected || data.githubToken || (githubTokenInput && githubTokenInput.value.trim()));
     if (pillGithub) {
       if (isGithubConnected) {
-        pillGithub.textContent = data.githubUsername ? `@${data.githubUsername}` : 'מחובר 🐙';
+        pillGithub.textContent = data.githubUsername ? `@${data.githubUsername}` : 'מחובר';
         pillGithub.className = 'auth-pill auth-pill-github connected';
         if (oauthGithubBtn) oauthGithubBtn.style.display = 'none';
         const row = document.getElementById('connected-row-github');
@@ -991,7 +991,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }, (res) => {
         if (res && res.success) {
-          setInlineResult(resGithub, res.message || 'חיבור תקין! 🐙', 'success');
+          setInlineResult(resGithub, res.message || 'חיבור תקין! ✓', 'success');
         } else {
           setInlineResult(resGithub, res ? res.error : 'שגיאת חיבור ל-GitHub', 'error');
         }

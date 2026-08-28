@@ -591,7 +591,7 @@ async function executeSupabase(toolCall, config) {
 }
 
 /**
- * 🐙 אינטגרציית GitHub
+ * GitHub Integration (קריאה וכתיבה של קוד, Repos ו-Issues)
  */
 async function executeGitHub(toolCall, config) {
   const { githubToken } = config;
@@ -678,7 +678,7 @@ async function executeGitHub(toolCall, config) {
 }
 
 /**
- * 📝 אינטגרציית Notion API
+ * Notion API Integration (קריאה ויצירת דפים ומסמכים)
  */
 async function executeNotion(toolCall, config) {
   const { notionApiKey } = config;

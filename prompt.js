@@ -21,9 +21,9 @@ const OMNI_MCP_REGISTRY = {
   },
   notion: {
     id: 'notion',
-    name: 'Notion Workspace (פתקים, מסמכים, רשימות ומשימות)',
-    icon: '📝',
-    description: 'הפקת פקודות בפורמט JSON עבור Notion (חיפוש פתקים ודפים, קריאת תוכן, יצירת פתקים ומשימות).',
+    name: 'Notion Workspace (ניהול ידע ומשימות)',
+    icon: 'notion',
+    description: 'הפקת פקודות בפורמט JSON עבור Notion (חיפוש, קריאת דפים, יצירת דפים ומשימות חדשות).',
     userIntentMapping: 'כל בקשה שקשורה ל: "פתקים", "איזה פתקים יש לי", "נושן", "Notion", "רשימות", "דפים", "משימות", "מסמכים", "תזכורות", "הערות" - החזר פקודת JSON עבור שירות notion.',
     schema: {
       action: 'search | get_page | create_page',
@@ -60,7 +60,7 @@ const OMNI_MCP_REGISTRY = {
   github: {
     id: 'github',
     name: 'GitHub Integration (ניהול קוד ומאגרים)',
-    icon: '🐙',
+    icon: 'github',
     description: 'הפקת פקודות בפורמט JSON עבור GitHub (יצירת מאגרים, משיכת רשימת ריפו, קריאת קוד מקור, יצירת Issues).',
     userIntentMapping: 'כל בקשה שקשורה ל: "גיטהאב", "GitHub", "ריפו", "צור ריפו", "מאגרים", "קוד מקור", "קרא קובץ מגיטהאב", "Issue" - החזר פקודת JSON עבור שירות github.',
     schema: {
@@ -204,7 +204,7 @@ ${toolSchemas.join('\n\n')}
 
 CRITICAL INSTRUCTIONS:
 1. Output ONLY the JSON object. Do NOT include markdown code blocks, conversational text, explanations, or refusals.
-2. When you receive a message starting with [MCP_RESPONSE], analyze the returned data and explain the results naturally to the user in Hebrew.
+2. When you receive a message starting with [MCP_RESPONSE], DO NOT output any JSON tool call. Analyze the returned data and explain the results naturally to the user in Hebrew.
 
 Acknowledge readiness by responding with only: "מוכן".`.trim();
 }
