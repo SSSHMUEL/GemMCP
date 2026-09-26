@@ -1,4 +1,4 @@
-# GemMCP Smart Auto-Locator
+﻿# GemMCP Smart Auto-Locator
 $ErrorActionPreference = 'SilentlyContinue'
 
 function Find-GemMCPPath {
@@ -76,7 +76,9 @@ $projectPath = Find-GemMCPPath
 if ($projectPath) {
     $gemDir = "$env:LOCALAPPDATA\GemMCP"
     if (-not (Test-Path $gemDir)) { New-Item -ItemType Directory -Path $gemDir -Force | Out-Null }
-    [System.IO.File]::WriteAllText("$gemDir\last_path.txt", $projectPath, [System.Text.Encoding]::ASCII)
+    # UTF-8 ולא ASCII: נתיב שמכיל תווים שאינם אנגלית (למשל שם תיקייה בעברית)
+    # נשמר כ-????? ואז ה-cd נכשל והשרת לא עולה בכלל.
+    [System.IO.File]::WriteAllText("$gemDir\last_path.txt", $projectPath, (New-Object System.Text.UTF8Encoding($false)))
 
     $bridgeDir = "$projectPath\bridge-server"
     if (-not (Test-Path "$bridgeDir\node_modules")) {

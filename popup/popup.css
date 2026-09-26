@@ -137,7 +137,7 @@ h1 {
 .services-list {
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 6px;
 }
 
 /* ---------- Service Card ---------- */
@@ -177,7 +177,7 @@ h1 {
 .service-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex: 1;
   min-width: 0;
 }
@@ -186,7 +186,8 @@ h1 {
   display: flex;
   align-items: center;
   gap: 6px;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .service-icon-wrap {
@@ -235,7 +236,7 @@ h1 {
 .service-desc {
   font-size: 11px;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 /* ---------- Status Pill ---------- */
@@ -399,9 +400,9 @@ h1 {
 }
 
 .service-card.open .service-body {
-  max-height: 600px;
+  max-height: 2500px;
   opacity: 1;
-  padding: 13px 14px 15px;
+  padding: 10px 12px 12px;
   border-top: 1px solid var(--border);
   user-select: auto;
 }
@@ -832,72 +833,144 @@ input:focus {
 
 /* ---------- Windows MCP permissions ---------- */
 .permissions-header-box {
-  background: #f7f9fc;
-  border: 1px solid var(--border-strong);
-  border-radius: 9px;
-  padding: 9px 11px;
-  margin-bottom: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+}
+
+.perm-badge-title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  margin-bottom: 2px;
 }
 
 .perm-badge {
-  display: inline-block;
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 800;
   color: #0f172a;
-  margin-bottom: 3px;
+}
+
+.perm-badge-icon {
+  font-size: 12px;
 }
 
 .perm-desc {
-  font-size: 11px;
-  color: var(--text-muted);
+  font-size: 10px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.25;
 }
 
 .permissions-grid {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 4px;
 }
 
 .perm-checkbox-row {
   display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  padding: 7px 9px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 9px;
   background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 9px;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
   cursor: pointer;
   transition: all 0.15s ease;
+  user-select: none;
 }
 
 .perm-checkbox-row:hover {
-  background: #f0f9ff;
-  border-color: var(--border-active);
+  background: #f8fafc;
+  border-color: #38bdf8;
+  box-shadow: 0 1px 3px rgba(14, 165, 233, 0.07);
 }
 
 .perm-checkbox-row input[type="checkbox"] {
-  margin-top: 3px;
-  accent-color: #38bdf8;
+  flex-shrink: 0;
+  margin: 0;
+  accent-color: #0284c7;
   cursor: pointer;
   width: 15px;
   height: 15px;
+  border-radius: 3px;
 }
 
 .perm-text {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 .perm-title {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 700;
-  color: var(--text-main);
+  color: #0f172a;
+  line-height: 1.2;
 }
 
 .perm-sub {
-  font-size: 10px;
-  color: var(--text-muted);
-  line-height: 1.35;
+  font-size: 9.5px;
+  color: #64748b;
+  line-height: 1.15;
+  margin-top: 1px;
+}
+
+/* ---------- Windows Server Status & Power Control Card ---------- */
+.win-server-status-card {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.btn-server-power-action {
+  background: #0284c7;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 4px 11px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(2, 132, 199, 0.25);
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-server-power-action:hover {
+  background: #0369a1;
+  box-shadow: 0 2px 5px rgba(2, 132, 199, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-server-power-action.connected {
+  background: #ef4444;
+  box-shadow: 0 1px 3px rgba(239, 68, 68, 0.25);
+}
+
+.btn-server-power-action.connected:hover {
+  background: #dc2626;
+  box-shadow: 0 2px 5px rgba(239, 68, 68, 0.35);
+}
+
+.win-server-status-label {
+  font-size: 11px;
+  color: #475569;
+  font-weight: 600;
 }
 
 /* ---------- Custom MCP Servers List ---------- */
@@ -1548,6 +1621,66 @@ html[dir="ltr"] .header-actions-group {
   justify-content: flex-end;
   background: #f8fafc;
   border-radius: 0 0 16px 16px;
+}
+
+/* ---------- Guide Code Snippet Box ---------- */
+.guide-code-box {
+  background: #0f172a;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 6px 0;
+  border: 1px solid #1e293b;
+}
+
+.guide-code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1e293b;
+  padding: 4px 10px;
+  font-size: 10px;
+  color: #94a3b8;
+  font-family: monospace;
+}
+
+.guide-copy-code-btn {
+  background: #334155;
+  border: none;
+  color: #e2e8f0;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 9.5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.guide-copy-code-btn:hover {
+  background: #0ea5e9;
+  color: #ffffff;
+}
+
+.guide-pre {
+  margin: 0;
+  padding: 8px 10px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: #38bdf8;
+  white-space: pre-wrap;
+  word-break: break-all;
+  direction: ltr;
+  text-align: left;
+}
+
+.guide-badge-pill {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-family: monospace;
 }
 
 

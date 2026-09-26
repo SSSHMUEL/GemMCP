@@ -62,7 +62,7 @@ echo ========================================================
 echo.
 echo [i] Next steps:
 echo     1. Open Chrome and navigate to:  chrome://extensions/
-echo     2. Find "GemMCP for Gemini" and click the REFRESH icon (circular arrow)
+echo     2. Find "GemMCP" and click the REFRESH icon (circular arrow)
 echo     3. (Optional) Start Windows Bridge with: start-bridge.bat
 echo.
 pause

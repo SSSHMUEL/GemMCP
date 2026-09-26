@@ -32,4 +32,7 @@ echo   [OK] Protocol registered permanently to:
 echo   %LOCALAPPDATA%\GemMCP
 echo ========================================================
 echo.
+REM כשקוראים לקובץ הזה מתוך ההתקנה המהירה אין טעם לעצור - ההתקנה ממשיכה
+REM משם הלאה. ארגומנט כלשהו מדלג על ההמתנה.
+if not "%~1"=="" goto :eof
 pause

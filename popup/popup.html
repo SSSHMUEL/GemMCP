@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GemMCP for Gemini</title>
+  <title>GemMCP - Gemini, Claude & ChatGPT</title>
   <style>
     html {
       width: 380px !important;
@@ -41,7 +41,7 @@
         <button class="btn-help-trigger" id="helpModalOpenBtn" title="מדריך והסבר: מה זה עושה ואיך להשתמש?">?</button>
       </div>
     </div>
-    <p class="subtitle" data-i18n="subtitle">חיבור שירותי MCP חיצוניים ישירות ל-Gemini</p>
+    <p class="subtitle" data-i18n="subtitle">חיבור שירותי MCP ישירות ל-Gemini, Claude ו-ChatGPT</p>
   </div>
 
   <!-- רשימת שירותים מתרחבת עם התחברות בקליק + ידנית -->
@@ -60,7 +60,7 @@
           <div>
             <div class="service-title-row">
               <span class="service-name" data-i18n="winTitle">Windows MCP</span>
-              <span class="auth-pill auth-pill-windows" id="pill-windows" data-i18n="winPillLocal">מקומי</span>
+              <span class="auth-pill auth-pill-windows disconnected" id="pill-windows">🔴 כבוי</span>
               <svg class="expand-chevron" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
               </svg>
@@ -77,63 +77,120 @@
       </div>
       <div class="service-body">
         <div class="permissions-header-box">
-          <span class="perm-badge" data-i18n="winPermHeader">🛡️ בקרת הרשאות ואבטחה</span>
+          <div class="perm-badge-title">
+            <span class="perm-badge" data-i18n="winPermHeader">בקרת הרשאות ואבטחה</span>
+            <span class="perm-badge-icon">🛡️</span>
+          </div>
           <p class="perm-desc" data-i18n="winPermSub">בחר אילו פעולות לג'מיני מותר לבצע במחשב שלך:</p>
         </div>
 
         <div class="permissions-grid">
           <label class="perm-checkbox-row">
-            <input type="checkbox" id="win-perm-read" checked>
             <div class="perm-text">
               <span class="perm-title" data-i18n="winPermReadTitle">📖 קריאת קבצים ותיקיות (Read)</span>
-              <span class="perm-sub" data-i18n="winPermReadSub">מאפשר לג'מיני לקרוא קבצי קוד, טקסט ולראות רשימת קבצים</span>
+              <span class="perm-sub" data-i18n="winPermReadSub">קריאת קוד, קבצי טקסט ורשימת קבצים</span>
             </div>
+            <input type="checkbox" id="win-perm-read" checked>
           </label>
 
           <label class="perm-checkbox-row">
-            <input type="checkbox" id="win-perm-write">
             <div class="perm-text">
               <span class="perm-title" data-i18n="winPermWriteTitle">✍️ כתיבה ויצירת קבצים (Write)</span>
-              <span class="perm-sub" data-i18n="winPermWriteSub">מאפשר לג'מיני ליצור קבצים חדשים או לשנות קבצים קיימים</span>
+              <span class="perm-sub" data-i18n="winPermWriteSub">יצירת קבצים חדשים או שינוי קבצים קיימים</span>
             </div>
+            <input type="checkbox" id="win-perm-write">
           </label>
 
           <label class="perm-checkbox-row">
-            <input type="checkbox" id="win-perm-command">
             <div class="perm-text">
               <span class="perm-title" data-i18n="winPermCmdTitle">⚡ הרצת פקודות PowerShell / CMD</span>
-              <span class="perm-sub" data-i18n="winPermCmdSub">הרצת סקריפטים, התקנת חבילות ופקודות טרמינל</span>
+              <span class="perm-sub" data-i18n="winPermCmdSub">הרצת סקריפטים, התקנות ופקודות טרמינל</span>
             </div>
+            <input type="checkbox" id="win-perm-command">
           </label>
 
           <label class="perm-checkbox-row">
-            <input type="checkbox" id="win-perm-app" checked>
             <div class="perm-text">
               <span class="perm-title" data-i18n="winPermAppTitle">🚀 הפעלת יישומים (Launch Apps)</span>
-              <span class="perm-sub" data-i18n="winPermAppSub">פתיחת אפליקציות מותקנות (Notepad, VSCode, Chrome וכו')</span>
+              <span class="perm-sub" data-i18n="winPermAppSub">פתיחת אפליקציות מותקנות (Notepad, Chrome וכו')</span>
             </div>
+            <input type="checkbox" id="win-perm-app" checked>
           </label>
 
           <label class="perm-checkbox-row">
-            <input type="checkbox" id="win-perm-clipboard" checked>
             <div class="perm-text">
               <span class="perm-title" data-i18n="winPermClipTitle">📋 לוח העתקה (Clipboard)</span>
               <span class="perm-sub" data-i18n="winPermClipSub">קריאה והדבקה מלוח ההעתקה של Windows</span>
             </div>
+            <input type="checkbox" id="win-perm-clipboard" checked>
+          </label>
+
+          <label class="perm-checkbox-row">
+            <div class="perm-text">
+              <span class="perm-title" data-i18n="winPermInstallTitle">📦 הורדה והתקנה מהאינטרנט</span>
+              <span class="perm-sub" data-i18n="winPermInstallSub">הורדת חבילות והתקנת תוכנות (עוצר לאישור)</span>
+            </div>
+            <input type="checkbox" id="win-perm-install" checked>
+          </label>
+
+          <label class="perm-checkbox-row">
+            <div class="perm-text">
+              <span class="perm-title" style="display: flex; align-items: center; gap: 5px;">
+                <svg style="width: 13px; height: 13px; flex-shrink: 0;" viewBox="0 0 24 24" fill="#181717">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                </svg>
+                <span>כלי שורת הפקודה GitHub CLI (gh)</span>
+              </span>
+              <span class="perm-sub">שימוש ב-gh המותקן במחשב לפעולות מאגרים</span>
+            </div>
+            <input type="checkbox" id="win-perm-github-cli">
           </label>
         </div>
 
-        <div class="form-group" style="margin-top: 14px;">
-          <label data-i18n="winAllowedPathLabel">נתיב עבודה מורשה (Allowed Directory Scope)</label>
-          <input type="text" id="winAllowedPath" placeholder="לדוגמה: C:\Users\SHMUEL\Projects (או השאר ריק לכל הכונן)" dir="ltr">
-          <div class="input-helper" data-i18n="winAllowedPathHelper">הגבלת גישה לתיקייה ספציפית בלבד מטעמי אבטחה.</div>
+        <div class="form-group" style="margin-top: 8px;">
+          <label data-i18n="winAllowedPathLabel" style="font-size: 11px; margin-bottom: 3px;">נתיב עבודה מורשה (Allowed Directory Scope)</label>
+          <input type="text" id="winAllowedPath" placeholder="לדוגמה: C:\Users\SHMUEL\Projects (או השאר ריק לכל הכונן)" dir="ltr" style="padding: 6px 10px; font-size: 11px; height: 32px;">
+          <div class="input-helper" data-i18n="winAllowedPathHelper" style="font-size: 10px; margin-top: 2px;">הגבלת גישה לתיקייה ספציפית בלבד מטעמי אבטחה.</div>
+        </div>
+
+        <!-- אפשרויות נתיבים מתקדמות וסריקה מהירה -->
+        <div class="win-advanced-options" style="margin-top: 6px;">
+          <button type="button" class="btn-toggle-subgroup" id="btn-toggle-win-adv" style="background:none; border:none; color:var(--text-muted); font-size:10.5px; cursor:pointer; padding:0; display:flex; align-items:center; gap:4px;">
+            <span>⚙️ הגדרות נתיבים מתקדמות ומסד מקומי</span>
+            <span class="subgroup-arrow">▾</span>
+          </button>
+          <div id="win-adv-body" style="display:none; margin-top:6px; padding-top:6px; border-top:1px dashed var(--border);">
+            <div class="form-group" style="margin-top: 4px;">
+              <label style="font-size: 10.5px;">תחום קריאת קבצים (Read Directory Scope)</label>
+              <input type="text" id="winReadPath" placeholder="* לכל המחשב (למעט תיקיות מערכת) או נתיב ספציפי" dir="ltr" style="padding: 5px 8px; font-size: 10.5px; height: 30px;">
+              <div class="input-helper" style="font-size: 9.5px;">מאיזה נתיב ג'מיני רשאי לקרוא קבצים (* = כל הדיסק).</div>
+            </div>
+
+            <div class="form-group" style="margin-top: 6px;">
+              <label style="font-size: 10.5px;">תיקיות חסומות נוספות (Blocked Paths)</label>
+              <input type="text" id="winExtraBlockedPaths" placeholder="לדוגמה: D:\Secrets;C:\Private (מופרד בנקודה-פסיק)" dir="ltr" style="padding: 5px 8px; font-size: 10.5px; height: 30px;">
+              <div class="input-helper" style="font-size: 9.5px;">נתיבים אלו ייחסמו תמיד לקריאה וכתיבה.</div>
+            </div>
+
+            <div style="margin-top:6px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:6px 8px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <div style="font-size:11px; font-weight:700; color:#166534;">⚡ מסד אפליקציות מקומי (4ms)</div>
+                  <div style="font-size:10px; color:#15803d; margin-top:1px;" id="localDbStatusText">סריקת תוכנות וקיצורי דרך לפתיחה מהירה</div>
+                </div>
+                <button type="button" id="btn-sync-local-db" class="btn-banner-action" style="padding:3px 7px; font-size:10px; background:#16a34a; border-color:#15803d;">
+                  <span>סרוק עכשיו</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- עריכת פרומפט והנחיות ל-Gemini -->
-        <div class="prompt-editor-section">
-          <button type="button" class="prompt-toggle-btn" data-target="prompt-section-windows">
-            <span data-i18n="promptEditorToggle">📝 עריכת פרומפט והנחיות ל-Gemini</span>
+        <div class="prompt-editor-section" style="margin-top: 8px; border-top: 1px dashed var(--border); padding-top: 6px;">
+          <button type="button" class="prompt-toggle-btn" data-target="prompt-section-windows" style="padding: 5px 8px; font-size: 11px;">
             <span class="toggle-arrow">▾</span>
+            <span data-i18n="promptEditorToggle">📝 עריכת פרומפט והנחיות ל-Gemini</span>
           </button>
           <div class="prompt-edit-body" id="prompt-section-windows">
             <div class="prompt-header-row">
@@ -148,40 +205,163 @@
           </div>
         </div>
 
-        <!-- שורת שרת כבוי רגילה עם כפתור הפעלה -->
-        <div id="win-bridge-offline-bar" style="margin-top:12px; display:none; justify-content:space-between; align-items:center; background:#f8fafc; border:1px solid var(--border); padding:8px 10px; border-radius:8px;">
-          <span style="font-size:11.5px; color:var(--text-muted); font-weight:600;" data-i18n="winOfflineBar">שרת Windows Bridge כבוי 🔴</span>
-          <button type="button" id="btn-quick-start-bridge" class="btn-banner-action" style="padding:4px 9px; font-size:11px;">
+        <!-- שורת שרת Windows Bridge כבוי/פעיל עם כפתור הפעלה מעוצב -->
+        <div id="win-bridge-offline-bar" class="win-server-status-card">
+          <button type="button" id="btn-quick-start-bridge" class="btn-server-power-action">
             <span data-i18n="winStartBtn">⚡ הפעל שרת</span>
           </button>
+          <span class="win-server-status-label" id="win-server-status-text" data-i18n="winOfflineBar">שרת Windows Bridge כבוי 🔴</span>
         </div>
 
         <!-- באנר התרעה שמופיע רק אם ההפעלה נכשלה בגלל היעדר Node.js -->
-        <div id="win-bridge-node-missing-box" class="bridge-status-banner offline" style="display:none;">
+        <div id="win-bridge-node-missing-box" class="bridge-status-banner offline" style="display:none; margin-top:6px; padding:6px 8px;">
           <div class="bridge-banner-title">
             <span class="bridge-status-dot"></span>
             <span data-i18n="winMissingNodeTitle">הפעלת השרת נכשלה (דרוש Node.js)</span>
           </div>
-          <div class="bridge-banner-desc" data-i18n="winMissingNodeDesc">
+          <div class="bridge-banner-desc" data-i18n="winMissingNodeDesc" style="font-size:10.5px; margin-bottom:5px;">
             שרת ה-Bridge לא הצליח לעלות. ייתכן ש-Node.js אינו מותקן במחשב שלך.
           </div>
           <div class="bridge-banner-actions">
-            <a href="https://nodejs.org/" target="_blank" class="btn-banner-link">
+            <a href="https://nodejs.org/" target="_blank" class="btn-banner-link" style="padding:4px 8px; font-size:10.5px;">
               <span>📥</span> <span data-i18n="winDownloadNodeBtn">הורדת Node.js חינם</span>
             </a>
-            <button type="button" id="btn-retry-start-bridge" class="btn-banner-action">
+            <button type="button" id="btn-retry-start-bridge" class="btn-banner-action" style="padding:4px 8px; font-size:10.5px;">
               <span>🔄</span> <span data-i18n="winRetryBtn">נסה שוב</span>
             </button>
           </div>
         </div>
 
-        <div class="actions-group">
-          <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
-            <button class="btn btn-outline" id="testWindowsBtn" data-i18n="winTestBtn" style="flex: 1; margin-top: 0;">בדוק חיבור ל-Windows Bridge</button>
-            <button class="btn btn-disconnect" id="stopWindowsBridgeBtn" data-i18n="winStopBtn" style="display: none; padding: 7px 12px; font-size: 11.5px; margin-top: 0;" title="כיבוי שרת Windows Bridge">כבה שרת 🛑</button>
+        <div class="actions-group" style="margin-top: 6px;">
+          <div style="display: flex; gap: 6px; align-items: center; width: 100%;">
+            <button class="btn btn-outline" id="testWindowsBtn" data-i18n="winTestBtn" style="flex: 1; margin-top: 0; font-size: 11px; padding: 5px 8px;">בדוק חיבור ל-Windows Bridge</button>
+            <button class="btn btn-disconnect" id="stopWindowsBridgeBtn" data-i18n="winStopBtn" style="display: none; padding: 5px 10px; font-size: 11px; margin-top: 0;" title="כיבוי שרת Windows Bridge">כבה שרת 🛑</button>
           </div>
           <div class="inline-test-result-block" id="result-windows"></div>
         </div>
+      </div>
+    </div>
+
+    <!-- Local OpenAI-Compatible API Card -->
+    <div class="service-card" data-service="local-api">
+      <div class="service-header">
+        <div class="service-meta">
+          <div class="service-icon-wrap" style="background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);">
+            <svg class="official-svg" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+            </svg>
+          </div>
+          <div>
+            <div class="service-title-row">
+              <span class="service-name" data-i18n="apiCardTitle">שרת ומפתח API</span>
+              <span class="auth-pill" id="pill-local-api" style="background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd;" data-i18n="apiPillReady">מוכן לחיבור</span>
+              <svg class="expand-chevron" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <div class="service-desc" data-i18n="apiCardDesc">חיבור Cursor, Python, Cline וכלים חיצוניים בחינם</div>
+          </div>
+        </div>
+      </div>
+      <div class="service-body">
+        
+        <!-- הסבר מפורט על אופן הפעולה והדרישות -->
+        <div class="api-info-banner" style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
+          <div style="font-weight: 600; font-size: 12px; color: #166534; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+            <span>💡</span> <span data-i18n="apiHowItWorksTitle">איך זה עובד ולמה זה בחינם?</span>
+          </div>
+          <div style="font-size: 11.5px; color: #15803d; line-height: 1.45; margin-bottom: 6px;" data-i18n="apiHowItWorksDesc">
+            הגשר פותח שרת מקומי תואם OpenAI ומנתב את השאילתות לחשבון הבינה הפתוח בדפדפן שלך, ללא עלות Tokens.
+          </div>
+          <div style="font-size: 11px; color: #14532d; font-weight: 600; margin-bottom: 3px;" data-i18n="apiRoutingExamplesTitle">
+            🎯 ניתוב אוטומטי לפי שדה המודל (model):
+          </div>
+          <div style="font-size: 11px; color: #15803d; line-height: 1.4; padding-inline-start: 4px; font-family: monospace;">
+            <div data-i18n="apiRoutingGemini">• model: "gemini" ➔ מבצע את השאילתה ב-gemini.google.com</div>
+            <div data-i18n="apiRoutingClaude">• model: "claude" ➔ מבצע את השאילתה ב-claude.ai</div>
+            <div data-i18n="apiRoutingChatGPT">• model: "chatgpt" ➔ מבצע את השאילתה ב-chatgpt.com</div>
+          </div>
+          <div style="margin-top: 6px; font-size: 11px; color: #166534; background: #dcfce7; padding: 6px 8px; border-radius: 6px; line-height: 1.4;" data-i18n="apiTabNotice">
+            📌 <strong>פתיחה אוטומטית:</strong> אם הכרטיסייה של הבינה המבוקשת לא פתוחה בדפדפן, התוסף יפתח אותה אוטומטית ברקע ויריץ בה את השאילתה.
+          </div>
+        </div>
+
+        <!-- מפתח API מאובטח -->
+        <div class="form-group" style="margin-bottom: 10px;">
+          <label style="display:flex; justify-content:space-between; align-items:center;">
+            <span data-i18n="apiKeyLabel">מפתח API מאובטח (Bearer Key)</span>
+            <span id="apiKeyCopiedToast" style="display:none; color:#16a34a; font-size:11px; font-weight:bold;">הועתק! ✓</span>
+          </label>
+          <div style="display: flex; gap: 6px;">
+            <input type="password" id="localApiKeyInput" readonly dir="ltr" style="font-family: monospace; font-size: 11.5px; background:#f8fafc;" value="gem_live_sk_...">
+            <button type="button" class="btn btn-outline" id="toggleApiKeyVisibilityBtn" style="padding: 0 8px;" title="הצג/הסתר מפתח">👁️</button>
+            <button type="button" class="btn btn-primary" id="copyApiKeyBtn" style="padding: 0 10px; font-size: 12px;" data-i18n="copyBtn">העתק 📋</button>
+          </div>
+        </div>
+
+        <!-- כפתור יצירת מפתח חדש -->
+        <div style="margin-bottom: 12px;">
+          <button type="button" class="btn btn-outline" id="generateNewApiKeyBtn" style="width: 100%; justify-content: center; font-size: 12px; gap: 6px;">
+            <span>🔄</span> <span data-i18n="apiGenerateNewBtn">צור מפתח API חדש ומאובטח</span>
+          </button>
+        </div>
+
+        <!-- Local Base URL -->
+        <div class="form-group" style="margin-bottom: 10px;">
+          <label style="display:flex; justify-content:space-between; align-items:center;">
+            <span data-i18n="apiBaseUrlLabel">Base URL מקומי (אותו מחשב)</span>
+            <span id="baseUrlCopiedToast" style="display:none; color:#16a34a; font-size:11px; font-weight:bold;">הועתק! ✓</span>
+          </label>
+          <div style="display: flex; gap: 6px;">
+            <input type="text" id="localApiBaseUrlInput" readonly dir="ltr" style="font-family: monospace; font-size: 12px; background:#f8fafc;" value="http://127.0.0.1:3000/v1">
+            <button type="button" class="btn btn-primary" id="copyBaseUrlBtn" style="padding: 0 10px; font-size: 12px;" data-i18n="copyBtn">העתק 📋</button>
+          </div>
+          <div class="input-helper" data-i18n="apiBaseUrlHelper">הדבק כתובת זו ב-Cursor / Cline / סקריפטים באותו המחשב.</div>
+        </div>
+
+        <!-- Network Base URL (למכשירים אחרים ברשת) -->
+        <div class="form-group" id="networkBaseUrlGroup" style="margin-bottom: 10px;">
+          <label style="display:flex; justify-content:space-between; align-items:center;">
+            <span data-i18n="apiNetworkUrlLabel">Base URL לרשת (מכשירים אחרים ב-Wi-Fi)</span>
+            <span id="networkUrlCopiedToast" style="display:none; color:#16a34a; font-size:11px; font-weight:bold;">הועתק! ✓</span>
+          </label>
+          <div style="display: flex; gap: 6px;">
+            <input type="text" id="networkApiBaseUrlInput" readonly dir="ltr" style="font-family: monospace; font-size: 12px; background:#f8fafc;" value="טוען כתובת רשת...">
+            <button type="button" class="btn btn-outline" id="copyNetworkUrlBtn" style="padding: 0 10px; font-size: 12px;" data-i18n="copyBtn">העתק 📋</button>
+          </div>
+          <div class="input-helper" data-i18n="apiNetworkUrlHelper">הדבק כתובת זו באפליקציות בטלפון או במחשבים אחרים באותה הרשת.</div>
+        </div>
+
+        <!-- Public Internet Tunnel (גישה מכל מקום בעולם) -->
+        <div class="form-group" id="publicTunnelGroup" style="margin-bottom: 12px; background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 8px; padding: 10px 12px;">
+          <label style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+            <span style="font-weight:600; color:#6b21a8; font-size: 11.5px;" data-i18n="apiPublicTunnelLabel">🌍 מנהרת אינטרנט ציבורית (HTTPS מכל מקום בעולם)</span>
+            <span id="publicUrlCopiedToast" style="display:none; color:#16a34a; font-size:11px; font-weight:bold;">הועתק! ✓</span>
+          </label>
+          <div style="display: flex; gap: 6px;">
+            <input type="text" id="publicApiBaseUrlInput" readonly dir="ltr" style="font-family: monospace; font-size: 11.5px; background:#ffffff;" placeholder="כבוי (לחץ להפעלה)">
+            <button type="button" class="btn btn-outline" id="togglePublicTunnelBtn" style="padding: 0 10px; font-size: 11.5px; white-space: nowrap; color:#7e22ce; border-color:#d8b4fe;" data-i18n="startTunnelBtn">⚡ הפעל מנהרה</button>
+            <button type="button" class="btn btn-primary" id="copyPublicUrlBtn" style="padding: 0 10px; font-size: 12px; display:none;" data-i18n="copyBtn">העתק 📋</button>
+          </div>
+          <div class="input-helper" style="color:#7e22ce;" data-i18n="apiPublicTunnelHelper">מאפשר לאפליקציות ולמכשירים מחוץ לבית לשלוח שאילתות דרך האינטרנט בחינם ובאופן מאובטח ב-HTTPS.</div>
+        </div>
+
+
+        <!-- כפתור בדיקת API -->
+        <div style="margin-top: 8px;">
+          <button type="button" class="btn btn-outline" id="testApiEndpointBtn" style="width: 100%; justify-content: center; font-size: 12px; gap: 6px;">
+            <span>🧪</span> <span data-i18n="apiTestBtn">בדוק קריאת API לדוגמה</span>
+          </button>
+          <div class="inline-test-result-block" id="result-local-api" style="margin-top: 6px; font-size: 11.5px; display: none;"></div>
+        </div>
+
+        <!-- כפתור מדריך חיבור מורחב -->
+        <div style="margin-top: 10px;">
+          <button type="button" class="btn btn-outline" id="openApiGuideModalBtn" style="width: 100%; justify-content: center; font-size: 11.5px; gap: 6px; background: #f0fdf4; border-color: #86efac; color: #166534; font-weight: 600;">
+            <span>📖</span> <span data-i18n="apiGuideBtn">מדריך חיבור מלא, דוגמאות קוד ומבנה השאילתה ↗</span>
+          </button>
+        </div>
+
       </div>
     </div>
 
@@ -564,6 +744,7 @@
             <li data-i18n="helpFeatGit"><svg style="width:14px;height:14px;vertical-align:-2px;display:inline-block;" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg> <strong>GitHub</strong> – חיפוש מאגרי קוד, קריאת קבצים, Issues ו-Pull Requests.</li>
             <li data-i18n="helpFeatFetch">🌐 <strong>Web Scraper</strong> – גלישה וקריאת תוכן מאתרים חיים בזמן אמת.</li>
             <li data-i18n="helpFeatCustom">🧩 <strong>שרתי MCP מותאמים</strong> – הוספת כל שרת MCP חיצוני (Local או SSE / Remote).</li>
+            <li data-i18n="helpFeatApi">🔑 <strong>שרת ומפתח API</strong> – חיבור תוכנות חיצוניות (Cursor, Python, Cline) לחשבונות ה-AI בדפדפן בחינם וללא עלות Tokens.</li>
           </ul>
         </div>
 
@@ -618,7 +799,157 @@
     </div>
   </div>
 
-  <div id="version-footer" style="text-align:center;padding:0;margin:0;line-height:1;font-size:10.5px;color:#0ea5e9;letter-spacing:0.04em;font-weight:400;user-select:none;"></div>
+  <!-- מודאל הסבר ומדריך חיבור מלא ל-API -->
+  <div class="help-modal-overlay" id="apiGuideModalOverlay">
+    <div class="help-modal-content" style="max-width: 360px;">
+      <div class="help-modal-header">
+        <div class="help-modal-title">
+          <span class="help-icon-badge">🤖</span>
+          <h3 data-i18n="apiGuideModalTitle">מדריך חיבור ל-OpenAI API המקומי</h3>
+        </div>
+        <button class="help-modal-close" id="apiGuideModalCloseBtn" title="סגור">✕</button>
+      </div>
+
+      <div class="help-modal-body">
+        
+        <!-- סקירה כללית -->
+        <div class="help-card-section" style="background: #f0fdf4; border-color: #bbf7d0;">
+          <div class="help-section-title" style="color: #166534;">
+            <span class="help-emoji">💡</span>
+            <strong>מה זה ואיך זה עובד?</strong>
+          </div>
+          <p class="help-section-text" style="color: #15803d;">
+            שרת ה-Bridge מדמה API מלא של OpenAI ומעביר את הפניות לחשבון הבינה המחובר בדפדפן שלך (Gemini / Claude / ChatGPT) – <strong>בחינם וללא עלות טוקנים</strong>.
+          </p>
+        </div>
+
+        <!-- ניתוב בינות -->
+        <div class="help-card-section">
+          <div class="help-section-title">
+            <span class="help-emoji">🎯</span>
+            <strong>ניתוב אוטומטי לפי שדה model</strong>
+          </div>
+          <p class="help-section-text">בשדה המודל בתוכנה שלך, הגדר לאיזו בינה השאילתה תנותב:</p>
+          <ul class="help-feature-list">
+            <li><code>"model": "gemini"</code> ➔ מריץ באתר <strong>Gemini</strong></li>
+            <li><code>"model": "claude"</code> ➔ מריץ באתר <strong>Claude</strong></li>
+            <li><code>"model": "chatgpt"</code> ➔ מריץ באתר <strong>ChatGPT</strong></li>
+          </ul>
+          <div style="font-size: 10px; color: #0284c7; background: #e0f2fe; padding: 5px 8px; border-radius: 6px; margin-top: 6px; line-height: 1.4;">
+            🛡️ <strong>כרטיסיית רקע ייעודית:</strong> התוסף פותח כרטיסייה נפרדת עבור ה-API מבלי להפריע לכרטיסיות שאתה עובד בהן כרגע!
+          </div>
+        </div>
+
+        <!-- כתובות Base URL -->
+        <div class="help-card-section">
+          <div class="help-section-title">
+            <span class="help-emoji">🌐</span>
+            <strong>3 אפשרויות חיבור (Base URLs)</strong>
+          </div>
+          <ul class="help-feature-list">
+            <li><strong>באותו המחשב:</strong> <code>http://127.0.0.1:3000/v1</code></li>
+            <li><strong>ברשת ה-Wi-Fi הביתית:</strong> <code>http://&lt;IP_של_המחשב&gt;:3000/v1</code></li>
+            <li><strong>מכל מקום בעולם (HTTPS):</strong> הפעל מנהרת Cloudflare לקבלת קישור מאובטח.</li>
+          </ul>
+        </div>
+
+        <!-- מבנה השאילתה -->
+        <div class="help-card-section">
+          <div class="help-section-title">
+            <span class="help-emoji">📦</span>
+            <strong>מבנה השאילתה (JSON Body)</strong>
+          </div>
+          <div class="guide-code-box">
+            <div class="guide-code-header">
+              <span>POST /v1/chat/completions</span>
+              <button type="button" class="guide-copy-code-btn" data-copy-target="code-json">העתק 📋</button>
+            </div>
+            <pre class="guide-pre" id="code-json">{
+  "model": "gemini",
+  "messages": [
+    {
+      "role": "user",
+      "content": "שלום, תסביר לי בכמה מילים מה זה MCP"
+    }
+  ],
+  "stream": false
+}</pre>
+          </div>
+        </div>
+
+        <!-- דוגמת Python -->
+        <div class="help-card-section">
+          <div class="help-section-title">
+            <span class="help-emoji">🐍</span>
+            <strong>דוגמת קוד בפייתון (OpenAI SDK)</strong>
+          </div>
+          <div class="guide-code-box">
+            <div class="guide-code-header">
+              <span>python (openai)</span>
+              <button type="button" class="guide-copy-code-btn" data-copy-target="code-python">העתק 📋</button>
+            </div>
+            <pre class="guide-pre" id="code-python">from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://127.0.0.1:3000/v1",
+    api_key="YOUR_API_KEY_FROM_POPUP"
+)
+
+response = client.chat.completions.create(
+    model="gemini", # או "claude" / "chatgpt"
+    messages=[
+        {"role": "user", "content": "מה השעה ואיזה יום היום?"}
+    ]
+)
+
+print(response.choices[0].message.content)</pre>
+          </div>
+        </div>
+
+        <!-- דוגמת cURL -->
+        <div class="help-card-section">
+          <div class="help-section-title">
+            <span class="help-emoji">💻</span>
+            <strong>דוגמת cURL (טרמינל / CMD)</strong>
+          </div>
+          <div class="guide-code-box">
+            <div class="guide-code-header">
+              <span>cURL</span>
+              <button type="button" class="guide-copy-code-btn" data-copy-target="code-curl">העתק 📋</button>
+            </div>
+            <pre class="guide-pre" id="code-curl">curl http://127.0.0.1:3000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "model": "claude",
+    "messages": [{"role": "user", "content": "היי!"}]
+  }'</pre>
+          </div>
+        </div>
+
+        <!-- הגדרת Cursor ו-Cline -->
+        <div class="help-card-section">
+          <div class="help-section-title">
+            <span class="help-emoji">⚙️</span>
+            <strong>חיבור ב-Cursor / Cline / Roo Code</strong>
+          </div>
+          <ul class="help-feature-list">
+            <li><strong>Provider:</strong> בחר ב-OpenAI Compatible</li>
+            <li><strong>Base URL:</strong> <code>http://127.0.0.1:3000/v1</code></li>
+            <li><strong>API Key:</strong> המפתח שהעתקת מהפופאפ</li>
+            <li><strong>Model:</strong> <code>gemini</code>, <code>claude</code> או <code>chatgpt</code></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="help-modal-footer">
+        <button class="btn btn-primary" id="apiGuideModalGotItBtn" data-i18n="helpCloseBtn">הבנתי, מעולה!</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="version-footer" style="text-align:center;padding:0;margin:6px 0 2px 0;line-height:1;font-size:10.5px;color:#0ea5e9;letter-spacing:0.04em;font-weight:400;user-select:none;"></div>
 
   <script src="../i18n.js"></script>
   <script src="../prompt.js"></script>

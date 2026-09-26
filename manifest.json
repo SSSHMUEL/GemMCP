@@ -1,14 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "GemMCP for Gemini",
-  "version": "2.1.4",
-  "description": "חבר שירותי MCP (Supabase, GitHub, Web Scraper, Custom MCP) ישירות ל-Google Gemini Web",
+  "name": "GemMCP",
+  "version": "2.1.5",
+  "version_name": "2.1.5",
+  "description": "Bridge Gemini, Claude, and ChatGPT to your Windows system with powerful local tools and MCP integrations.",
   "permissions": [
     "storage",
     "activeTab",
     "identity",
     "tabs",
-    "scripting"
+    "scripting",
+    "alarms",
+    "contextMenus"
   ],
   "host_permissions": [
     "<all_urls>",
@@ -18,14 +21,17 @@
     "https://*.supabase.co/*",
     "https://api.supabase.com/*",
     "https://api.github.com/*",
-    "https://api.notion.com/*"
+    "https://api.notion.com/*",
+    "https://claude.ai/*",
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
     "default_popup": "popup/popup.html",
-    "default_title": "GemMCP for Gemini",
+    "default_title": "GemMCP",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
@@ -36,7 +42,10 @@
   "content_scripts": [
     {
       "matches": [
-        "https://gemini.google.com/*"
+        "https://gemini.google.com/*",
+        "https://claude.ai/*",
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*"
       ],
       "js": [
         "i18n.js",
@@ -58,6 +67,9 @@
       ],
       "matches": [
         "https://gemini.google.com/*",
+        "https://claude.ai/*",
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
         "http://localhost:3000/*",
         "http://127.0.0.1:3000/*"
       ]

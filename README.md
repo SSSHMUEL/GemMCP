@@ -1,13 +1,13 @@
 # GemMCP 🚀
-### Seamless MCP (Model Context Protocol) Bridge for Gemini Web & AI Assistants
+### Seamless MCP (Model Context Protocol) Bridge for Gemini, Claude, ChatGPT & AI Assistants
 
-GemMCP connects your browser (Gemini Web, AI chat interfaces) directly to local and cloud Model Context Protocol (MCP) servers with zero hassle. It empowers your AI conversations with real-time tool execution, live database access, and full local automation.
+GemMCP connects your browser (Gemini, Claude, ChatGPT Web interfaces) directly to local and cloud Model Context Protocol (MCP) servers with zero hassle. It empowers your AI conversations with real-time tool execution, live database access, and full local automation.
 
 ---
 
 ## ✨ Features
 
-- 🔌 **Plug & Play Chrome Extension:** Injects tools directly into the Gemini Web interface.
+- 🔌 **Plug & Play Chrome Extension:** Injects tools directly into Gemini, Claude, and ChatGPT Web interfaces.
 - ⚡ **Local Bridge Server:** Ultra-fast Express & WebSocket server acting as a bridge between the browser and local MCP tools.
 - 🔐 **OAuth 2.0 Integration:** Built-in seamless authentication for **GitHub**, **Notion**, and **Supabase**.
 - 🗄️ **Supabase Cloud Sync:** Dynamic settings and secrets management via secure database backend.
@@ -108,7 +108,21 @@ Double-click `start-bridge.bat` (or `bridge-launcher.bat`) located in the root p
 
 ---
 
-## 📁 Project Architecture
+## 🤖 Local & Network OpenAI-Compatible API / שרת API מקומי ורשתי
+
+GemMCP provides a local and network-accessible OpenAI-compatible endpoint:
+- **Local (Same PC):** `http://127.0.0.1:3000/v1`
+- **Network (Other devices on Wi-Fi / LAN):** `http://<YOUR_LOCAL_IP>:3000/v1`
+
+### 🎯 Smart AI Routing by `model`:
+You can connect tools like **Cursor**, **Cline**, mobile apps, Python scripts, or custom applications, and route queries directly:
+- **`model: "gemini"`** ➔ Executes query directly on **Gemini** (`gemini.google.com`)
+- **`model: "claude"`** ➔ Executes query directly on **Claude** (`claude.ai`)
+- **`model: "chatgpt"`** ➔ Executes query directly on **ChatGPT** (`chatgpt.com`)
+
+> 💡 **Dedicated Background Tabs:** When an API session starts, a dedicated background tab is opened automatically so it never interrupts your active browser tabs.
+
+---
 
 ```text
 gemmcp/
