@@ -1,176 +1,132 @@
 # GemMCP 🚀
-### Seamless MCP (Model Context Protocol) Bridge for Gemini, Claude, ChatGPT & AI Assistants
+### גשר MCP (Model Context Protocol) וכלי מערכת מתקדמים עבור Gemini, Claude ו-ChatGPT
 
-GemMCP connects your browser (Gemini, Claude, ChatGPT Web interfaces) directly to local and cloud Model Context Protocol (MCP) servers with zero hassle. It empowers your AI conversations with real-time tool execution, live database access, and full local automation.
-
----
-
-## ✨ Features
-
-- 🔌 **Plug & Play Chrome Extension:** Injects tools directly into Gemini, Claude, and ChatGPT Web interfaces.
-- ⚡ **Local Bridge Server:** Ultra-fast Express & WebSocket server acting as a bridge between the browser and local MCP tools.
-- 🔐 **OAuth 2.0 Integration:** Built-in seamless authentication for **GitHub**, **Notion**, and **Supabase**.
-- 🗄️ **Supabase Cloud Sync:** Dynamic settings and secrets management via secure database backend.
-- 🛡️ **Zero Secret Leaks:** Local storage never exposes private secrets; `.env` is fully isolated and ignored by Git.
-- 🛠️ **Full MCP Protocol Support:** Supports list tools, tool execution, JSON-RPC, SSE, and custom MCP integrations.
+**GemMCP** מחבר את ממשקי הדפדפן של מודלי ה-AI המובילים (**Gemini**, **Claude**, **ChatGPT**) ישירות למחשב ה-Windows שלך ולשרתי MCP מקומיים וענניים. המערכת מעניקה ל-AI יכולות אוטומציה אמיתיות, גישה למערכת הקבצים, מסדי נתונים, שירותי ענן והרצת פקודות בזמן אמת.
 
 ---
 
-## 📦 Installation & Setup Guide
+## 🇮🇱 מדריך ומפרט יכולות בעברית
 
-### 📋 Prerequisites
-- **Node.js (v18 or higher):** Required to run the local Windows Bridge Server. [Download & Install Node.js](https://nodejs.org/).
-- **Google Chrome** (or any Chromium-based browser like Brave, Edge).
+### 🌟 יכולות עיקריות (Key Capabilities)
 
----
-
-### 1️⃣ Download & Extract
-1. Download the project as a ZIP archive (click **Code** > **Download ZIP** on GitHub).
-2. **Extract the ZIP file** to a permanent folder on your computer (e.g., `C:\GemMCP` or `Documents`).
-   > ⚠️ **Important:** Do not delete or move this folder after installation.
-
----
-
-### 2️⃣ Install the Chrome Extension
-1. Open Google Chrome and go to `chrome://extensions/` (or click **Menu (⋮)** > **Extensions** > **Manage Extensions**).
-2. Turn ON **Developer mode** (מצב מפתח) in the top-right corner.
-3. Click the **Load unpacked** (טען פריט שלא נארז) button in the top-left corner.
-4. Select the project root folder (the folder containing `manifest.json`).
-5. (Recommended) Click the puzzle piece icon in Chrome and **Pin GemMCP** to your toolbar.
+* 🔌 **אינטגרציה ישירה בדפדפן:** התוסף מתחבר אוטומטית לממשקי הווב של Gemini, Claude ו-ChatGPT ומזריק לתוכם יכולות הפעלת כלים.
+* ⚡ **שרת גישור מקומי (Windows Bridge Server):** שרת Express & WebSocket קל ומהיר המבצע את הפקודות במחשב בצורה מאובטחת.
+* 🤖 **שרת API תואם OpenAI (מקומי וברשת):**
+  * נקודת קצה מקומית ב-`http://127.0.0.1:3000/v1` וברשת הביתית `http://<IP>:3000/v1`.
+  * מאפשר חיבור של כלי פיתוח חיצוניים (כמו **Cursor**, **Cline**, סקריפטים ב-Python ואפליקציות).
+  * **ניתוב חכם לפי מודל:** שליחת שאילתות ישירות לממשקי הווב ברקע (`model: "gemini"`, `model: "claude"`, `model: "chatgpt"`).
+* 🛠️ **תמיכה מלאה בפרוטוקול MCP:** תמיכה ב-JSON-RPC, הרצת כלים, קבלת רשימת כלים (Tool Listing), חיבורי SSE ושרתי MCP מותאמים אישית.
+* 🔐 **אינטגרציית OAuth 2.0 מובנית:** חיבור מהיר בלחיצה לשירותי **GitHub**, **Notion** ו-**Supabase**.
+* 🌐 **תמיכה בריבוי שפות (i18n):** ממשק משתמש והודעות תומכים באופן מלא בעברית ובאנגלית.
+* 🗄️ **סנכרון ענן מאובטח (Supabase):** שמירה וניהול הגדרות ומפתחות בצורה מוצפנת מבלי לחשוף סודות מקומיים.
+* 🔄 **עדכונים פשוטים:** בדיקת עדכונים ישירות מחלון התוסף או באמצעות קובץ הפעלה מהיר `update.bat`.
 
 ---
 
-### 3️⃣ Start the Windows Bridge Server
+### 📦 מדריך התקנה והפעלה מהיר
 
-#### Option A: One-Click Startup (Recommended)
-Double-click `start-bridge.bat` (or `bridge-launcher.bat`) located in the root project folder.
-> 💡 **Auto-Setup:** On the first run, the script automatically installs all required dependencies (`npm install`) if missing, and immediately starts the server on `http://localhost:3000`.
-
-#### Option B: Manual Terminal Startup
-1. Open PowerShell or Command Prompt inside the `bridge-server/` directory:
-   ```bash
-   cd bridge-server
-   npm install
-   npm start
-   ```
-2. The server will start and listen on `http://localhost:3000`.
+#### 📋 דרישות קדם
+1. **Node.js (גרסה 18 ומעלה):** [להורדה מהאתר הרשמי](https://nodejs.org/).
+2. **דפדפן מבוסס כרומיום:** Google Chrome, Microsoft Edge, Brave וכו'.
 
 ---
 
----
-
-## 🇮🇱 מדריך התקנה ושימוש בעברית
-
-### 📋 דרישות קדם
-- **Node.js (גרסה 18 ומעלה):** חובה להתקין במחשב לצורך הפעלת שרת הגישור (Bridge Server) המקומי ב-Windows.  
-  [הורדת Node.js מהאתר הרשמי](https://nodejs.org/).
-- **דפדפן Google Chrome** (או כל דפדפן מבוסס Chromium כמו Brave או Edge).
+#### 1️⃣ הורדה וחילוץ
+1. הורידו את הפרויקט כקובץ ZIP (או בצעו `git clone`).
+2. חלצו את הקבצים לתיקייה קבועה במחשב (למשל `C:\GemMCP` או בתיקיית המסמכים).
+   > ⚠️ **חשוב:** אין למחוק או להעביר את התיקייה לאחר ההתקנה.
 
 ---
 
-### 1️⃣ הורדה וחילוץ הקבצים
-1. לחצו על כפתור **Code** הירוק בראש עמוד ה-GitHub ובחרו ב-**Download ZIP**.
-2. **חלצו את קובץ ה-ZIP** לתיקייה קבועה במחשב שלכם (לדוגמה: `C:\GemMCP` או בתוך תיקיית המסמכים).
-   > ⚠️ **חשוב:** אין למחוק או להעביר את התיקייה לאחר ההתקנה, אחרת התוסף בדפדפן יפסיק לעבוד.
-
----
-
-### 2️⃣ התקנת התוסף בדפדפן Chrome
-1. פתחו את דפדפן Chrome והיכנסו לכתובת: `chrome://extensions/` (או דרך תפריט 3 הנקודות > **תוספים** > **ניהול תוספים**).
+#### 2️⃣ התקנת התוסף בדפדפן
+1. פתחו את הדפדפן והיכנסו אל `chrome://extensions/` (או `edge://extensions/`).
 2. הפעילו את מתג **מצב מפתח (Developer mode)** בפינה העליונה.
-3. לחצו על הכפתור **טען פריט שלא נארז (Load unpacked)**.
-4. ⚠️ **בחרו ישירות את התיקייה הראשית של הפרויקט** (התיקייה שחילצתם, המכילה את `manifest.json` ו-`start-bridge.bat`).
-5. מומלץ: לחצו על סמל הפאזל בסרגל הדפדפן ונעצו (Pin) את **GemMCP** לסרגל הכלים.
+3. לחצו על **טען פריט שלא נארז (Load unpacked)** ובחרו בתיקיית הפרויקט הראשית (היכן שנמצא `manifest.json`).
+4. מומלץ: נעצו את סמל GemMCP בסרגל הכלים לנוחות מרבית.
 
 ---
 
-### 3️⃣ הפעלת שרת ה-Windows Bridge
-
-#### אפשרות א': הפעלה בלחיצה אחת (מומלץ)
-לחצו לחיצה כפולה על הקובץ `start-bridge.bat` (או `bridge-launcher.bat`) הנמצא בתיקייה הראשית של הפרויקט.  
-> 💡 **התקנה אוטומטית:** בהפעלה הראשונה, הסקריפט מזהה אוטומטית אם חסרות ספריות ומבצע `npm install` עצמאית ברקע, ולאחר מכן מפעיל מיד את השרת בכתובת `http://localhost:3000`.
-
-#### אפשרות ב': הפעלה ידנית דרך הטרמינל
-1. פתחו את ה-PowerShell או ה-CMD בתוך תיקיית `bridge-server`:
-   ```bash
-   cd bridge-server
-   npm install
-   npm start
-   ```
-2. השרת ייפתח ויאזין בכתובת `http://localhost:3000`.
+#### 3️⃣ הפעלת שרת הגישור
+* **הפעלה מהירה בלחיצה כפולה (מומלץ):** הפעילו את הקובץ `start-bridge.bat` (או `bridge-launcher.bat`).  
+  *(בהפעלה הראשונה יותקנו אוטומטית כל הספריות הנדרשות, והשרת ירוץ בכתובת `http://localhost:3000`)*.
+* **או הפעלה ידנית מטרמינל:**
+  ```bash
+  cd bridge-server
+  npm install
+  npm start
+  ```
 
 ---
 
-### 🔄 איך לעדכן גרסה (Updates)
-ישנן שתי דרכים פשוטות לעדכון הפרויקט:
-1. **בדיקת עדכון מתוך התוסף:** לחצו על סמל הריענון 🔄 בראש חלון התוסף (Popup) כדי לבדוק מול GitHub אם יש גרסה חדשה.
-2. **עדכון מלא בלחיצת כפתור (`update.bat`):** לחצו לחיצה כפולה על הקובץ `update.bat` בתיקייה הראשית. הסקריפט ימשוך את הגרסה האחרונה מ-GitHub, יעדכן את חבילות ה-Node.js, וירשום את הפרוטוקול מחדש. לאחר מכן רק רעננו את התוסף ב-`chrome://extensions/`.
+#### 🔄 עדכון גרסאות
+* **דרך חלון התוסף:** לחצו על סמל הריענון 🔄 בחלון הפופאפ.
+* **עדכון מלא בלחיצה:** הפעילו את `update.bat` לעדכון הקוד והספריות מ-GitHub.
+
+---
+---
+
+## 🇬🇧 English Documentation
+
+### ✨ Key Features
+
+- 🔌 **Plug & Play Browser Extension:** Seamlessly injects tool execution capabilities into Gemini, Claude, and ChatGPT Web interfaces.
+- ⚡ **Local Windows Bridge Server:** Ultra-fast Express & WebSocket server acting as a secure bridge between your browser and local system tools.
+- 🤖 **Local & Network OpenAI-Compatible API:**
+  - Local endpoint: `http://127.0.0.1:3000/v1`
+  - LAN / Network endpoint: `http://<YOUR_LOCAL_IP>:3000/v1`
+  - Connect external AI coding agents (**Cursor**, **Cline**, Python apps) directly to browser web models using `model: "gemini"`, `model: "claude"`, or `model: "chatgpt"`.
+- 🛠️ **Full MCP Protocol Support:** Standard JSON-RPC, SSE, tool discovery, and custom MCP integrations.
+- 🔐 **Built-in OAuth 2.0:** One-click authentication for **GitHub**, **Notion**, and **Supabase**.
+- 🗄️ **Secure Supabase Cloud Sync:** Sync configurations securely without exposing secrets.
+- 🌐 **Full Multilingual Support (i18n):** Native Hebrew & English UI support.
 
 ---
 
-## 🤖 Local & Network OpenAI-Compatible API / שרת API מקומי ורשתי
+### 📦 Quick Setup (English)
 
-GemMCP provides a local and network-accessible OpenAI-compatible endpoint:
-- **Local (Same PC):** `http://127.0.0.1:3000/v1`
-- **Network (Other devices on Wi-Fi / LAN):** `http://<YOUR_LOCAL_IP>:3000/v1`
-
-### 🎯 Smart AI Routing by `model`:
-You can connect tools like **Cursor**, **Cline**, mobile apps, Python scripts, or custom applications, and route queries directly:
-- **`model: "gemini"`** ➔ Executes query directly on **Gemini** (`gemini.google.com`)
-- **`model: "claude"`** ➔ Executes query directly on **Claude** (`claude.ai`)
-- **`model: "chatgpt"`** ➔ Executes query directly on **ChatGPT** (`chatgpt.com`)
-
-> 💡 **Dedicated Background Tabs:** When an API session starts, a dedicated background tab is opened automatically so it never interrupts your active browser tabs.
+1. **Prerequisites:** Install [Node.js (v18+)](https://nodejs.org/) & Chrome / Edge / Brave.
+2. **Install Extension:** Go to `chrome://extensions/`, enable **Developer mode**, click **Load unpacked**, and select the project folder.
+3. **Start Bridge:** Double-click `start-bridge.bat` (or run `npm start` inside `bridge-server/`).
 
 ---
+
+### 📁 Project Structure
 
 ```text
 gemmcp/
 ├── manifest.json          # Chrome Extension Manifest (V3)
 ├── background.js          # Service worker & message router
-├── content.js             # Gemini Web page script injector
-├── content.css            # Injected UI styles
-├── popup/                 # Settings UI & OAuth callback handlers
-├── icons/                 # Extension Icons
-├── bridge-server/         # Node.js backend bridge
-│   ├── server.js          # Express & WebSocket server handling MCP & OAuth
+├── content.js             # Web page tool injector (Gemini, Claude, ChatGPT)
+├── content.css            # Injected UI styling
+├── popup/                 # Settings UI & OAuth handlers
+├── i18n.js                # Internationalization strings (Hebrew / English)
+├── icons/                 # Extension icons
+├── bridge-server/         # Node.js backend bridge server
+│   ├── server.js          # Express & WebSocket server (MCP & OpenAI API)
 │   ├── setup_rpc.sql      # Supabase schema & RPC configuration
-│   └── .env.example       # Environment template
-├── start-bridge.bat       # Windows Bridge launcher
-├── update.bat             # Git pull + npm install + registry update
-└── test-simulator.html    # Standalone browser test suite
+│   └── .env.example       # Environment variables template
+├── start-bridge.bat       # One-click Windows Bridge launcher
+├── update.bat             # One-click auto updater
+└── test-simulator.html    # Standalone browser testing suite
 ```
 
 ---
 
-## 🔒 Security & Privacy
+## 🔒 Security & Privacy / אבטחה ופרטיות
 
-- Sensitive tokens and API keys are stored securely using Supabase Service Role RPCs or isolated environment variables.
-- The extension communicates with local services over loopback interfaces (`127.0.0.1` / `localhost`).
-- No conversation data or prompt text is ever logged or transferred outside of your configured tools.
+- Sensitive tokens and API keys are stored securely using Supabase Service Role RPCs or isolated local environment variables (`.env`).
+- Local communication occurs strictly over local loopback interfaces (`127.0.0.1` / `localhost`).
+- No conversation history or private prompts are ever transmitted to third parties outside your explicitly connected tools.
 
 ---
 
 ## ⚠️ Disclaimer & Liability / כתב ויתור והצהרת אחריות
 
-### 🇬🇧 English:
-> **IMPORTANT SECURITY NOTICE:**  
-> This project is provided as **open-source software on an "AS IS" basis**, without warranty of any kind, express or implied.
-> - **Local Access & System Permissions:** GemMCP can bridge AI interfaces with your local operating system and active browser tabs. Granting automated tools or AI models access to execute local commands, modify files, or interact with authenticated sessions carries inherent security risks.
-> - **User Responsibility:** You are solely responsible for reviewing the tools and MCP servers you configure, the commands permitted, and any data accessed. Always exercise caution and verify actions before running potentially destructive operations.
-> - **Code Audit:** It is strongly recommended to review the source code and configuration files prior to installation and execution.
-
----
-
-### 🇮🇱 עברית:
-> **הודעת אבטחה ואחריות חשובה:**  
-> פרויקט זה מופץ כתוכנת **קוד פתוח "כמות שהוא" (AS IS)**, והשימוש בו הוא **באחריות המשתמש בלבד**.
-> - **גישה למחשב ולדפדפן:** המערכת מאפשרת לגשר בין מודל ה-AI לבין מערכת ההפעלה המקומית וכרטיסיות הדפדפן שלכם. מתן הרשאות להרצת פקודות מקומיות, גישה לקבצים או אינטראקציה עם חשבונות מחוברים דורשת זהירות מרבית.
-> - **אחריות בלעדית:** המשתמש נושא באחריות המלאה והבלעדית לכל פעולה, שינוי, מחיקה או נזק שעלולים להיגרם כתוצאה מהרצת פקודות או חיבור שרתי MCP.
-> - **בדיקת הקוד:** מומלץ מאוד לעבור על קוד המקור, הסקריפטים וקובצי ההגדרות לפני ההתקנה וההפעלה במחשבכם.
+> **🇮🇱 עברית:** פרויקט זה מופץ כתוכנת קוד פתוח "כמות שהוא" (AS IS). מתן גישה למודלי AI להרצת פקודות מקומיות וגישה לקבצים נעשית באחריות המשתמש בלבד. מומלץ לעבור על קוד המקור והפקודות לפני השימוש.
+> 
+> **🇬🇧 English:** GemMCP is provided as open-source software on an "AS IS" basis. Executing local system commands via AI tools carries inherent risks. Users are solely responsible for reviewing and verifying all configured tools and actions.
 
 ---
 
 ## 📄 License
-MIT License. Created by [SSSHMUEL](https://github.com/SSSHMUEL).
-
+MIT License. Created with ❤️ by [SSSHMUEL](https://github.com/SSSHMUEL).

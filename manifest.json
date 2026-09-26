@@ -3,7 +3,7 @@
   "name": "GemMCP",
   "version": "2.1.5",
   "version_name": "2.1.5",
-  "description": "Bridge Gemini, Claude, and ChatGPT to your Windows system with powerful local tools and MCP integrations.",
+  "description": "חיבור Gemini, Claude ו-ChatGPT למערכת Windows שלך עם כלים מקומיים מתקדמים ושילובי MCP.",
   "permissions": [
     "storage",
     "activeTab",
