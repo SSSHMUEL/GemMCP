@@ -383,7 +383,8 @@ Acknowledge readiness by responding with only: "מוכן".`.trim();
  */
 function generateSingleToolPrompt(serviceId, customServerConfig = null, customToolPrompts = {}, userText = '') {
   const cleanUserText = (userText || '').trim();
-  const userPrefix = cleanUserText ? `${cleanUserText}\n\n` : '';
+  // שלוש שורות רווח מפרידות בין הודעת המשתמש להנחיה כדי להסתיר אותה בתצוגה
+  const userPrefix = cleanUserText ? `${cleanUserText}\n\n\n\n` : '';
 
   if (customToolPrompts && customToolPrompts[serviceId] && customToolPrompts[serviceId].trim()) {
     return `${userPrefix}Format response strictly as JSON for ${serviceId}.\n${customToolPrompts[serviceId].trim()}`;

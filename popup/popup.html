@@ -47,6 +47,34 @@
   <!-- רשימת שירותים מתרחבת עם התחברות בקליק + ידנית -->
   <div class="services-list">
     
+    <!-- TalkFix Sponsor & Promo Banner (Top) -->
+    <div class="talkfix-ad-container" id="talkfix-ad-container">
+      <a href="https://talkfix.app/" target="_blank" rel="noopener noreferrer" class="talkfix-ad-card" id="talkfix-ad-card" data-i18n-title="talkfixBannerTitleAttr" title="מעבר לאתר TalkFix - ללמוד אנגלית בטבעיות">
+        <div class="talkfix-ad-glow"></div>
+        <div class="talkfix-ad-body">
+          <div class="talkfix-ad-logo-wrap">
+            <img src="talkfix-icon.png" alt="TalkFix" class="talkfix-ad-logo" onerror="this.src='../icons/icon48.png'">
+          </div>
+          <div class="talkfix-ad-text-wrap">
+            <div class="talkfix-ad-top">
+              <span class="talkfix-ad-tag" data-i18n="talkfixBannerTag">בחסות TALKFIX</span>
+            </div>
+            <div class="talkfix-ad-title" data-i18n="talkfixBannerTitle">כותבים קוד? שפרו את האנגלית שלכם</div>
+            <div class="talkfix-ad-sub" data-i18n="talkfixBannerSub">למדו מונחים וביטויים באנגלית בקלות</div>
+          </div>
+          <div class="talkfix-ad-action">
+            <span class="talkfix-cta-button">
+              <span data-i18n="talkfixBannerCta">כניסה לאתר</span>
+              <svg class="talkfix-cta-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+            </span>
+          </div>
+        </div>
+      </a>
+    </div>
+
     <!-- Windows OS MCP Card -->
     <div class="service-card" data-service="windows">
       <div class="service-header">
@@ -711,9 +739,9 @@
 
   </div>
 
-  <div class="footer">
-    <div id="statusMessage" class="status-msg"></div>
-  </div>
+  <div id="version-footer" style="text-align:center;padding:0;margin:10px 0 2px 0;line-height:1;font-size:10.5px;color:#0ea5e9;letter-spacing:0.04em;font-weight:400;user-select:none;"></div>
+
+  <div id="statusMessage" class="status-msg"></div>
 
   <!-- מודאל הסבר ומדריך שימוש מלא -->
   <div class="help-modal-overlay" id="helpModalOverlay">
@@ -948,8 +976,6 @@ print(response.choices[0].message.content)</pre>
       </div>
     </div>
   </div>
-
-  <div id="version-footer" style="text-align:center;padding:0;margin:6px 0 2px 0;line-height:1;font-size:10.5px;color:#0ea5e9;letter-spacing:0.04em;font-weight:400;user-select:none;"></div>
 
   <script src="../i18n.js"></script>
   <script src="../prompt.js"></script>

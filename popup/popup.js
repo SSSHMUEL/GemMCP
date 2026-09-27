@@ -37,6 +37,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+    // Apply translations to elements with data-i18n-title
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      const key = el.getAttribute('data-i18n-title');
+      if (key && typeof t === 'function') {
+        const translation = t(key, lang);
+        if (translation) {
+          el.setAttribute('title', translation);
+        }
+      }
+    });
+
     // Update dynamic labels
     const lblWindows = document.getElementById('lbl-prompt-windows');
     if (lblWindows) lblWindows.textContent = (typeof t === 'function' ? t('promptLabelPrefix', lang) : 'הנחיות לכלי ') + (lang === 'he' ? 'Windows' : 'Windows');
@@ -1522,5 +1533,20 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // TalkFix banner click handler
+  const talkfixAdCard = document.getElementById('talkfix-ad-card');
+  if (talkfixAdCard) {
+    talkfixAdCard.addEventListener('click', (e) => {
+      e.preventDefault();
+      const url = 'https://talkfix.app/';
+      if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.create) {
+        chrome.tabs.create({ url });
+      } else {
+        window.open(url, '_blank');
+      }
+    });
+  }
 });
+
 

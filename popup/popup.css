@@ -791,13 +791,17 @@ input:focus {
 }
 
 .footer {
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-height: 22px;
+  gap: 0;
+}
+
+.footer:empty,
+.status-msg:empty {
+  display: none;
 }
 
 .btn-primary {
@@ -1682,6 +1686,184 @@ html[dir="ltr"] .header-actions-group {
   color: #0369a1;
   font-family: monospace;
 }
+
+/* ==========================================================================
+   TalkFix Sponsor Banner (Top)
+   ========================================================================== */
+.talkfix-ad-container {
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 10;
+}
+
+.talkfix-ad-card {
+  display: block;
+  text-decoration: none;
+  position: relative;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #D4D7E3 0%, #CAD5EA 50%, #B4D1F3 100%);
+  border: 1px solid rgba(165, 185, 220, 0.75);
+  box-shadow: 0 4px 14px rgba(100, 130, 180, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.85);
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.talkfix-ad-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(140, 168, 215, 0.95);
+  background: linear-gradient(90deg, #C8CDE0 0%, #BCCDE8 50%, #A4C7F2 100%);
+  box-shadow: 0 8px 20px rgba(80, 120, 190, 0.32), inset 0 1px 2px rgba(255, 255, 255, 0.95);
+}
+
+.talkfix-ad-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 60%);
+  opacity: 0.7;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.talkfix-ad-card:hover .talkfix-ad-glow {
+  opacity: 1;
+}
+
+.talkfix-ad-body {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 9px;
+  position: relative;
+  z-index: 2;
+}
+
+.talkfix-ad-logo-wrap {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.talkfix-ad-logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 0;
+  object-fit: contain;
+  background: transparent;
+  box-shadow: none;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.talkfix-ad-card:hover .talkfix-ad-logo {
+  transform: scale(1.06) rotate(-2deg);
+}
+
+.talkfix-ad-text-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+html[dir="rtl"] .talkfix-ad-text-wrap {
+  text-align: right;
+}
+
+html[dir="ltr"] .talkfix-ad-text-wrap {
+  text-align: left;
+}
+
+.talkfix-ad-top {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.talkfix-ad-tag {
+  font-size: 8.5px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1e3a8a;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  line-height: 1.25;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: inline-block;
+}
+
+.talkfix-ad-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+
+.talkfix-ad-sub {
+  font-size: 9px;
+  font-weight: 500;
+  color: #334155;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.talkfix-ad-action {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.talkfix-cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: linear-gradient(135deg, hsl(25, 90%, 48%) 0%, hsl(20, 88%, 42%) 100%);
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 4px 7px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(232, 105, 13, 0.35);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.talkfix-ad-card:hover .talkfix-cta-button {
+  background: linear-gradient(135deg, hsl(25, 90%, 44%) 0%, hsl(20, 88%, 38%) 100%);
+  box-shadow: 0 3px 10px rgba(232, 105, 13, 0.5);
+}
+
+.talkfix-cta-arrow {
+  width: 11px;
+  height: 11px;
+  transition: transform 0.2s ease;
+}
+
+html[dir="rtl"] .talkfix-ad-card:hover .talkfix-cta-arrow {
+  transform: translateX(-2px);
+}
+
+html[dir="ltr"] .talkfix-ad-card:hover .talkfix-cta-arrow {
+  transform: translateX(2px) scaleX(-1);
+}
+
+html[dir="ltr"] .talkfix-cta-arrow {
+  transform: scaleX(-1);
+}
+
 
 
 

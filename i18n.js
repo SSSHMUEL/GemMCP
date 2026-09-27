@@ -54,6 +54,13 @@ const I18N_DICT = {
 
     builtByName: 'בינארי חכם',
 
+    // TalkFix Banner
+    talkfixBannerTag: 'בחסות TALKFIX',
+    talkfixBannerTitle: 'כותבים קוד? שפרו את האנגלית שלכם',
+    talkfixBannerSub: 'למדו מונחים וביטויים באנגלית בקלות',
+    talkfixBannerCta: 'כניסה לאתר',
+    talkfixBannerTitleAttr: 'מעבר לאתר TalkFix - ללמוד אנגלית בטבעיות',
+
     bridgeTokenLabel: 'טוקן אימות הגשר',
     // מצב הרצה, היקף קריאה, הפעלה לפי שיחה והתקנה - נוספו יחד עם התכונות
     // עצמן. בלי הערכים האלה הפופאפ הציג את שמות המפתחות למשתמש.
@@ -180,6 +187,9 @@ const I18N_DICT = {
     widgetDragHeader: 'לחץ וגרור כדי להזיז את החלונית',
     widgetRescanBtn: 'סריקה מחדש',
     widgetRescanTitle: 'סרוק ובצע פקודה אחרונה מהצ\'אט (ריענון)',
+    widgetStopBtn: 'עצירה',
+    widgetStopTitle: 'השהה / עצור תקשורת ופקודות',
+    widgetResumeBtn: 'המשך פעילות',
     widgetInjectBtn: 'הפעל GemMCP',
     widgetActiveServices: 'שירותים פעילים בשיחה:',
     widgetWinServerLabel: 'שרת Windows:',
@@ -269,6 +279,13 @@ const I18N_DICT = {
     builtByPrefix: 'Built by',
 
     builtByName: 'Smart Binary',
+
+    // TalkFix Banner
+    talkfixBannerTag: 'SPONSORED BY TALKFIX',
+    talkfixBannerTitle: 'Coding & Developing? Master your English',
+    talkfixBannerSub: 'Learn technical terms & spoken English effortlessly',
+    talkfixBannerCta: 'Visit Site',
+    talkfixBannerTitleAttr: 'Visit TalkFix - Learn English Naturally',
 
     bridgeTokenLabel: 'Bridge auth token',
     runModeHeader: '🎚️ Run mode',
@@ -394,6 +411,9 @@ const I18N_DICT = {
     widgetDragHeader: 'Click and drag to move panel',
     widgetRescanBtn: 'Rescan Chat',
     widgetRescanTitle: 'Rescan and execute latest chat command (Refresh)',
+    widgetStopBtn: 'Stop',
+    widgetStopTitle: 'Pause / stop command exchange',
+    widgetResumeBtn: 'Resume',
     widgetInjectBtn: 'Activate GemMCP',
     widgetActiveServices: 'Active Chat Services:',
     widgetWinServerLabel: 'Windows Server:',
