@@ -1539,7 +1539,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (talkfixAdCard) {
     talkfixAdCard.addEventListener('click', (e) => {
       e.preventDefault();
-      const url = 'https://talkfix.app/';
+      const url = 'https://talkfix.app/?ref=gem_mcp&c=gem_mcp_app';
       if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.create) {
         chrome.tabs.create({ url });
       } else {
